@@ -1,8 +1,10 @@
 # Wanted Weather
 
-A weather app that plays like an open-world game: real forecasts, wanted-level stars, extreme-weather alerts and (coming soon) missions, radio and shareable movie posters. Spanish by default, with an ES/EN switch. Built with AI for the AI Maker programme.
+A weather app that plays like an open-world game: real forecasts, wanted-level stars, extreme-weather alerts, daily missions and (coming soon) radio and shareable movie posters. Spanish by default, with an ES/EN switch. Built with AI for the AI Maker programme.
 
-> 🚧 Work in progress. See [PLAN.md](PLAN.md) for the phases. Live link and screenshots arrive with the publishing step.
+**Live:** https://jplataes.github.io/wanted-weather/
+
+> 🚧 Work in progress. See [PLAN.md](PLAN.md) for the phases. Screenshots arrive with the final phase.
 
 ## What works now (phases 1–2)
 - Real current weather from OpenWeatherMap for your location, with Madrid as the fallback if location is refused.

@@ -2,7 +2,7 @@
 // Lines with several options rotate: one is picked per city and per day, so every visit can surprise.
 
 export const STAR_LINES = {
-  1: { es: ['Día de chill', 'La calle es tuya', 'Ni una nube te busca'], en: ['Easy street', 'The streets are yours', 'Not a cloud on your tail'] },
+  1: { es: ['Día de chill', 'La calle es tuya', 'Nadie te busca hoy'], en: ['Easy street', 'The streets are yours', "Nobody's after you today"] },
   2: { es: ['Algo se cuece', 'Te tienen fichado', 'Ojito, colega'], en: ["Something's cooking", "You're on their radar", 'Eyes open, pal'] },
   3: { es: ['Se está liando', 'El cielo quiere bronca', 'Modo supervivencia'], en: ['Things are kicking off', 'The sky wants a word', 'Survival mode'] },
   4: { es: ['Esto se pone feo', 'El clima te ha puesto precio', 'Sal solo si es urgente'], en: ["It's getting ugly", 'The weather put a price on your head', 'Out only if you must'] },

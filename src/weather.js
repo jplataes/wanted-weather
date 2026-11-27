@@ -23,13 +23,33 @@ export function isNight(data) {
 }
 
 /**
- * Which illustrated scene to show. Phase 1 has three scenes (sun, rain, night);
- * the other weather types get their own scene in phase 2.
+ * Which illustrated scene to show. Bad weather wins; then strong wind; then night; then clouds or sun.
+ * @returns {'sun'|'clouds'|'rain'|'storm'|'snow'|'fog'|'wind'|'night'}
  */
-export function sceneFor(kind, night) {
-  if (kind === 'rain' || kind === 'storm') return 'rain';
+export function sceneFor(kind, night, windKmh = 0) {
+  if (kind === 'storm' || kind === 'rain' || kind === 'snow' || kind === 'fog' || kind === 'wind') return kind;
+  if (windKmh >= 40) return 'wind';
   if (night) return 'night';
-  return 'sun';
+  return kind === 'clouds' ? 'clouds' : 'sun';
+}
+
+/**
+ * Screen effect over the whole interface, from the real conditions.
+ * @returns {'storm'|'rain'|'snow'|'fog'|'wind'|'heat'|'cold'|'none'}
+ */
+export function screenFxFor(kind, feels, windKmh) {
+  if (kind === 'storm' || kind === 'rain' || kind === 'snow' || kind === 'fog') return kind;
+  if (feels >= 30) return 'heat';
+  if (feels <= 3) return 'cold';
+  if (kind === 'wind' || windKmh >= 30) return 'wind';
+  return 'none';
+}
+
+/** Place name in the app language, from a geocoding result, with fallbacks. */
+export function localName(place, lang, fallback = '') {
+  if (!place) return fallback;
+  const names = place.local_names || {};
+  return names[lang] || place.name || fallback;
 }
 
 const RAIN_LEVEL = { 300: 2, 301: 2, 302: 2, 310: 2, 311: 2, 312: 2, 313: 2, 314: 3, 321: 2,
@@ -93,7 +113,7 @@ export function cityDay(data) {
 }
 
 /** Everything the interface needs, already computed. */
-export function buildView(data, lang) {
+export function buildView(data, lang, place = null) {
   const weather = data.weather?.[0] ?? { id: 800, description: '' };
   const kind = kindFromCode(weather.id);
   const night = isNight(data);
@@ -102,7 +122,7 @@ export function buildView(data, lang) {
   const description = weather.description || '';
   return {
     id: data.id,
-    city: data.name,
+    city: localName(place, lang, data.name),
     country: data.sys?.country ?? '',
     lat: data.coord?.lat ?? 0,
     lon: data.coord?.lon ?? 0,
@@ -110,15 +130,19 @@ export function buildView(data, lang) {
     feels: Math.round(data.main?.feels_like ?? 0),
     humidity: Math.round(data.main?.humidity ?? 0),
     windKmh: Math.round((data.wind?.speed ?? 0) * 3.6),
+    gustKmh: Math.round((data.wind?.gust ?? 0) * 3.6),
     windDeg: data.wind?.deg ?? 0,
     windCompass: compassIndex(data.wind?.deg ?? 0),
+    sunriseUnix: data.sys?.sunrise ?? 0,
+    sunsetUnix: data.sys?.sunset ?? 0,
     sunrise: data.sys?.sunrise ? cityTime(data.sys.sunrise, tz, lang) : '–',
     sunset: data.sys?.sunset ? cityTime(data.sys.sunset, tz, lang) : '–',
     localTime: cityTime(Math.floor(Date.now() / 1000), tz, lang),
     description: description.charAt(0).toUpperCase() + description.slice(1),
     kind,
     night,
-    scene: sceneFor(kind, night),
+    scene: sceneFor(kind, night, Math.max(data.wind?.speed ?? 0, (data.wind?.gust ?? 0) * 0.8) * 3.6),
+    fx: screenFxFor(kind, data.main?.feels_like ?? 15, Math.max(data.wind?.speed ?? 0, (data.wind?.gust ?? 0) * 0.8) * 3.6),
     level: wanted.level,
     extreme: wanted.extreme,
     seed: `${data.id}-${cityDay(data)}`,

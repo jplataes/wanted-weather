@@ -101,7 +101,7 @@ a { color: var(--sun); }
 .scene-frame { border: 4px solid var(--ink); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--ink); overflow: hidden; background: var(--ink); aspect-ratio: 400 / 260; max-width: 100%; }
 .scene-frame svg { display: block; width: 100%; height: 100%; }
 .hud-card {
-  position: relative; margin: -56px 12px 0; padding: 16px 18px 18px; display: grid; gap: 8px;
+  position: relative; margin: -34px 12px 0; padding: 16px 18px 18px; display: grid; gap: 8px;
   background: rgba(20, 10, 36, .94); border: var(--line) solid var(--ink); border-top: 6px solid var(--accent);
   border-radius: var(--radius); box-shadow: var(--shadow); transform: rotate(-1deg);
   outline: 1px solid rgba(255, 243, 220, .15);
@@ -243,3 +243,160 @@ a { color: var(--sun); }
   .overlay[data-type="heat"] .banner-word { filter: none; }
   .legB { opacity: 0; }
 }
+
+/* ---------- Phase 2: wide sections on desktop ---------- */
+@media (min-width: 900px) {
+  .mission, .upcoming { grid-column: 1 / -1; }
+}
+
+/* ---------- Sixth box: daylight countdown ---------- */
+.hud-details .daylight { border-color: var(--ink); background: linear-gradient(135deg, var(--night), #3f1e78); }
+.hud-details .daylight[data-phase="night"] { background: linear-gradient(135deg, #0d0620, var(--night)); }
+.countdown { display: block; font-variant-numeric: tabular-nums; color: var(--sun); }
+.daylight[data-phase="night"] .countdown { color: var(--teal); }
+.daybar { display: block; height: 6px; margin-top: 6px; border: 1.5px solid var(--ink); border-radius: 3px; background: rgba(255, 243, 220, .12); overflow: hidden; }
+.daybar span { display: block; height: 100%; width: 0; background: repeating-linear-gradient(-45deg, var(--sun) 0 6px, var(--orange) 6px 12px); transition: width 1s linear; }
+
+/* ---------- Mission dossier ---------- */
+.mission {
+  position: relative; display: grid; gap: 14px; padding: 22px 20px 20px; color: var(--ink);
+  background:
+    radial-gradient(circle at 1px 1px, rgba(20, 10, 36, .08) 1px, transparent 1.4px) 0 0 / 8px 8px,
+    linear-gradient(180deg, #fff3dc, #f6e3bf);
+  border: var(--line) solid var(--ink); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--accent-2);
+  transform: rotate(.4deg);
+}
+.mission::before { content: ""; position: absolute; top: -12px; left: 50%; width: 110px; height: 24px; transform: translateX(-50%) rotate(-3deg); background: rgba(255, 201, 60, .75); border: 1px solid rgba(20, 10, 36, .2); }
+.mission-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mission-when { font: 700 .8rem/1 var(--body); text-transform: uppercase; letter-spacing: .16em; color: #6e2bc4; }
+.mission-stamp { font: 400 1.1rem/1 var(--display); text-transform: uppercase; letter-spacing: .12em; color: #d4145a; border: 3px solid #d4145a; padding: 4px 10px; border-radius: 4px; transform: rotate(-8deg); opacity: .85; }
+.mission-title { font: 400 clamp(2.2rem, 9vw, 3.6rem)/.95 var(--display); text-transform: uppercase; letter-spacing: .01em; color: var(--ink); text-shadow: 3px 3px 0 var(--accent); text-wrap: balance; }
+.mission-objective { font-size: 1.1rem; max-width: 65ch; }
+.mission-objective strong { text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; }
+.mission-cols { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.mission-sub { font: 400 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.intel { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.intel li { padding-left: 22px; position: relative; font-weight: 700; }
+.intel li::before { content: ""; position: absolute; left: 0; top: .45em; width: 12px; height: 12px; background: var(--magenta); border: 2px solid var(--ink); transform: rotate(45deg); }
+.gear { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+.gear li { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; box-shadow: 3px 3px 0 var(--ink); font-weight: 700; }
+.gear svg { width: 34px; height: 34px; flex: none; }
+.call-launch { justify-self: start; }
+.call-launch svg { width: 20px; height: 20px; }
+.call-launch.missed { background: var(--magenta); animation: nudge 1.2s ease-in-out infinite; }
+@keyframes nudge { 0%, 70%, 100% { transform: none; } 75% { transform: rotate(-3deg); } 85% { transform: rotate(3deg); } }
+
+/* ---------- Upcoming missions ---------- */
+.upcoming { display: grid; gap: 12px; min-width: 0; }
+.section-title { font: 400 clamp(1.8rem, 7vw, 2.6rem)/1 var(--display); text-transform: uppercase; color: var(--sun); text-shadow: 4px 4px 0 var(--ink); }
+.upcoming-list { margin: 0; padding: 4px 4px 12px; list-style: none; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(158px, 1fr); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; }
+.up-card { scroll-snap-align: start; display: grid; gap: 6px; align-content: start; padding: 14px 12px; background: rgba(20, 10, 36, .9); border: var(--line) solid var(--ink); border-top: 6px solid var(--teal); border-radius: var(--radius); box-shadow: 4px 4px 0 var(--ink); outline: 1px solid rgba(255, 243, 220, .15); min-width: 0; }
+.up-card[data-theme="rain"], .up-card[data-theme="storm"] { border-top-color: var(--magenta); }
+.up-card[data-theme="heat"], .up-card[data-theme="clear"] { border-top-color: var(--orange); }
+.up-card[data-theme="cold"], .up-card[data-theme="snow"] { border-top-color: var(--ice); }
+.up-day { font: 400 1.25rem/1 var(--display); text-transform: uppercase; letter-spacing: .03em; }
+.up-icon svg { width: 52px; height: 52px; }
+.up-temps { font: 400 1.6rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.up-max { color: var(--sun); }
+.up-min { color: var(--muted); font-size: .75em; }
+.up-desc { font-size: .9rem; color: var(--muted); line-height: 1.3; }
+.wanted.small svg { width: 18px; height: 18px; }
+.up-code { font: 700 .72rem/1.2 var(--body); text-transform: uppercase; letter-spacing: .1em; color: var(--teal); }
+.note { color: var(--muted); }
+
+/* ---------- Phone call ---------- */
+.call {
+  position: fixed; z-index: 55; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(360px, calc(100% - 32px)); display: grid; gap: 12px; padding: 16px; color: var(--cream);
+  background: linear-gradient(180deg, #1d1038, #0d0620); border: var(--line) solid var(--ink); border-radius: 22px;
+  box-shadow: 6px 6px 0 var(--ink), 0 0 0 2px rgba(255, 243, 220, .15) inset; animation: callIn .4s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.call[data-state="ringing"] { animation: callIn .4s cubic-bezier(.2, 1.4, .4, 1) both, ring 1.4s ease-in-out .4s infinite; }
+@keyframes callIn { from { transform: translateY(40px) scale(.9); opacity: 0; } }
+@keyframes ring { 0%, 60%, 100% { transform: none; } 65% { transform: rotate(-2deg); } 70% { transform: rotate(2deg); } 75% { transform: rotate(-2deg); } 80% { transform: rotate(2deg); } }
+.call-top { display: flex; gap: 12px; align-items: center; }
+.call-avatar { width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--magenta); overflow: hidden; flex: none; }
+.call-avatar svg { width: 100%; height: 100%; display: block; }
+.call[data-state="ringing"] .call-avatar { animation: pulseRing 1.4s ease-out infinite; }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(255, 46, 138, .7); } 100% { box-shadow: 0 0 0 16px rgba(255, 46, 138, 0); } }
+.call-who { flex: 1; min-width: 0; }
+.call-status { font: 700 .75rem/1.2 var(--body); text-transform: uppercase; letter-spacing: .14em; color: var(--teal); }
+.call-name { font: 400 1.5rem/1.05 var(--display); text-transform: uppercase; }
+.call-clock { font: 400 1.1rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--muted); }
+.call-subs { max-height: 9.5em; overflow-y: auto; font-size: .98rem; line-height: 1.45; }
+.call-subs:empty { display: none; }
+.call-actions { display: flex; gap: 10px; }
+.call-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: var(--line) solid var(--ink); border-radius: 999px; font: 400 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; color: var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
+.call-btn svg { width: 18px; height: 18px; }
+.call-btn.answer { background: #3ddc84; }
+.call-btn.decline, .call-btn.hangup { background: var(--magenta); }
+.call-btn.decline svg, .call-btn.hangup svg { transform: rotate(135deg); }
+
+/* ---------- Living screen ---------- */
+.screenfx { position: fixed; inset: 0; z-index: 30; pointer-events: none; overflow: hidden; }
+.screenfx i { position: absolute; display: block; }
+.drop {
+  left: var(--x); top: var(--y); width: var(--s); height: calc(var(--s) * 1.25); border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .75), rgba(191, 233, 255, .18) 45%, rgba(191, 233, 255, .05) 70%);
+  box-shadow: inset -1px -2px 2px rgba(20, 10, 36, .25), 0 1px 1px rgba(255, 255, 255, .2);
+  animation: slide var(--d) cubic-bezier(.6, 0, .9, .6) var(--delay) infinite;
+}
+@keyframes slide { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 55% { transform: translateY(6vh); } 100% { transform: translateY(45vh); opacity: 0; } }
+.lightning { inset: 0; background: rgba(255, 243, 220, .85); opacity: 0; animation: flashScreen 7s linear infinite 2s; }
+@keyframes flashScreen { 0%, 100% { opacity: 0; } 2% { opacity: .55; } 3% { opacity: 0; } 5% { opacity: .35; } 6% { opacity: 0; } }
+.flake { left: var(--x); top: -10px; width: var(--s); height: var(--s); border-radius: 50%; background: #fff; opacity: .85; box-shadow: 0 0 4px rgba(255, 255, 255, .8); animation: fall var(--d) linear var(--delay) infinite; }
+@keyframes fall { to { transform: translate(var(--sway), 105vh); } }
+.fogband { left: -60vw; top: var(--y); width: 160vw; height: 22vh; background: radial-gradient(ellipse at center, rgba(232, 226, 245, .22), transparent 70%); animation: fogMove var(--d) ease-in-out var(--delay) infinite alternate; }
+@keyframes fogMove { to { transform: translateX(30vw); } }
+.gust { left: -260px; top: var(--y); width: var(--w); height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(255, 243, 220, .55), transparent); animation: gustMove var(--d) linear var(--delay) infinite; }
+@keyframes gustMove { to { transform: translateX(calc(100vw + 300px)); } }
+.leaf { left: -30px; top: var(--y); width: 14px; height: 8px; border-radius: 0 100% 0 100%; background: #0e7a66; border: 1.5px solid var(--ink); animation: leafMove var(--d) linear var(--delay) infinite; }
+@keyframes leafMove { 0% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(55vw, -6vh) rotate(360deg); } 100% { transform: translate(110vw, 4vh) rotate(720deg); } }
+.heatwave { inset: auto 0 0; height: 40vh; background: linear-gradient(0deg, rgba(255, 122, 26, .22), transparent); }
+.heatwave::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255, 201, 60, .07) 0 3px, transparent 3px 10px); animation: haze 1.6s ease-in-out infinite alternate; }
+.frost { inset: 0; background:
+  radial-gradient(circle at 0 0, rgba(220, 245, 255, .55), transparent 28%),
+  radial-gradient(circle at 100% 0, rgba(220, 245, 255, .45), transparent 24%),
+  radial-gradient(circle at 0 100%, rgba(220, 245, 255, .45), transparent 26%),
+  radial-gradient(circle at 100% 100%, rgba(220, 245, 255, .55), transparent 28%); }
+
+/* ---------- Phase 2 scene animations ---------- */
+.drift { animation: drift 14s ease-in-out infinite alternate; }
+.drift.slow { animation-duration: 20s; animation-delay: -6s; }
+@keyframes drift { from { transform: translateX(-12px); } to { transform: translateX(14px); } }
+.walk2 { animation: walk2 11s linear infinite; }
+@keyframes walk2 { 0% { transform: translateX(-90px); opacity: 0; } 6% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translateX(170px); opacity: 0; } }
+.wag { transform-box: fill-box; transform-origin: 0 100%; animation: wag .35s ease-in-out infinite alternate; }
+@keyframes wag { from { transform: rotate(-18deg); } to { transform: rotate(14deg); } }
+.flash { animation: sceneFlash 4.5s linear infinite 1s; }
+.bolt { opacity: 0; animation: bolt 4.5s linear infinite 1s; }
+@keyframes sceneFlash { 0%, 100% { opacity: 0; } 2% { opacity: .7; } 4% { opacity: 0; } 6% { opacity: .4; } 8% { opacity: 0; } }
+@keyframes bolt { 0%, 100% { opacity: 0; } 1%, 9% { opacity: 1; } 10% { opacity: 0; } }
+.flap { transform-box: fill-box; transform-origin: 50% 100%; animation: flap .25s ease-in-out infinite alternate; }
+@keyframes flap { from { transform: rotate(-14deg); } to { transform: rotate(2deg); } }
+.brace { animation: brace 1.2s ease-in-out infinite alternate; }
+@keyframes brace { to { transform: translateX(-3px); } }
+.wave { transform-box: fill-box; transform-origin: 0 100%; animation: waveArm .6s ease-in-out infinite alternate; }
+@keyframes waveArm { from { transform: rotate(-10deg); } to { transform: rotate(16deg); } }
+.gale { transform-box: fill-box; transform-origin: 50% 100%; animation: gale 1.1s ease-in-out infinite alternate; }
+.gale.slow { animation-duration: 1.4s; animation-delay: -.5s; }
+@keyframes gale { from { transform: rotate(4deg); } to { transform: rotate(12deg); } }
+.fly { animation: flyAcross 4s linear infinite; }
+.fly.late { animation-delay: -1.6s; }
+.fly.later { animation-delay: -2.8s; }
+@keyframes flyAcross { 0% { transform: translate(-80px, 0) rotate(0); } 50% { transform: translate(160px, -30px) rotate(300deg); } 100% { transform: translate(440px, 10px) rotate(720deg); } }
+.zoom { animation: zoom 9s linear infinite; }
+.zoom.late { animation-duration: 12s; animation-delay: -5s; }
+@keyframes zoom { from { transform: translateX(-140px); } to { transform: translateX(460px); } }
+.streak { animation: streak 1.6s linear infinite; }
+.streak.late { animation-delay: -.8s; }
+@keyframes streak { from { transform: translateX(-60px); opacity: 0; } 30% { opacity: 1; } to { transform: translateX(120px); opacity: 0; } }
+.capfly { transform-box: fill-box; transform-origin: center; animation: capfly 2.4s ease-in-out infinite; }
+@keyframes capfly { 0% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(26px, -18px) rotate(200deg); } 100% { transform: translate(0, 0) rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .bolt { opacity: 1; }
+  .flash, .lightning { opacity: 0; }
+  .walk2 { opacity: 1; }
+}
+@media (min-width: 900px) { .hud-card { margin-top: -56px; } }

@@ -20,11 +20,11 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué verás:** la página `muestra/index.html`, publicada también como página privada para verla en el móvil.
 - **Resultado:** aprobada por el propietario.
 
-### 🟨 Fase 1 — HUD con datos reales (hecha; falta publicarla)
+### ✅ Fase 1 — HUD con datos reales
 - **Qué se hace:** proyecto Vite con módulos separados (`api.js`, `dom.js`, `main.js` y textos ES/EN). Ubicación automática con Madrid como ciudad de respaldo, buscador de ciudades y el HUD completo: ciudad, temperatura, estado, sensación térmica, humedad, viento, salida y puesta de sol, minimapa y nivel de 1 a 5 estrellas. Cartel a pantalla completa con tiempo extremo. Errores con el estilo del juego, carga con estilo y último resultado guardado. Intermediario de Cloudflare Workers y publicación en GitHub Pages.
 - **Qué verás:** la app con el tiempo real de tu ciudad en una URL pública, en español o inglés, en móvil y ordenador.
 
-### ⬜ Fase 2 — Misión del día y próximas misiones
+### 🟨 Fase 2 — Misión del día y próximas misiones (hecha; pendiente de revisión)
 - **Qué se hace:** previsión de 5 días como "próximas misiones" y la misión del día (objetivo y equipo recomendado). Las 8 escenas completas (despejado, nubes, lluvia, tormenta, nieve, niebla, viento, noche) y una interfaz que cambia con el tiempo y la hora. **Llamada de teléfono de la misión:** un contacto ficticio te llama y te cuenta la misión con voz sintetizada. **Pantalla viva:** gotas que resbalan por el cristal, calima, escarcha en los bordes y relámpagos que iluminan la interfaz.
 - **Qué verás:** una pantalla distinta cada día, con textos de humor en los dos idiomas para revisar.
 
@@ -65,5 +65,18 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - Pantalla de carga de portada y último resultado guardado.
   - Intermediario de Cloudflare Workers con la key protegida y publicación automática en GitHub Pages.
   - 15 pruebas automáticas y prueba completa en navegador con la API real.
-  - **Pendiente para publicar:** que el propietario añada 3 secretos en GitHub y active GitHub Pages.
+  - Publicada en https://jplataes.github.io/wanted-weather/ con el intermediario en Cloudflare. Comprobado en vivo: datos reales, key protegida y web ajena bloqueada.
   - **Limitación conocida:** el nombre de la ciudad sale como lo da la API; por ejemplo, con ubicación puede salir "Seville" en vez de "Sevilla". Se puede resolver en la fase 2 con la búsqueda de nombres locales de OpenWeatherMap.
+- **Fase 2:** previsión a 5 días convertida en misiones. Incluye:
+  - **Misión del día** con aspecto de dossier "Confidencial": título, objetivo, información real (temperaturas, lluvia, viento, puesta de sol) y equipo recomendado con iconos propios.
+  - **Próximas misiones:** una tarjeta por día con icono, máxima y mínima, estrellas y nombre en clave.
+  - **Las 8 escenas**, cada una con su personaje (paseo del perro, paraguas dado la vuelta, muñeco de nieve con gafas, tipo de gabardina en la niebla, persecución de la gorra). Velo nocturno en todas cuando es de noche.
+  - **Llamada del Tío Isobaras:** el teléfono vibra en pantalla una vez al día y la voz solo suena al contestar. Lleva subtítulos y se puede repetir con un botón.
+  - **Pantalla viva:** gotas en el cristal, nieve, niebla, ráfagas, relámpagos, calima o escarcha según el tiempo real.
+  - **Sexta caja:** cuenta atrás de luz restante (o de amanecer) con barra de progreso.
+  - **Arreglos:**
+    - Nombre de la ciudad en el idioma de la app ("Sevilla", "Tokio").
+    - La frase de nivel 1 que hablaba de nubes cambia a "Nadie te busca hoy".
+    - Los días de previsión incompletos ya no se muestran.
+  - Intermediario con dos rutas nuevas, `/api/geocode` y `/api/reverse`.
+  - 26 pruebas automáticas y prueba completa en navegador.

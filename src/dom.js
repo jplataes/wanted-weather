@@ -3,6 +3,7 @@ import { t, getLang } from './i18n.js';
 import { sceneSvg } from './scenes.js';
 import { minimapSvg } from './minimap.js';
 import { STAR_LINES, ALERTS, TAGLINES, LOADING_TIPS, pickBySeed, pickRandom } from './copy.js';
+import { weatherIcon, gearIcon } from './icons.js';
 
 const $ = (id) => document.getElementById(id);
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -59,7 +60,7 @@ export function renderWeather(view) {
   const lang = getLang();
   document.body.dataset.scene = view.scene;
 
-  $('scene').innerHTML = sceneSvg(view.scene, t(`sceneAria.${view.scene}`));
+  $('scene').innerHTML = sceneSvg(view.scene, t(`sceneAria.${view.scene}`), view.night);
   bindParallax($('scene').querySelector('svg'));
 
   $('cityName').textContent = view.city;
@@ -183,3 +184,108 @@ export function closeAlert() {
 }
 
 export const isAlertOpen = () => !$('alert').hidden;
+
+let daylightTimer;
+/** Live countdown to sunset (or to sunrise at night), with a day-progress bar. */
+export function startDaylight(view) {
+  clearInterval(daylightTimer);
+  const rise = view.sunriseUnix;
+  const set = view.sunsetUnix;
+  if (!rise || !set) {
+    $('daylight').textContent = '–';
+    return;
+  }
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${h}:${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  };
+  const tick = () => {
+    const now = Date.now() / 1000;
+    let label, left, progress;
+    if (now < rise) {
+      label = 'sunriseIn'; left = rise - now; progress = 0;
+    } else if (now < set) {
+      label = 'daylightLeft'; left = set - now; progress = (now - rise) / (set - rise);
+    } else {
+      label = 'sunriseIn'; left = rise + 86400 - now; progress = 1;
+    }
+    $('daylightLabel').textContent = t(label);
+    $('daylight').textContent = fmt(left);
+    $('daybarFill').style.width = `${Math.round(progress * 100)}%`;
+    $('daylightBox').dataset.phase = label === 'daylightLeft' ? 'day' : 'night';
+  };
+  tick();
+  daylightTimer = setInterval(tick, 1000);
+}
+
+/** The mission briefing card. */
+export function renderMission(mission) {
+  $('missionWhen').textContent = t(mission.when === 'today' ? 'missionToday' : 'missionTomorrow');
+  $('missionTitle').textContent = mission.title;
+  $('missionObjective').textContent = mission.objective;
+  $('missionIntel').replaceChildren(...mission.intel.map((line) => {
+    const li = document.createElement('li');
+    li.textContent = line;
+    return li;
+  }));
+  $('missionGear').replaceChildren(...mission.gear.map((item) => {
+    const li = document.createElement('li');
+    li.innerHTML = gearIcon(item.id);
+    const span = document.createElement('span');
+    span.textContent = item.label;
+    li.appendChild(span);
+    return li;
+  }));
+  $('mission').dataset.theme = mission.theme;
+  $('mission').hidden = false;
+}
+
+/** Show or hide the "missed call" badge on the call button. */
+export function setMissedCall(missed) {
+  $('callBtn').classList.toggle('missed', missed);
+  $('callBtnLabel').textContent = t(missed ? 'missedCall' : 'callBtn');
+}
+
+/** Upcoming days as mission cards. Pass null when the forecast is not available. */
+export function renderUpcoming(cards) {
+  const list = $('upcomingList');
+  $('upcoming').hidden = false;
+  if (!cards || !cards.length) {
+    list.replaceChildren();
+    $('upcomingNote').textContent = t('upcomingUnavailable');
+    $('upcomingNote').hidden = false;
+    return;
+  }
+  $('upcomingNote').hidden = true;
+  list.replaceChildren(...cards.map((c) => {
+    const li = document.createElement('li');
+    li.className = 'up-card';
+    li.dataset.theme = c.theme;
+    const day = document.createElement('p');
+    day.className = 'up-day';
+    day.textContent = c.weekday;
+    const icon = document.createElement('div');
+    icon.className = 'up-icon';
+    icon.innerHTML = weatherIcon(c.kind);
+    const temps = document.createElement('p');
+    temps.className = 'up-temps';
+    temps.setAttribute('aria-label', t('maxMinAria', { max: c.max, min: c.min }));
+    temps.innerHTML = `<span class="up-max"></span> <span class="up-min"></span>`;
+    temps.querySelector('.up-max').textContent = `${c.max}°`;
+    temps.querySelector('.up-min').textContent = `${c.min}°`;
+    const desc = document.createElement('p');
+    desc.className = 'up-desc';
+    desc.textContent = c.pop >= 20 ? `${c.description} · ${t('rainShort', { pop: c.pop })}` : c.description;
+    const stars = document.createElement('div');
+    stars.className = 'wanted small';
+    stars.setAttribute('role', 'img');
+    renderStars(stars, c.level);
+    const code = document.createElement('p');
+    code.className = 'up-code';
+    code.textContent = c.codename;
+    li.append(day, icon, temps, desc, stars, code);
+    return li;
+  }));
+}

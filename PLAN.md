@@ -13,6 +13,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 
 ### ✅ Fase 0 — Dirección visual (pendiente de aprobación del propietario)
 - **Qué se hace:** una página de muestra con la paleta, la tipografía, los elementos del HUD (estrellas, minimapa, botones, buscador, selector ES/EN), el cartel de tiempo extremo y tres escenas de ejemplo (sol, lluvia y noche) dibujadas en SVG.
+- **Ajustes v2 (pedidos por el propietario):** más actitud y efecto wow. Portada de videojuego, personajes en silueta en cada escena, alertas con efecto propio (lluvia, calor, frío, viento, tormenta), escenas con movimiento en capas y una sala de guionistas con 2–3 opciones de texto por elemento en ES y EN.
 - **Qué verás:** la página `muestra/index.html`, publicada también como página privada para verla en el móvil.
 - **Condición:** no se empieza la fase 1 hasta que el propietario apruebe la muestra.
 
@@ -53,4 +54,4 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué verás:** la URL definitiva lista para entregar.
 
 ## Registro de fases
-- **Fase 0:** página de muestra creada en `muestra/index.html`. Paleta de atardecer, tipografías Anton, Bangers y Barlow (licencia libre OFL), estrellas, minimapa, botones, cartel "¡EMPAPADO!" y escenas de sol, lluvia y noche dibujadas en SVG. A la espera de aprobación.
+- **Fase 0:** página de muestra creada en `muestra/index.html`. Paleta de atardecer, tipografías Anton, Bangers y Barlow (licencia libre OFL), estrellas, minimapa, botones, cartel "¡EMPAPADO!" y escenas de sol, lluvia y noche dibujadas en SVG. Aprobada como base. Versión 2 con más chulería, personajes y efectos, a la espera de que el propietario elija los textos.

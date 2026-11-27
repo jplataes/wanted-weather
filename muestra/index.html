@@ -9,25 +9,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Barlow:wght@500;700&display=swap">
 <style>
-/* Layout: a single scrolling "game manual" column; each block is a page of the style guide. Deliberately single-theme (a dusk game world). */
+/* Layout: a single scrolling "game manual" column that opens on a title screen. Deliberately single-theme (a dusk game world). */
 :root {
   color-scheme: dark;
-  /* Palette */
-  --ink: #140a24;       /* outlines, deep shadows */
-  --night: #2a1250;     /* night sky, panels */
-  --purple: #6e2bc4;    /* skyline, dusk */
-  --magenta: #ff2e8a;   /* neon, alerts */
-  --orange: #ff7a1a;    /* sunset, primary action */
-  --sun: #ffc93c;       /* sun, stars, focus */
-  --teal: #16c7b7;      /* sea, secondary action */
-  --cream: #fff3dc;     /* text on dark */
-  --storm: #3b4a6b;     /* rain sky */
-  --muted: #c9b8e8;     /* secondary text on dark */
-  /* Type */
+  --ink: #140a24;
+  --night: #2a1250;
+  --purple: #6e2bc4;
+  --magenta: #ff2e8a;
+  --orange: #ff7a1a;
+  --sun: #ffc93c;
+  --teal: #16c7b7;
+  --cream: #fff3dc;
+  --storm: #3b4a6b;
+  --ice: #bfe9ff;
+  --muted: #c9b8e8;
   --display: "Anton", "Impact", "Arial Narrow", sans-serif;
   --shout: "Bangers", "Impact", "Comic Sans MS", cursive;
   --body: "Barlow", "Segoe UI", system-ui, sans-serif;
-  /* Shape */
   --line: 3px;
   --shadow: 5px 5px 0 var(--ink);
   --radius: 6px;
@@ -45,7 +43,7 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-.wrap { max-width: 1080px; margin: 0 auto; padding-block: 24px 64px; display: grid; gap: 56px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 20px 64px; display: grid; gap: 56px; }
 h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: .02em; line-height: 1; margin: 0; text-wrap: balance; }
 h2 { font-size: clamp(2rem, 6vw, 3rem); color: var(--sun); -webkit-text-stroke: 1px var(--ink); text-shadow: 4px 4px 0 var(--ink); }
 h3 { font-size: 1.25rem; color: var(--cream); }
@@ -55,17 +53,40 @@ p { margin: 0; max-width: 65ch; }
 section { display: grid; gap: 20px; }
 .section-head { display: grid; gap: 8px; }
 :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Top bar */
-.topbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
-.logo { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: clamp(1.6rem, 6vw, 2.4rem); line-height: .9; text-transform: uppercase; }
+.topbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: -36px; }
+.logo { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: clamp(1.4rem, 5vw, 2rem); line-height: .9; text-transform: uppercase; }
 .logo span:last-child { color: var(--orange); }
-.logo svg { width: 44px; height: 44px; flex: none; }
+.logo svg { width: 38px; height: 38px; flex: none; }
+.lang { display: inline-flex; border: var(--line) solid var(--ink); border-radius: var(--radius); box-shadow: 4px 4px 0 var(--ink); overflow: hidden; }
+.lang button { font: 400 1.05rem/1 var(--display); padding: 10px 14px; border: 0; background: var(--night); color: var(--cream); cursor: pointer; letter-spacing: .06em; }
+.lang button[aria-pressed="true"] { background: var(--sun); color: var(--ink); }
 
-/* Intro */
-.intro { display: grid; gap: 14px; padding: 22px; border: var(--line) solid var(--ink); background: var(--purple); box-shadow: var(--shadow); border-radius: var(--radius); }
-.intro h1 { font-size: clamp(2.4rem, 9vw, 4.5rem); color: var(--cream); text-shadow: 5px 5px 0 var(--ink); }
-.intro p { color: var(--cream); }
+/* Title screen */
+.hero { position: relative; overflow: hidden; isolation: isolate; border: 4px solid var(--ink); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--ink); display: grid; justify-items: center; align-content: center; gap: 18px; text-align: center; padding: 48px 16px 150px; min-height: 460px; background: var(--orange); }
+.burst { position: absolute; inset: -60%; z-index: -4; background: repeating-conic-gradient(from 0deg at 50% 50%, var(--magenta) 0deg 8deg, var(--orange) 8deg 16deg); animation: spin 60s linear infinite; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -3; background: radial-gradient(circle at 50% 42%, rgba(255, 201, 60, .9) 0 10%, rgba(255, 201, 60, 0) 32%); }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(circle at 1px 1px, rgba(20, 10, 36, .35) 1.4px, transparent 1.8px) 0 0 / 9px 9px; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 55%); mask-image: linear-gradient(180deg, #000 0%, transparent 55%); }
+.hero-city { position: absolute; left: 0; right: 0; bottom: 0; height: 150px; width: 100%; z-index: -1; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hero-sticker { position: absolute; top: 14px; left: 14px; font: 700 .75rem/1 var(--body); text-transform: uppercase; letter-spacing: .12em; padding: 6px 9px; background: var(--ink); color: var(--sun); transform: rotate(-3deg); }
+.hero-logo { display: grid; line-height: .82; font-family: var(--display); text-transform: uppercase; font-size: clamp(4.2rem, 19vw, 9.5rem); transform: rotate(-4deg); animation: slamIn .7s cubic-bezier(.2, 1.5, .4, 1) both; }
+.hero-logo span { color: var(--cream); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 5px 5px 0 var(--magenta), 10px 10px 0 var(--ink); }
+.hero-logo span + span { color: var(--sun); margin-left: .35em; }
+@keyframes slamIn { from { transform: rotate(-4deg) scale(2.4); opacity: 0; } to { transform: rotate(-4deg) scale(1); opacity: 1; } }
+.hero-stars { display: flex; gap: 6px; }
+.hero-stars svg { width: clamp(30px, 8vw, 46px); height: clamp(30px, 8vw, 46px); animation: popStar .35s cubic-bezier(.2, 1.8, .4, 1) both; }
+.hero-stars svg:nth-child(1) { animation-delay: .7s; } .hero-stars svg:nth-child(2) { animation-delay: .85s; }
+.hero-stars svg:nth-child(3) { animation-delay: 1s; } .hero-stars svg:nth-child(4) { animation-delay: 1.15s; }
+.hero-stars svg:nth-child(5) { animation-delay: 1.3s; }
+.hero-stars svg { filter: drop-shadow(3px 3px 0 var(--ink)); }
+.hero-stars .on { fill: var(--sun); } .hero-stars path { stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+@keyframes popStar { from { transform: scale(0) rotate(-90deg); } to { transform: scale(1) rotate(0); } }
+.tape { font: 400 clamp(1.1rem, 4.5vw, 1.6rem)/1.1 var(--display); text-transform: uppercase; letter-spacing: .06em; background: var(--ink); color: var(--cream); padding: 8px 16px; transform: rotate(2deg); box-shadow: 4px 4px 0 var(--magenta); max-width: 100%; }
+.press { font: 700 .85rem/1 var(--body); text-transform: uppercase; letter-spacing: .2em; color: var(--ink); animation: blink 1.2s steps(1) infinite; }
+.intro-note { display: grid; gap: 8px; }
 
 /* Palette */
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
@@ -89,7 +110,7 @@ section { display: grid; gap: 20px; }
 .panel { padding: 18px; background: rgba(20, 10, 36, .85); border: var(--line) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); display: grid; gap: 14px; align-content: start; min-width: 0; outline: 1px solid rgba(255, 243, 220, .15); }
 .wanted-row { display: grid; gap: 4px; }
 .wanted { display: flex; gap: 4px; }
-.wanted svg { width: 36px; height: 36px; }
+.wanted svg { width: 30px; height: 30px; }
 .wanted .on { fill: var(--sun); }
 .wanted .off { fill: rgba(255, 243, 220, .08); }
 .wanted path { stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
@@ -111,18 +132,13 @@ section { display: grid; gap: 20px; }
   box-shadow: 4px 4px 0 var(--ink); cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
   transition: transform .08s, box-shadow .08s; color: var(--ink);
 }
-.btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--ink); }
+.btn:hover { transform: translate(-1px, -1px) rotate(-1deg); box-shadow: 6px 6px 0 var(--ink); }
 .btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
-.btn svg { width: 20px; height: 20px; }
+.btn svg { width: 20px; height: 20px; flex: none; }
 .btn-primary { background: var(--orange); }
 .btn-secondary { background: var(--teal); }
 .btn-ghost { background: var(--cream); }
-.btn-icon { padding: 12px; }
-.lang { display: inline-flex; border: var(--line) solid var(--ink); border-radius: var(--radius); box-shadow: 4px 4px 0 var(--ink); overflow: hidden; }
-.lang button { font: 400 1.05rem/1 var(--display); padding: 10px 14px; border: 0; background: var(--night); color: var(--cream); cursor: pointer; letter-spacing: .06em; }
-.lang button[aria-pressed="true"] { background: var(--sun); color: var(--ink); }
-.search { display: flex; gap: 0; width: 100%; max-width: 460px; }
-.search label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.search { display: flex; width: 100%; max-width: 460px; }
 .search input {
   flex: 1; min-width: 0; font: 700 1.05rem/1 var(--body); padding: 14px; color: var(--ink); background: var(--cream);
   border: var(--line) solid var(--ink); border-right: 0; border-radius: var(--radius) 0 0 var(--radius);
@@ -152,6 +168,7 @@ section { display: grid; gap: 20px; }
 .cap-sun { background: var(--sun); }
 .cap-rain { background: var(--teal); }
 .cap-night { background: var(--magenta); }
+.px { transition: transform .25s ease-out; }
 
 /* Scene animation */
 .sway { transform-box: fill-box; transform-origin: 50% 100%; animation: sway 4s ease-in-out infinite alternate; }
@@ -171,24 +188,84 @@ section { display: grid; gap: 20px; }
 @keyframes neon { 0%, 100% { opacity: 1; } 91% { opacity: .35; } 93% { opacity: 1; } 95% { opacity: .35; } }
 .pulse { transform-box: fill-box; transform-origin: center; animation: pulse 2s ease-out infinite; }
 @keyframes pulse { from { transform: scale(.6); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+/* Characters */
+.glint { animation: glint 3s steps(1) infinite; }
+@keyframes glint { 0%, 70% { opacity: 0; } 72%, 80% { opacity: 1; } 82% { opacity: 0; } }
+.nod { transform-box: fill-box; transform-origin: 50% 100%; animation: nod 1.2s ease-in-out infinite; }
+@keyframes nod { 50% { transform: rotate(3deg); } }
+.run { animation: run 6s linear infinite; }
+@keyframes run { from { transform: translateX(-70px); } to { transform: translateX(460px); } }
+.bob { animation: bob .3s ease-in-out infinite alternate; }
+@keyframes bob { to { transform: translateY(-3px); } }
+.legA { animation: legs .3s steps(1) infinite; }
+.legB { animation: legs .3s steps(1) infinite reverse; }
+@keyframes legs { 0% { opacity: 1; } 50% { opacity: 0; } }
+.walk { animation: walk 8s linear infinite; }
+@keyframes walk { 0% { transform: translateX(0); opacity: 0; } 8% { opacity: 1; } 80% { transform: translateX(66px); opacity: 1; } 90%, 100% { transform: translateX(72px); opacity: 0; } }
+.slowlegs { animation-duration: .5s; }
+.steam { animation: steam 1.6s ease-out infinite; }
+@keyframes steam { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-6px); opacity: 0; } }
 
-/* Banner */
-.banner-demo { position: relative; overflow: hidden; border: 4px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); background: var(--storm); min-height: 280px; display: grid; place-items: center; padding-block: 28px; }
+/* Writers' room */
+.room { display: grid; gap: 16px; }
+.room-group { display: grid; gap: 12px; padding: 18px; background: rgba(20, 10, 36, .85); border: var(--line) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); outline: 1px solid rgba(255, 243, 220, .15); }
+.room-row { display: grid; gap: 8px; grid-template-columns: minmax(130px, 190px) 1fr; align-items: center; padding-top: 12px; border-top: 2px dashed rgba(255, 243, 220, .15); }
+.room-row:first-of-type { border-top: 0; padding-top: 0; }
+.room-label { display: grid; gap: 4px; font: 700 .85rem/1.2 var(--body); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.room-label .wanted svg { width: 16px; height: 16px; }
+.chips { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); min-width: 0; }
+.chip { display: grid; gap: 3px; text-align: left; padding: 10px 12px; border: var(--line) solid var(--ink); border-radius: var(--radius); background: var(--night); color: var(--cream); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: transform .08s; min-width: 0; }
+.chip:hover { transform: translate(-1px, -1px); }
+.chip-es { font: 400 1.15rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .02em; overflow-wrap: anywhere; }
+.chip-en { font: 700 .85rem/1.2 var(--body); color: var(--muted); overflow-wrap: anywhere; }
+.chip[aria-pressed="true"] { background: var(--sun); color: var(--ink); }
+.chip[aria-pressed="true"] .chip-en { color: #4a3466; }
+.chip .fire { font: 700 .7rem/1 var(--body); text-transform: uppercase; letter-spacing: .12em; color: var(--magenta); }
+.chip[aria-pressed="true"] .fire { color: var(--ink); }
+.export { display: grid; gap: 10px; }
+.export textarea { width: 100%; min-height: 150px; font: 500 .9rem/1.4 ui-monospace, Menlo, monospace; color: var(--cream); background: var(--ink); border: 2px solid var(--muted); border-radius: var(--radius); padding: 10px; resize: vertical; }
+
+/* Full-screen alert */
+.overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; overflow: hidden; background: rgba(20, 10, 36, .95); padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); --band: var(--sun); --word: var(--magenta); }
+.fx { position: absolute; inset: 0; pointer-events: none; }
 .banner { position: relative; display: grid; justify-items: center; gap: 6px; text-align: center; width: 100%; }
-.banner::before { content: ""; position: absolute; inset: 18% -10%; background: repeating-linear-gradient(-45deg, var(--ink) 0 18px, var(--sun) 18px 36px); transform: rotate(-4deg); border-block: 4px solid var(--ink); z-index: 0; }
-.banner-word { position: relative; z-index: 1; font: 400 clamp(3.6rem, 16vw, 8rem)/.9 var(--shout); color: var(--magenta); letter-spacing: .03em; -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 6px 6px 0 var(--ink); transform: rotate(-4deg); }
+.banner::before { content: ""; position: absolute; inset: 18% -10%; background: repeating-linear-gradient(-45deg, var(--ink) 0 18px, var(--band) 18px 36px); transform: rotate(-4deg); border-block: 4px solid var(--ink); z-index: 0; }
+.banner-word { position: relative; z-index: 1; font: 400 clamp(3.2rem, 15vw, 8rem)/.9 var(--shout); color: var(--word); letter-spacing: .03em; -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 6px 6px 0 var(--ink); transform: rotate(-4deg); max-width: 100%; overflow-wrap: anywhere; }
 .banner-sub { position: relative; z-index: 1; font: 400 clamp(1rem, 4vw, 1.4rem)/1.1 var(--display); text-transform: uppercase; letter-spacing: .08em; background: var(--ink); color: var(--cream); padding: 6px 12px; transform: rotate(-4deg); }
-.overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(20, 10, 36, .88); padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.overlay-inner { position: relative; display: grid; justify-items: center; width: 100%; }
 .overlay .banner { animation: slam .45s cubic-bezier(.2, 1.6, .4, 1) both; }
 .overlay .btn { margin-top: 28px; position: relative; z-index: 1; }
 @keyframes slam { from { transform: scale(2.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* per-weather effects */
+.overlay[data-type="rain"] { --band: var(--sun); --word: var(--magenta); }
+.overlay[data-type="rain"] .fx { background: repeating-linear-gradient(100deg, transparent 0 22px, rgba(191, 233, 255, .35) 22px 24px) 0 0 / 240px 240px; animation: rainfx .35s linear infinite; }
+@keyframes rainfx { to { background-position: -40px 240px; } }
+.overlay[data-type="heat"] { --band: var(--orange); --word: var(--sun); background: radial-gradient(circle at 50% 110%, rgba(255, 122, 26, .96), rgba(110, 20, 40, .97) 55%, rgba(20, 10, 36, .98)); }
+.overlay[data-type="heat"] .banner-word { filter: url(#haze); }
+.overlay[data-type="heat"] .fx { background: repeating-linear-gradient(0deg, rgba(255, 201, 60, .07) 0 3px, transparent 3px 9px); animation: haze 1.5s ease-in-out infinite alternate; }
+@keyframes haze { to { transform: translateY(-9px); } }
+.overlay[data-type="cold"] { --band: var(--ice); --word: var(--cream); background: rgba(24, 30, 70, .92); }
+.overlay[data-type="cold"] .fx { box-shadow: inset 0 0 120px 50px rgba(220, 245, 255, .75); background: radial-gradient(circle, #fff 1.6px, transparent 2px) 0 0 / 46px 46px, radial-gradient(circle, rgba(255, 255, 255, .7) 1.2px, transparent 1.6px) 20px 10px / 30px 30px; animation: snow 3s linear infinite; }
+@keyframes snow { to { background-position: 12px 46px, 26px 40px; } }
+.overlay[data-type="wind"] { --band: var(--teal); --word: var(--cream); }
+.overlay[data-type="wind"] .fx { background: repeating-linear-gradient(0deg, transparent 0 46px, rgba(255, 243, 220, .3) 46px 48px, transparent 48px 90px) 0 0 / 360px 90px; animation: gust .4s linear infinite; }
+@keyframes gust { to { background-position: -360px 0; } }
+.overlay[data-type="wind"] .banner-word { animation: wobble .6s ease-in-out infinite alternate; }
+@keyframes wobble { from { transform: rotate(-4deg) skewX(-8deg); } to { transform: rotate(-4deg) skewX(8deg) translateX(10px); } }
+.overlay[data-type="storm"] { --band: var(--magenta); --word: var(--sun); }
+.overlay[data-type="storm"] .fx { background: var(--cream); opacity: 0; animation: flash 2.6s linear infinite .4s; }
+@keyframes flash { 0%, 100% { opacity: 0; } 3% { opacity: .9; } 6% { opacity: 0; } 9% { opacity: .7; } 12% { opacity: 0; } }
+.overlay[data-type="storm"] .banner { animation: slam .45s cubic-bezier(.2, 1.6, .4, 1) both, shake .09s linear .45s 8; }
+@keyframes shake { 25% { translate: -8px 4px; } 50% { translate: 6px -6px; } 75% { translate: -4px -3px; } }
 
 footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255, 243, 220, .2); padding-top: 18px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .overlay[data-type="heat"] .banner-word { filter: none; }
 }
-@media (max-width: 420px) {
+@media (max-width: 560px) {
+  .room-row { grid-template-columns: 1fr; }
   .hud { grid-template-columns: 1fr; }
 }
 </style>
@@ -198,26 +275,32 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
 <!-- Shared drawings reused by every scene -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
-      <circle cx="4" cy="4" r="1.7" fill="#140a24"/>
-    </pattern>
-    <pattern id="dotsLight" width="7" height="7" patternUnits="userSpaceOnUse">
-      <circle cx="3.5" cy="3.5" r="1.3" fill="#fff3dc"/>
-    </pattern>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.7" fill="#140a24"/></pattern>
+    <pattern id="dotsLight" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.3" fill="#fff3dc"/></pattern>
     <path id="skyline" d="M0 232V182H22V152H48V170H62V122H70V110H78V122H92V162H110V142H138V176H150V96H168V84H178V96H196V150H214V132H240V166H258V116H290V152H306V172H322V126H334V108H346V126H360V162H380V142H400V232Z"/>
     <clipPath id="skyClip"><use href="#skyline"/></clipPath>
-    <pattern id="winDay" width="12" height="14" patternUnits="userSpaceOnUse">
-      <rect x="3" y="3" width="5" height="7" fill="#9a63e6"/>
-    </pattern>
-    <pattern id="winWarm" width="12" height="14" patternUnits="userSpaceOnUse">
-      <rect x="3" y="3" width="5" height="7" fill="#ffc93c"/>
-      <rect x="9" y="10" width="0" height="0"/>
-    </pattern>
-    <pattern id="winNeon" width="24" height="14" patternUnits="userSpaceOnUse">
-      <rect x="3" y="3" width="5" height="7" fill="#ff2e8a"/>
-      <rect x="15" y="3" width="5" height="7" fill="#16c7b7"/>
-    </pattern>
-    <!-- Palm tree: a curved trunk plus fronds, drawn around its base at (0,0) -->
+    <pattern id="winDay" width="12" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#9a63e6"/></pattern>
+    <pattern id="winWarm" width="12" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#ffc93c"/></pattern>
+    <pattern id="winNeon" width="24" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#ff2e8a"/><rect x="15" y="3" width="5" height="7" fill="#16c7b7"/></pattern>
+    <!-- Comic outline around a silhouette: grow the shape, paint it, put the original on top -->
+    <filter id="rimCream" x="-20%" y="-20%" width="140%" height="140%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="grow"/>
+      <feFlood flood-color="#fff3dc"/><feComposite in2="grow" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="rimNeon" x="-30%" y="-30%" width="160%" height="160%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="grow"/>
+      <feFlood flood-color="#ff2e8a"/><feComposite in2="grow" operator="in" result="rim"/>
+      <feGaussianBlur in="rim" stdDeviation="2" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="rim"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Heat haze for the heat alert -->
+    <filter id="haze">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.09" numOctaves="1" seed="3">
+        <animate attributeName="baseFrequency" values="0.01 0.09;0.01 0.13;0.01 0.09" dur="1.8s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" scale="10"/>
+    </filter>
     <g id="palm">
       <path d="M0 0C-2 -40 4 -80 18 -112" fill="none" stroke="#140a24" stroke-width="13" stroke-linecap="round"/>
       <path d="M0 0C-2 -40 4 -80 18 -112" fill="none" stroke="var(--trunk, #8a4b2a)" stroke-width="6" stroke-linecap="round"/>
@@ -230,17 +313,13 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
         <path d="M0 0C-12 6 -26 20 -28 40C-20 24 -10 12 0 0Z"/>
       </g>
     </g>
-    <!-- Generic coupe, 112 x 38 -->
     <g id="car">
       <path d="M2 30L6 19L26 15L40 4H72L88 15L108 19L111 30Z" stroke="#140a24" stroke-width="3" stroke-linejoin="round"/>
       <path d="M44 8H58V15H34Z M62 8H70L80 15H62Z" fill="#bfe9ff" stroke="#140a24" stroke-width="2" stroke-linejoin="round"/>
       <circle cx="26" cy="30" r="8" fill="#140a24"/><circle cx="26" cy="30" r="3" fill="#fff3dc"/>
       <circle cx="88" cy="30" r="8" fill="#140a24"/><circle cx="88" cy="30" r="3" fill="#fff3dc"/>
     </g>
-    <!-- Cloud: circles drawn twice (thick ink first, fill on top) so only the outer edge gets an outline -->
-    <g id="cloudShape">
-      <circle cx="40" cy="40" r="26"/><circle cx="76" cy="28" r="30"/><circle cx="112" cy="40" r="24"/><rect x="18" y="40" width="118" height="24" rx="12"/>
-    </g>
+    <g id="cloudShape"><circle cx="40" cy="40" r="26"/><circle cx="76" cy="28" r="30"/><circle cx="112" cy="40" r="24"/><rect x="18" y="40" width="118" height="24" rx="12"/></g>
     <g id="cloud">
       <use href="#cloudShape" fill="#140a24" stroke="#140a24" stroke-width="8"/>
       <use href="#cloudShape" fill="var(--cloud, #4b5a80)"/>
@@ -262,55 +341,254 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
     </div>
   </header>
 
-  <div class="intro">
-    <p class="eyebrow" style="color: var(--sun)">Fase 0 · Dirección visual</p>
-    <h1>Muestra visual</h1>
-    <p>Esta página reúne los ingredientes del estilo antes de construir la app: colores, letras, piezas del HUD, el cartel de tiempo extremo y tres escenas dibujadas en código. Todos los datos que aparecen son de ejemplo. El selector ES/EN de arriba cambia los textos del juego para ver cómo quedan en los dos idiomas.</p>
+  <!-- TITLE SCREEN -->
+  <div class="hero" style="margin-top: 52px">
+    <div class="burst" aria-hidden="true"></div>
+    <span class="hero-sticker">Muestra visual · v2</span>
+    <h1 class="hero-logo"><span>Wanted</span><span>Weather</span></h1>
+    <div class="hero-stars" aria-hidden="true"></div>
+    <p class="tape" data-copy="tagline">El tiempo de hoy viene a por ti</p>
+    <p class="press" aria-hidden="true" data-es="▼ Baja para jugar ▼" data-en="▼ Scroll to play ▼">▼ Baja para jugar ▼</p>
+    <svg class="hero-city" viewBox="0 80 1200 156" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g id="heroCity">
+        <use href="#skyline" fill="#140a24"/>
+        <rect y="80" width="400" height="152" fill="url(#winNeon)" clip-path="url(#skyClip)" opacity=".7"/>
+      </g>
+      <use href="#heroCity" x="400"/><use href="#heroCity" x="800"/>
+      <rect y="230" width="1200" height="10" fill="#140a24"/>
+      <g style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(470 236) scale(.9)"/><use href="#palm" transform="translate(735 236) scale(-.8 .8)"/><use href="#palm" transform="translate(120 236) scale(.8)"/><use href="#palm" transform="translate(1090 236) scale(-.9 .9)"/></g>
+    </svg>
   </div>
 
-  <!-- PALETTE -->
-  <section aria-labelledby="pal-h">
+  <div class="intro-note">
+    <p class="eyebrow">Fase 0 · Dirección visual</p>
+    <p class="note">Esta página reúne los ingredientes del estilo antes de construir la app. Todos los datos son de ejemplo. Arriba, el selector ES/EN cambia los textos del juego. En la <a href="#guion" style="color: var(--sun)">sala de guionistas</a> puedes elegir los textos que más te gusten y lanzar las alertas a pantalla completa.</p>
+  </div>
+
+  <!-- SCENES (first: they are the wow) -->
+  <section aria-labelledby="sc-h">
     <div class="section-head">
-      <p class="eyebrow">Paleta</p>
-      <h2 id="pal-h">Colores de atardecer</h2>
-      <p class="note">Naranja, magenta, púrpura y turquesa saturados sobre una tinta casi negra. El tono de cada pantalla cambiará con el tiempo y la hora del día.</p>
+      <p class="eyebrow">Escenas</p>
+      <h2 id="sc-h">Tres climas, tres personajes</h2>
+      <p class="note">Dibujadas en SVG con contornos gruesos, tramas de puntos y personajes en silueta. En ordenador, pasa el ratón por encima: la escena se mueve en capas. En la fase 2 llegarán nubes, tormenta, nieve, niebla y viento.</p>
     </div>
-    <div class="swatches">
-      <div class="swatch"><div class="swatch-color" style="background:#140a24"></div><div class="swatch-info"><b>Tinta</b><code>#140A24</code><small>Contornos y sombras</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#2a1250"></div><div class="swatch-info"><b>Noche</b><code>#2A1250</code><small>Cielo nocturno y paneles</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#6e2bc4"></div><div class="swatch-info"><b>Púrpura</b><code>#6E2BC4</code><small>Siluetas de ciudad</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ff2e8a"></div><div class="swatch-info"><b>Magenta</b><code>#FF2E8A</code><small>Neones y alertas</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ff7a1a"></div><div class="swatch-info"><b>Naranja</b><code>#FF7A1A</code><small>Atardecer y botón principal</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#ffc93c"></div><div class="swatch-info"><b>Sol</b><code>#FFC93C</code><small>Estrellas y foco del teclado</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#16c7b7"></div><div class="swatch-info"><b>Turquesa</b><code>#16C7B7</code><small>Mar y botón secundario</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#3b4a6b"></div><div class="swatch-info"><b>Tormenta</b><code>#3B4A6B</code><small>Cielos de lluvia</small></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:#fff3dc"></div><div class="swatch-info"><b>Crema</b><code>#FFF3DC</code><small>Texto sobre oscuro</small></div></div>
+    <div class="scenes">
+
+      <!-- SUN -->
+      <figure class="scene">
+        <svg viewBox="0 0 400 260" role="img" aria-label="Atardecer con un sol rayado, palmeras y un tipo con gafas de sol apoyado en su coche" data-es-label="Atardecer con un sol rayado, palmeras y un tipo con gafas de sol apoyado en su coche" data-en-label="Sunset with a striped sun, palm trees and a guy in shades leaning on his car">
+          <defs>
+            <linearGradient id="skySun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff2e8a"/><stop offset=".55" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffc93c"/></linearGradient>
+            <linearGradient id="sunFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3dc"/><stop offset=".6" stop-color="#ffc93c"/></linearGradient>
+            <mask id="sunStripes">
+              <rect width="400" height="260" fill="#fff"/>
+              <rect y="142" width="400" height="3" fill="#000"/><rect y="154" width="400" height="4" fill="#000"/>
+              <rect y="166" width="400" height="5" fill="#000"/><rect y="178" width="400" height="6" fill="#000"/>
+              <rect y="191" width="400" height="7" fill="#000"/>
+            </mask>
+          </defs>
+          <rect x="-20" y="-20" width="440" height="300" fill="url(#skySun)"/>
+          <rect width="400" height="150" fill="url(#dots)" opacity=".14"/>
+          <g class="px" data-depth="2">
+            <circle class="sun-glow" cx="200" cy="140" r="88" fill="#fff3dc" opacity=".55"/>
+            <g mask="url(#sunStripes)"><circle cx="200" cy="140" r="70" fill="url(#sunFill)" stroke="#140a24" stroke-width="5"/></g>
+          </g>
+          <g class="px" data-depth="5">
+            <use href="#skyline" fill="#6e2bc4" stroke="#140a24" stroke-width="4" stroke-linejoin="round"/>
+            <rect width="400" height="232" fill="url(#winDay)" clip-path="url(#skyClip)" opacity=".7"/>
+          </g>
+          <rect x="-20" y="228" width="440" height="40" fill="#2a1250" stroke="#140a24" stroke-width="4"/>
+          <path d="M-20 245H420" stroke="#ffc93c" stroke-width="3" stroke-dasharray="18 14"/>
+          <g class="px" data-depth="9">
+            <g class="sway" style="--trunk:#8a4b2a; --frond:#0e7a66"><use href="#palm" transform="translate(46 232)"/></g>
+            <g class="sway slow" style="--trunk:#8a4b2a; --frond:#12a08a"><use href="#palm" transform="translate(352 232) scale(-.85 .85)"/></g>
+            <use href="#car" transform="translate(236 212)" fill="#ff2e8a"/>
+            <!-- The guy: leaning back on the car, arms crossed, shades on -->
+            <g filter="url(#rimCream)" transform="translate(219 254) rotate(7) scale(1.15)">
+              <g fill="#140a24">
+                <path d="M9 -32 L8 -3" stroke="#140a24" stroke-width="7" stroke-linecap="round"/>
+                <path d="M3 -32 L15 -4" stroke="#140a24" stroke-width="7" stroke-linecap="round"/>
+                <ellipse cx="5" cy="-2" rx="6" ry="3"/><ellipse cx="17" cy="-2" rx="6" ry="3"/>
+                <path d="M-1 -31 H14 L17 -58 H-2 Z"/>
+                <path d="M-2 -57 L-5 -45" stroke="#140a24" stroke-width="6" stroke-linecap="round"/>
+                <path d="M17 -57 L20 -45" stroke="#140a24" stroke-width="6" stroke-linecap="round"/>
+                <rect x="-6" y="-50" width="28" height="8" rx="4"/>
+                <rect x="5" y="-64" width="6" height="7"/>
+                <g class="nod">
+                  <ellipse cx="8" cy="-70" rx="7" ry="8"/>
+                  <path d="M0 -72 Q0 -86 17 -81 Q12 -79 15 -75 Q8 -78 0 -72Z"/>
+                </g>
+              </g>
+            </g>
+            <g transform="translate(219 254) rotate(7) scale(1.15)">
+              <path d="M0 -72 H7 V-69 Q3 -66.5 0 -69 Z M8 -72 H14 V-69 Q11 -66.5 8 -69 Z" fill="#16c7b7" stroke="#140a24" stroke-width=".8"/>
+              <path class="glint" d="M1.5 -71 L4 -71" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+            </g>
+          </g>
+        </svg>
+        <figcaption class="cap-sun">
+          <b data-es="Despejado" data-en="Clear">Despejado</b>
+          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div>
+        </figcaption>
+      </figure>
+
+      <!-- RAIN -->
+      <figure class="scene">
+        <svg viewBox="0 0 400 260" role="img" aria-label="Ciudad bajo la lluvia, un coche con los faros puestos y alguien que corre tapándose con un periódico" data-es-label="Ciudad bajo la lluvia, un coche con los faros puestos y alguien que corre tapándose con un periódico" data-en-label="City in the rain, a car with its headlights on and someone running with a newspaper over their head">
+          <defs>
+            <linearGradient id="skyRain" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2846"/><stop offset=".6" stop-color="#3b4a6b"/><stop offset="1" stop-color="#5a3d7a"/></linearGradient>
+            <pattern id="rainA" width="36" height="48" patternUnits="userSpaceOnUse">
+              <path d="M10 0L6 16M28 24L24 40" stroke="#bfe9ff" stroke-width="2.2" stroke-linecap="round" opacity=".75"/>
+              <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 48" dur=".55s" repeatCount="indefinite"/>
+            </pattern>
+            <pattern id="rainB" width="22" height="30" patternUnits="userSpaceOnUse">
+              <path d="M6 0L4 9" stroke="#bfe9ff" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+              <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 30" dur=".8s" repeatCount="indefinite"/>
+            </pattern>
+          </defs>
+          <rect x="-20" y="-20" width="440" height="300" fill="url(#skyRain)"/>
+          <rect width="400" height="180" fill="url(#dotsLight)" opacity=".06"/>
+          <g class="px" data-depth="4">
+            <use href="#skyline" fill="#1e1638" stroke="#140a24" stroke-width="4" stroke-linejoin="round"/>
+            <rect width="400" height="232" fill="url(#winWarm)" clip-path="url(#skyClip)" opacity=".8"/>
+          </g>
+          <g class="px" data-depth="2">
+            <g style="--cloud:#55648c"><use href="#cloud" transform="translate(-24 2) scale(1.3)"/></g>
+            <g style="--cloud:#465479"><use href="#cloud" transform="translate(150 -12) scale(1.45)"/></g>
+            <g style="--cloud:#55648c"><use href="#cloud" transform="translate(290 10) scale(1.1)"/></g>
+          </g>
+          <rect width="400" height="232" fill="url(#rainB)"/>
+          <rect x="-20" y="228" width="440" height="40" fill="#1a1230" stroke="#140a24" stroke-width="4"/>
+          <path d="M-20 245H420" stroke="#ffc93c" stroke-width="3" stroke-dasharray="18 14" opacity=".6"/>
+          <g fill="none" stroke="#bfe9ff" stroke-width="2" opacity=".6">
+            <ellipse cx="80" cy="252" rx="18" ry="3"/><ellipse cx="300" cy="250" rx="24" ry="3.5"/><ellipse cx="190" cy="254" rx="12" ry="2"/>
+          </g>
+          <g class="px" data-depth="9">
+            <g class="drive">
+              <path d="M110 222L190 210V240Z" fill="#ffc93c" opacity=".35"/>
+              <use href="#car" transform="translate(0 210)" fill="#16c7b7"/>
+            </g>
+            <!-- The runner: newspaper over the head, legs in a two-frame stride -->
+            <g class="run">
+              <g transform="translate(0 258) scale(1.35)">
+                <g class="bob">
+                  <g filter="url(#rimCream)" fill="#140a24" stroke="#140a24" stroke-linecap="round" stroke-linejoin="round">
+                    <g class="legA" fill="none" stroke-width="6"><path d="M0 -28 L-7 -15 L-17 -9"/><path d="M3 -28 L12 -17 L18 -3"/></g>
+                    <g class="legB" fill="none" stroke-width="6"><path d="M0 -28 L-2 -14 L1 -1"/><path d="M3 -28 L10 -18 L2 -11"/></g>
+                    <path d="M-4 -27 L6 -30 L16 -50 L5 -54 Z" stroke-width="2"/>
+                    <circle cx="16" cy="-59" r="6.5" stroke-width="0"/>
+                    <path d="M8 -50 L4 -64 M14 -50 L20 -64" fill="none" stroke-width="4.5"/>
+                  </g>
+                  <g transform="rotate(-7 10 -68)">
+                    <rect x="-7" y="-72" width="34" height="8" fill="#fff3dc" stroke="#140a24" stroke-width="1.8"/>
+                    <path d="M-4 -69.5 H9 M12 -69.5 H24 M-4 -66.5 H24" stroke="#140a24" stroke-width="1"/>
+                  </g>
+                  <path class="blink" d="M-2 -78 L-5 -84 M8 -80 L8 -87 M20 -79 L23 -85" stroke="#bfe9ff" stroke-width="1.6" stroke-linecap="round"/>
+                </g>
+              </g>
+            </g>
+          </g>
+          <rect width="400" height="260" fill="url(#rainA)" pointer-events="none"/>
+        </svg>
+        <figcaption class="cap-rain">
+          <b data-es="Lluvia" data-en="Rain">Lluvia</b>
+          <div class="wanted" role="img" aria-label="3 de 5 estrellas" data-es-label="3 de 5 estrellas" data-en-label="3 out of 5 stars" data-n="3"></div>
+        </figcaption>
+      </figure>
+
+      <!-- NIGHT -->
+      <figure class="scene">
+        <svg viewBox="0 0 400 260" role="img" aria-label="Noche en la ciudad: alguien sale del local 24H con un café humeante y una bolsa" data-es-label="Noche en la ciudad: alguien sale del local 24H con un café humeante y una bolsa" data-en-label="Night in the city: someone walks out of the 24H store with a steaming coffee and a bag">
+          <defs>
+            <linearGradient id="skyNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d0620"/><stop offset=".55" stop-color="#2a1250"/><stop offset="1" stop-color="#6e2bc4"/></linearGradient>
+            <mask id="moonCut"><rect width="400" height="260" fill="#fff"/><circle cx="328" cy="48" r="32" fill="#000"/></mask>
+          </defs>
+          <rect x="-20" y="-20" width="440" height="300" fill="url(#skyNight)"/>
+          <rect width="400" height="260" fill="url(#dotsLight)" opacity=".05"/>
+          <g class="px" data-depth="2">
+            <g fill="#fff3dc">
+              <use class="twinkle" href="#star5" transform="translate(30 24) scale(.5)"/>
+              <use class="twinkle" href="#star5" transform="translate(96 54) scale(.35)"/>
+              <use class="twinkle" href="#star5" transform="translate(150 18) scale(.45)"/>
+              <use class="twinkle" href="#star5" transform="translate(212 60) scale(.3)"/>
+              <use class="twinkle" href="#star5" transform="translate(248 26) scale(.4)"/>
+              <use class="twinkle" href="#star5" transform="translate(60 90) scale(.3)"/>
+              <use class="twinkle" href="#star5" transform="translate(370 96) scale(.35)"/>
+            </g>
+            <g mask="url(#moonCut)">
+              <circle cx="310" cy="58" r="34" fill="#fff3dc" stroke="#140a24" stroke-width="4"/>
+              <circle cx="310" cy="58" r="34" fill="url(#dots)" opacity=".12"/>
+            </g>
+          </g>
+          <g class="px" data-depth="4">
+            <use href="#skyline" fill="#160c2c" stroke="#ff2e8a" stroke-width="2" stroke-linejoin="round"/>
+            <rect width="400" height="232" fill="url(#winNeon)" clip-path="url(#skyClip)" opacity=".85"/>
+            <circle class="blink" cx="173" cy="80" r="4" fill="#ff2e8a"/>
+            <path d="M173 84V96" stroke="#140a24" stroke-width="3"/>
+          </g>
+          <rect x="-20" y="228" width="440" height="40" fill="#0d0620" stroke="#140a24" stroke-width="4"/>
+          <path d="M-20 245H420" stroke="#ff2e8a" stroke-width="3" stroke-dasharray="18 14" opacity=".7"/>
+          <g class="px" data-depth="7">
+            <!-- 24H store -->
+            <rect x="238" y="178" width="96" height="50" fill="#1e1240" stroke="#140a24" stroke-width="3"/>
+            <rect x="246" y="194" width="36" height="28" fill="#ffe9a8" stroke="#140a24" stroke-width="2.5"/>
+            <path d="M246 203H282M246 213H282" stroke="#c98a2b" stroke-width="2"/>
+            <rect x="292" y="190" width="24" height="38" fill="#fff3dc" stroke="#140a24" stroke-width="2.5"/>
+            <path d="M286 228H322L338 262H270Z" fill="#ffc93c" opacity=".22"/>
+            <g class="neon">
+              <rect x="258" y="156" width="52" height="20" rx="3" fill="#140a24" stroke="#16c7b7" stroke-width="2.5"/>
+              <text x="284" y="172" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="15" fill="#16c7b7">24H</text>
+            </g>
+            <!-- The night owl: hood up, coffee in one hand, bag in the other -->
+            <g class="walk">
+              <g transform="translate(302 245) scale(1.3)">
+                <g class="bob" style="animation-duration:.5s">
+                  <g filter="url(#rimNeon)" fill="#140a24" stroke="#140a24" stroke-linecap="round" stroke-linejoin="round">
+                    <g class="legA slowlegs" fill="none" stroke-width="6"><path d="M-1 -26 L-6 -1"/><path d="M3 -26 L8 -1"/></g>
+                    <g class="legB slowlegs" fill="none" stroke-width="6"><path d="M-1 -26 L1 -1"/><path d="M3 -26 L2 -1"/></g>
+                    <path d="M-7 -26 H8 L9 -48 Q1 -55 -8 -48 Z" stroke-width="2"/>
+                    <circle cx="1" cy="-57" r="8.5" stroke-width="0"/>
+                    <path d="M-6 -46 L-9 -32" fill="none" stroke-width="5"/>
+                    <path d="M7 -46 L14 -40 L14 -49" fill="none" stroke-width="4.5"/>
+                  </g>
+                  <rect x="-15" y="-35" width="11" height="13" rx="1" fill="#e2b87a" stroke="#140a24" stroke-width="1.6"/>
+                  <path d="M11 -56 H18 L17 -48 H12 Z" fill="#fff3dc" stroke="#140a24" stroke-width="1.4"/>
+                  <path class="steam" d="M13 -59 q-2 -3 0 -6 t0 -6 M16.5 -59 q-2 -3 0 -6" fill="none" stroke="#fff3dc" stroke-width="1.3" stroke-linecap="round"/>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g class="px" data-depth="10">
+            <g class="sway" style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(40 232)"/></g>
+            <g class="sway slow" style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(380 232) scale(-.9 .9)"/></g>
+            <use href="#car" transform="translate(110 212)" fill="#6e2bc4"/>
+            <rect x="110" y="222" width="6" height="5" fill="#ff2e8a"/>
+          </g>
+        </svg>
+        <figcaption class="cap-night">
+          <b data-es="Noche" data-en="Night">Noche</b>
+          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- TYPE -->
-  <section aria-labelledby="type-h">
+  <!-- WRITERS' ROOM -->
+  <section aria-labelledby="guion-h" id="guion">
     <div class="section-head">
-      <p class="eyebrow">Tipografía</p>
-      <h2 id="type-h">Letras con actitud</h2>
-      <p class="note">Tres familias gratuitas con licencia abierta (SIL Open Font License). En la app las guardaremos dentro del proyecto para que carguen rápido y sin depender de otros servidores.</p>
+      <p class="eyebrow">Sala de guionistas</p>
+      <h2 id="guion-h">Elige los textos con más calle</h2>
+      <p class="note">Tres opciones por texto. Arriba, en grande, la versión en español; debajo, la versión en inglés, escrita aparte y no traducida palabra por palabra. Toca una opción para elegirla: se aplica al momento en toda la página. Las alertas se lanzan a pantalla completa con su efecto. Al final puedes copiar tus elecciones y pegármelas en el chat.</p>
     </div>
-    <div class="type-grid">
-      <div class="type-card">
-        <div class="type-sample-display">Madrid 24°</div>
-        <h3>Anton</h3>
-        <p class="type-meta">Títulos, temperatura y botones. Gruesa y condensada, como un cartel de carretera.</p>
+    <div class="room" id="room"></div>
+    <div class="room-group export">
+      <h3>Tus elecciones</h3>
+      <div class="buttons">
+        <button class="btn btn-primary" type="button" id="copyPicks">Copiar mis elecciones</button>
+        <span id="copyStatus" class="note" role="status" aria-live="polite"></span>
       </div>
-      <div class="type-card">
-        <div class="type-sample-shout" data-es="¡Empapado!" data-en="Soaked!">¡Empapado!</div>
-        <h3>Bangers</h3>
-        <p class="type-meta">Solo para gritos de cómic: carteles de tiempo extremo y logros.</p>
-      </div>
-      <div class="type-card">
-        <p class="type-sample-body" data-es="Sal con paraguas, que hoy la ciudad viene a por ti." data-en="Grab an umbrella. The city is coming for you today.">Sal con paraguas, que hoy la ciudad viene a por ti.</p>
-        <h3>Barlow</h3>
-        <p class="type-meta">Textos largos, detalles y etiquetas. Clara y legible en el móvil.</p>
-      </div>
+      <label for="picksOut" class="sr">Resumen de tus elecciones</label>
+      <textarea id="picksOut" readonly></textarea>
     </div>
   </section>
 
@@ -319,31 +597,23 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
     <div class="section-head">
       <p class="eyebrow">Piezas del HUD</p>
       <h2 id="hud-h">El panel de mando</h2>
-      <p class="note">Las piezas que aparecerán en la pantalla principal. Todas se pueden usar con teclado; pulsa Tab para ver el foco amarillo.</p>
+      <p class="note">Las piezas de la pantalla principal, ya con los textos que elijas arriba. Todas se pueden usar con teclado; pulsa Tab para ver el foco amarillo.</p>
     </div>
 
     <div class="kit">
       <div class="panel">
         <h3 data-es="Nivel de busca y captura" data-en="Wanted level">Nivel de busca y captura</h3>
-        <div class="wanted-row">
-          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars"></div>
-          <span class="wanted-label" data-es="1 · Día tranquilo" data-en="1 · Easy day">1 · Día tranquilo</span>
-        </div>
-        <div class="wanted-row">
-          <div class="wanted" role="img" aria-label="3 de 5 estrellas" data-es-label="3 de 5 estrellas" data-en-label="3 out of 5 stars"></div>
-          <span class="wanted-label" data-es="3 · Se complica" data-en="3 · Getting rough">3 · Se complica</span>
-        </div>
-        <div class="wanted-row">
-          <div class="wanted max" role="img" aria-label="5 de 5 estrellas" data-es-label="5 de 5 estrellas" data-en-label="5 out of 5 stars"></div>
-          <span class="wanted-label" data-es="5 · Quédate en casa" data-en="5 · Stay indoors">5 · Quédate en casa</span>
-        </div>
-        <p class="note">Con 5 estrellas parpadean como una sirena (salvo si el móvil tiene activado "reducir movimiento").</p>
+        <div class="wanted-row"><div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div><span class="wanted-label" data-copy="stars.0"></span></div>
+        <div class="wanted-row"><div class="wanted" role="img" aria-label="2 de 5 estrellas" data-es-label="2 de 5 estrellas" data-en-label="2 out of 5 stars" data-n="2"></div><span class="wanted-label" data-copy="stars.1"></span></div>
+        <div class="wanted-row"><div class="wanted" role="img" aria-label="3 de 5 estrellas" data-es-label="3 de 5 estrellas" data-en-label="3 out of 5 stars" data-n="3"></div><span class="wanted-label" data-copy="stars.2"></span></div>
+        <div class="wanted-row"><div class="wanted" role="img" aria-label="4 de 5 estrellas" data-es-label="4 de 5 estrellas" data-en-label="4 out of 5 stars" data-n="4"></div><span class="wanted-label" data-copy="stars.3"></span></div>
+        <div class="wanted-row"><div class="wanted max" role="img" aria-label="5 de 5 estrellas" data-es-label="5 de 5 estrellas" data-en-label="5 out of 5 stars" data-n="5"></div><span class="wanted-label" data-copy="stars.4"></span></div>
       </div>
 
       <div class="panel">
         <h3 data-es="Minimapa" data-en="Minimap">Minimapa</h3>
         <div class="minimap-box">
-          <svg class="minimap" viewBox="0 0 200 200" role="img" aria-label="Minimapa ilustrado de la zona" data-es-label="Minimapa ilustrado de la zona" data-en-label="Illustrated minimap of the area">
+          <svg class="minimap" id="minimap" viewBox="0 0 200 200" role="img" aria-label="Minimapa ilustrado de la zona" data-es-label="Minimapa ilustrado de la zona" data-en-label="Illustrated minimap of the area">
             <defs><clipPath id="mapClip"><circle cx="100" cy="100" r="90"/></clipPath></defs>
             <circle cx="100" cy="100" r="96" fill="#ff7a1a" stroke="#140a24" stroke-width="5"/>
             <g clip-path="url(#mapClip)">
@@ -373,39 +643,41 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
             <span><i style="background:#19a97b"></i><span data-es="Parque" data-en="Park">Parque</span></span>
           </div>
         </div>
-        <p class="note">Es un mapa dibujado, no un mapa real: sirve para dar ambiente sin cargar mapas externos.</p>
+        <p class="note">Es un mapa dibujado, no un mapa real: da ambiente sin cargar mapas externos.</p>
       </div>
 
       <div class="panel">
         <h3 data-es="Botones y buscador" data-en="Buttons and search">Botones y buscador</h3>
-        <form class="search" role="search" onsubmit="event.preventDefault()">
-          <label for="city" data-es="Buscar ciudad" data-en="Search city">Buscar ciudad</label>
-          <input id="city" type="search" placeholder="Busca una ciudad…" data-es-ph="Busca una ciudad…" data-en-ph="Search a city…" autocomplete="off">
-          <button class="btn btn-primary" type="submit" data-es="Ir" data-en="Go">Ir</button>
+        <form class="search" role="search" id="searchForm">
+          <label for="city" class="sr" data-es="Buscar ciudad" data-en="Search city">Buscar ciudad</label>
+          <input id="city" type="search" data-copy-ph="btn.ph" autocomplete="off">
+          <button class="btn btn-primary" type="submit" data-copy="btn.go"></button>
         </form>
         <div class="buttons">
           <button class="btn btn-secondary" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#140a24" stroke-width="2.5"><circle cx="12" cy="12" r="7"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/><circle cx="12" cy="12" r="2" fill="#140a24"/></svg>
-            <span data-es="Mi ubicación" data-en="My location">Mi ubicación</span>
+            <span data-copy="btn.loc"></span>
           </button>
-          <button class="btn btn-ghost btn-icon" type="button" aria-label="Encender la radio" data-es-label="Encender la radio" data-en-label="Turn the radio on">
+          <button class="btn btn-ghost" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#140a24" stroke-width="2.5" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4Z" fill="#ff2e8a"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+            <span data-copy="btn.radio"></span>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="panel" aria-labelledby="hudprev-h">
+    <div class="panel">
       <span class="example-tag" data-es="Datos de ejemplo" data-en="Sample data">Datos de ejemplo</span>
-      <h3 id="hudprev-h" data-es="Así se combinan en la pantalla principal" data-en="How they come together on the main screen">Así se combinan en la pantalla principal</h3>
+      <h3 data-es="Así se combinan en la pantalla principal" data-en="How they come together on the main screen">Así se combinan en la pantalla principal</h3>
       <div class="hud">
         <div style="display:grid; gap:10px; min-width:0">
           <div class="hud-city">Madrid</div>
           <div class="hud-temp">24°</div>
-          <div class="hud-cond" data-es="Despejado · Sol de justicia" data-en="Clear · Blazing sun">Despejado · Sol de justicia</div>
-          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars"></div>
+          <div class="hud-cond" data-es="Despejado" data-en="Clear">Despejado</div>
+          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div>
+          <span class="wanted-label" data-copy="stars.0"></span>
         </div>
-        <svg class="minimap" viewBox="0 0 200 200" aria-hidden="true" style="width:120px;height:120px"><use href="#miniCopy"/></svg>
+        <svg class="minimap" id="miniCopy" viewBox="0 0 200 200" aria-hidden="true" style="width:120px;height:120px"></svg>
         <dl class="hud-details">
           <div><dt data-es="Sensación" data-en="Feels like">Sensación</dt><dd>26°</dd></div>
           <div><dt data-es="Humedad" data-en="Humidity">Humedad</dt><dd>40%</dd></div>
@@ -417,157 +689,38 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
     </div>
   </section>
 
-  <!-- SCENES -->
-  <section aria-labelledby="sc-h">
+  <!-- PALETTE -->
+  <section aria-labelledby="pal-h">
     <div class="section-head">
-      <p class="eyebrow">Escenas</p>
-      <h2 id="sc-h">Tres climas de muestra</h2>
-      <p class="note">Dibujadas en SVG con contornos gruesos y tramas de puntos, con animaciones suaves (palmeras, lluvia, estrellas, coche). En la fase 2 llegarán las otras cinco: nubes, tormenta, nieve, niebla y viento.</p>
+      <p class="eyebrow">Paleta</p>
+      <h2 id="pal-h">Colores de atardecer</h2>
+      <p class="note">Naranja, magenta, púrpura y turquesa saturados sobre una tinta casi negra. El tono de cada pantalla cambiará con el tiempo y la hora del día.</p>
     </div>
-    <div class="scenes">
-
-      <!-- SUN -->
-      <figure class="scene">
-        <svg viewBox="0 0 400 260" role="img" aria-label="Ciudad al atardecer con un gran sol rayado, palmeras y un coche" data-es-label="Ciudad al atardecer con un gran sol rayado, palmeras y un coche" data-en-label="City at sunset with a big striped sun, palm trees and a car">
-          <defs>
-            <linearGradient id="skySun" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ff2e8a"/><stop offset=".55" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffc93c"/>
-            </linearGradient>
-            <linearGradient id="sunFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#fff3dc"/><stop offset=".6" stop-color="#ffc93c"/>
-            </linearGradient>
-            <mask id="sunStripes">
-              <rect width="400" height="260" fill="#fff"/>
-              <rect y="142" width="400" height="3" fill="#000"/><rect y="154" width="400" height="4" fill="#000"/>
-              <rect y="166" width="400" height="5" fill="#000"/><rect y="178" width="400" height="6" fill="#000"/>
-              <rect y="191" width="400" height="7" fill="#000"/>
-            </mask>
-          </defs>
-          <rect width="400" height="260" fill="url(#skySun)"/>
-          <rect width="400" height="150" fill="url(#dots)" opacity=".14"/>
-          <circle class="sun-glow" cx="200" cy="140" r="88" fill="#fff3dc" opacity=".55"/>
-          <g mask="url(#sunStripes)">
-            <circle cx="200" cy="140" r="70" fill="url(#sunFill)" stroke="#140a24" stroke-width="5"/>
-          </g>
-          <use href="#skyline" fill="#6e2bc4" stroke="#140a24" stroke-width="4" stroke-linejoin="round"/>
-          <rect width="400" height="232" fill="url(#winDay)" clip-path="url(#skyClip)" opacity=".7"/>
-          <rect y="228" width="400" height="32" fill="#2a1250" stroke="#140a24" stroke-width="4"/>
-          <path d="M0 245H400" stroke="#ffc93c" stroke-width="3" stroke-dasharray="18 14"/>
-          <g class="sway" style="--trunk:#8a4b2a; --frond:#0e7a66"><use href="#palm" transform="translate(46 232)"/></g>
-          <g class="sway slow" style="--trunk:#8a4b2a; --frond:#12a08a"><use href="#palm" transform="translate(352 232) scale(-.85 .85)"/></g>
-          <use href="#car" transform="translate(230 212)" fill="#ff2e8a"/>
-        </svg>
-        <figcaption class="cap-sun">
-          <b data-es="Despejado" data-en="Clear">Despejado</b>
-          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div>
-        </figcaption>
-      </figure>
-
-      <!-- RAIN -->
-      <figure class="scene">
-        <svg viewBox="0 0 400 260" role="img" aria-label="Ciudad bajo la lluvia con nubes oscuras, ventanas encendidas y un coche con los faros puestos" data-es-label="Ciudad bajo la lluvia con nubes oscuras, ventanas encendidas y un coche con los faros puestos" data-en-label="City in the rain with dark clouds, lit windows and a car with its headlights on">
-          <defs>
-            <linearGradient id="skyRain" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#1c2846"/><stop offset=".6" stop-color="#3b4a6b"/><stop offset="1" stop-color="#5a3d7a"/>
-            </linearGradient>
-            <pattern id="rainA" width="36" height="48" patternUnits="userSpaceOnUse">
-              <path d="M10 0L6 16M28 24L24 40" stroke="#bfe9ff" stroke-width="2.2" stroke-linecap="round" opacity=".75"/>
-              <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 48" dur=".55s" repeatCount="indefinite"/>
-            </pattern>
-            <pattern id="rainB" width="22" height="30" patternUnits="userSpaceOnUse">
-              <path d="M6 0L4 9" stroke="#bfe9ff" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
-              <animateTransform attributeName="patternTransform" type="translate" from="0 0" to="0 30" dur=".8s" repeatCount="indefinite"/>
-            </pattern>
-          </defs>
-          <rect width="400" height="260" fill="url(#skyRain)"/>
-          <rect width="400" height="180" fill="url(#dotsLight)" opacity=".06"/>
-          <use href="#skyline" fill="#1e1638" stroke="#140a24" stroke-width="4" stroke-linejoin="round"/>
-          <rect width="400" height="232" fill="url(#winWarm)" clip-path="url(#skyClip)" opacity=".8"/>
-          <g style="--cloud:#55648c"><use href="#cloud" transform="translate(-24 2) scale(1.3)"/></g>
-          <g style="--cloud:#465479"><use href="#cloud" transform="translate(150 -12) scale(1.45)"/></g>
-          <g style="--cloud:#55648c"><use href="#cloud" transform="translate(290 10) scale(1.1)"/></g>
-          <rect width="400" height="232" fill="url(#rainB)"/>
-          <rect width="400" height="260" fill="url(#rainA)"/>
-          <rect y="228" width="400" height="32" fill="#1a1230" stroke="#140a24" stroke-width="4"/>
-          <path d="M0 245H400" stroke="#ffc93c" stroke-width="3" stroke-dasharray="18 14" opacity=".6"/>
-          <g fill="none" stroke="#bfe9ff" stroke-width="2" opacity=".6">
-            <ellipse cx="80" cy="252" rx="18" ry="3"/><ellipse cx="300" cy="250" rx="24" ry="3.5"/><ellipse cx="190" cy="254" rx="12" ry="2"/>
-          </g>
-          <g class="drive">
-            <path d="M110 222L190 210V240Z" fill="#ffc93c" opacity=".35"/>
-            <use href="#car" transform="translate(0 210)" fill="#16c7b7"/>
-          </g>
-        </svg>
-        <figcaption class="cap-rain">
-          <b data-es="Lluvia" data-en="Rain">Lluvia</b>
-          <div class="wanted" role="img" aria-label="3 de 5 estrellas" data-es-label="3 de 5 estrellas" data-en-label="3 out of 5 stars" data-n="3"></div>
-        </figcaption>
-      </figure>
-
-      <!-- NIGHT -->
-      <figure class="scene">
-        <svg viewBox="0 0 400 260" role="img" aria-label="Ciudad de noche con luna creciente, estrellas, ventanas de neón y palmeras" data-es-label="Ciudad de noche con luna creciente, estrellas, ventanas de neón y palmeras" data-en-label="City at night with a crescent moon, stars, neon windows and palm trees">
-          <defs>
-            <linearGradient id="skyNight" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#0d0620"/><stop offset=".55" stop-color="#2a1250"/><stop offset="1" stop-color="#6e2bc4"/>
-            </linearGradient>
-            <mask id="moonCut">
-              <rect width="400" height="260" fill="#fff"/>
-              <circle cx="328" cy="48" r="32" fill="#000"/>
-            </mask>
-          </defs>
-          <rect width="400" height="260" fill="url(#skyNight)"/>
-          <rect width="400" height="260" fill="url(#dotsLight)" opacity=".05"/>
-          <g fill="#fff3dc">
-            <use class="twinkle" href="#star5" transform="translate(30 24) scale(.5)"/>
-            <use class="twinkle" href="#star5" transform="translate(96 54) scale(.35)"/>
-            <use class="twinkle" href="#star5" transform="translate(150 18) scale(.45)"/>
-            <use class="twinkle" href="#star5" transform="translate(212 60) scale(.3)"/>
-            <use class="twinkle" href="#star5" transform="translate(248 26) scale(.4)"/>
-            <use class="twinkle" href="#star5" transform="translate(60 90) scale(.3)"/>
-            <use class="twinkle" href="#star5" transform="translate(370 96) scale(.35)"/>
-          </g>
-          <g mask="url(#moonCut)">
-            <circle cx="310" cy="58" r="34" fill="#fff3dc" stroke="#140a24" stroke-width="4"/>
-            <circle cx="310" cy="58" r="34" fill="url(#dots)" opacity=".12"/>
-          </g>
-          <use href="#skyline" fill="#160c2c" stroke="#ff2e8a" stroke-width="2" stroke-linejoin="round"/>
-          <rect width="400" height="232" fill="url(#winNeon)" clip-path="url(#skyClip)" opacity=".85"/>
-          <circle class="blink" cx="173" cy="80" r="4" fill="#ff2e8a"/>
-          <path d="M173 84V96" stroke="#140a24" stroke-width="3"/>
-          <g class="neon">
-            <rect x="262" y="128" width="40" height="18" rx="3" fill="#140a24" stroke="#16c7b7" stroke-width="2.5"/>
-            <text x="282" y="142" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="13" fill="#16c7b7">24H</text>
-          </g>
-          <rect y="228" width="400" height="32" fill="#0d0620" stroke="#140a24" stroke-width="4"/>
-          <path d="M0 245H400" stroke="#ff2e8a" stroke-width="3" stroke-dasharray="18 14" opacity=".7"/>
-          <g class="sway" style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(40 232)"/></g>
-          <g class="sway slow" style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(372 232) scale(-.9 .9)"/></g>
-          <use href="#car" transform="translate(150 212)" fill="#6e2bc4"/>
-          <rect x="150" y="222" width="6" height="5" fill="#ff2e8a"/>
-        </svg>
-        <figcaption class="cap-night">
-          <b data-es="Noche" data-en="Night">Noche</b>
-          <div class="wanted" role="img" aria-label="1 de 5 estrellas" data-es-label="1 de 5 estrellas" data-en-label="1 out of 5 stars" data-n="1"></div>
-        </figcaption>
-      </figure>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-color" style="background:#140a24"></div><div class="swatch-info"><b>Tinta</b><code>#140A24</code><small>Contornos y sombras</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2a1250"></div><div class="swatch-info"><b>Noche</b><code>#2A1250</code><small>Cielo nocturno y paneles</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#6e2bc4"></div><div class="swatch-info"><b>Púrpura</b><code>#6E2BC4</code><small>Siluetas de ciudad</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff2e8a"></div><div class="swatch-info"><b>Magenta</b><code>#FF2E8A</code><small>Neones y alertas</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff7a1a"></div><div class="swatch-info"><b>Naranja</b><code>#FF7A1A</code><small>Atardecer y botón principal</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffc93c"></div><div class="swatch-info"><b>Sol</b><code>#FFC93C</code><small>Estrellas y foco del teclado</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#16c7b7"></div><div class="swatch-info"><b>Turquesa</b><code>#16C7B7</code><small>Mar y botón secundario</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#3b4a6b"></div><div class="swatch-info"><b>Tormenta</b><code>#3B4A6B</code><small>Cielos de lluvia</small></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#fff3dc"></div><div class="swatch-info"><b>Crema</b><code>#FFF3DC</code><small>Texto sobre oscuro</small></div></div>
     </div>
   </section>
 
-  <!-- BANNER -->
-  <section aria-labelledby="ban-h">
+  <!-- TYPE -->
+  <section aria-labelledby="type-h">
     <div class="section-head">
-      <p class="eyebrow" data-es="Tiempo extremo" data-en="Extreme weather">Tiempo extremo</p>
-      <h2 id="ban-h">El cartel de alerta</h2>
-      <p class="note">Cuando el tiempo se pone serio, un cartel entra de golpe a pantalla completa. Se cierra con el botón o con la tecla Esc.</p>
+      <p class="eyebrow">Tipografía</p>
+      <h2 id="type-h">Letras con actitud</h2>
+      <p class="note">Tres familias gratuitas con licencia abierta (SIL Open Font License). En la app irán dentro del proyecto para que carguen rápido.</p>
     </div>
-    <div class="banner-demo">
-      <div class="banner">
-        <div class="banner-word" data-es="¡Empapado!" data-en="Soaked!">¡Empapado!</div>
-        <div class="banner-sub" data-es="Lluvia fuerte en tu zona" data-en="Heavy rain in your area">Lluvia fuerte en tu zona</div>
-      </div>
+    <div class="type-grid">
+      <div class="type-card"><div class="type-sample-display">Madrid 24°</div><h3>Anton</h3><p class="type-meta">Títulos, temperatura y botones. Gruesa y condensada, como un cartel de carretera.</p></div>
+      <div class="type-card"><div class="type-sample-shout" data-copy="alerts.rain"></div><h3>Bangers</h3><p class="type-meta">Solo para gritos de cómic: alertas y logros.</p></div>
+      <div class="type-card"><p class="type-sample-body" data-es="Sal con paraguas, que hoy la ciudad viene a por ti." data-en="Grab an umbrella. The city's coming for you today.">Sal con paraguas, que hoy la ciudad viene a por ti.</p><h3>Barlow</h3><p class="type-meta">Textos largos, detalles y etiquetas. Clara y legible en el móvil.</p></div>
     </div>
-    <div><button class="btn btn-primary" type="button" id="openBanner" data-es="Ver a pantalla completa" data-en="Show full screen">Ver a pantalla completa</button></div>
   </section>
 
   <footer>
@@ -576,21 +729,68 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
 </div>
 
 <div class="overlay" id="overlay" role="alertdialog" aria-modal="true" aria-labelledby="ovWord" hidden>
-  <div style="display:grid; justify-items:center; width:100%">
+  <div class="fx" aria-hidden="true"></div>
+  <div class="overlay-inner">
     <div class="banner">
-      <div class="banner-word" id="ovWord" data-es="¡Empapado!" data-en="Soaked!">¡Empapado!</div>
-      <div class="banner-sub" data-es="Lluvia fuerte en tu zona" data-en="Heavy rain in your area">Lluvia fuerte en tu zona</div>
+      <div class="banner-word" id="ovWord"></div>
+      <div class="banner-sub" id="ovSub"></div>
     </div>
-    <button class="btn btn-ghost" type="button" id="closeBanner" data-es="Entendido" data-en="Got it">Entendido</button>
+    <button class="btn btn-ghost" type="button" id="closeBanner" data-copy="btn.close"></button>
   </div>
 </div>
 
 <script>
 (() => {
-  // Build star rows: data-n or the number in the aria-label decides how many are filled
+  // ---------- Copy options (ES first, EN second, each written natively) ----------
+  const COPY = {
+    tagline: { name: 'Lema de portada', opts: [
+      ['El tiempo de hoy viene a por ti', "Today's weather is coming for you"],
+      ['Tu ciudad. Tu cielo. Tus reglas.', 'Your city. Your sky. Your rules.'],
+      ['Sal ahí fuera. O no.', "Get out there. Or don't."] ] },
+    stars: [
+      { name: 'Nivel 1', opts: [['Día de chill', 'Easy street'], ['La calle es tuya', 'The streets are yours'], ['Ni una nube te busca', 'Not a cloud on your tail']] },
+      { name: 'Nivel 2', opts: [['Algo se cuece', "Something's cooking"], ['Te tienen fichado', "You're on their radar"], ['Ojito, colega', 'Eyes open, pal']] },
+      { name: 'Nivel 3', opts: [['Se está liando', 'Things are kicking off'], ['El cielo quiere bronca', 'The sky wants a word'], ['Modo supervivencia', 'Survival mode']] },
+      { name: 'Nivel 4', opts: [['Esto se pone feo', "It's getting ugly"], ['El clima te ha puesto precio', 'The weather put a price on your head'], ['Sal solo si es urgente', 'Out only if you must']] },
+      { name: 'Nivel 5', opts: [['Sofá o nada', 'Couch or nothing'], ['Ni lo intentes, campeón', "Don't even try, champ"], ['Hoy manda el cielo', 'The sky runs this town today']] }
+    ],
+    alerts: {
+      rain: { name: 'Lluvia fuerte', sub: ['Lluvia fuerte en tu zona', 'Heavy rain in your area'],
+        opts: [['¡Empapado!', 'Soaked!'], ['¡Calado hasta el alma!', 'Drenched to the bone!'], ['¡Ducha gratis!', 'Free shower!']] },
+      heat: { name: 'Calor extremo', sub: ['Calor extremo: busca sombra', 'Extreme heat: find some shade'],
+        opts: [['¡A la parrilla!', 'Grilled!'], ['¡Derretido!', 'Melted!'], ['¡Modo horno!', 'Oven mode!']] },
+      cold: { name: 'Frío extremo', sub: ['Frío de los que muerden', 'The kind of cold that bites'],
+        opts: [['¡Congelado!', 'Frozen solid!'], ['¡Cubito humano!', 'Human ice cube!'], ['¡Tiritando!', 'Brrr-utal!']] },
+      wind: { name: 'Viento fuerte', sub: ['Rachas fuertes: sujeta el sombrero', 'Strong gusts: hold onto your hat'],
+        opts: [['¡Despeinado!', 'Blown away!'], ['¡Sales volando!', 'Up, up and away!'], ['¡Agárrate!', 'Hold on tight!']] },
+      storm: { name: 'Tormenta', sub: ['Tormenta eléctrica encima', 'Thunderstorm overhead'],
+        opts: [['¡Fulminado!', 'Zapped!'], ['¡El cielo tiene ganas!', "The sky's got beef!"], ['¡Zambombazo!', 'Ka-boom!']] }
+    },
+    btn: {
+      go: { name: 'Botón de buscar', opts: [['¡Dale!', 'Hit it'], ['Vamos', "Let's roll"], ['A fondo', 'Floor it']] },
+      ph: { name: 'Texto del buscador', opts: [['¿A qué ciudad vamos, jefe?', 'Where to, boss?'], ['Elige tu territorio…', 'Pick your turf…'], ['Suelta una ciudad…', 'Drop a city…']] },
+      loc: { name: 'Botón de ubicación', opts: [['Mi barrio', 'My turf'], ['Localízame', 'Find me'], ['¿Dónde estoy?', 'Where am I?']] },
+      radio: { name: 'Botón de radio', opts: [['Dale caña a la radio', 'Crank the radio'], ['Pon música', 'Drop the beat'], ['Sube el volumen', 'Pump it up']] },
+      close: { name: 'Cerrar alerta', opts: [['Recibido, jefe', 'Copy that'], ['Vale, vale', 'Yeah, yeah'], ['Lo pillo', 'Got it, got it']] }
+    }
+  };
+  const ALERT_LABEL = { rain: 'Lluvia fuerte', heat: 'Calor extremo', cold: 'Frío extremo', wind: 'Viento fuerte', storm: 'Tormenta' };
+  const pick = {};
+  let lang = 'es';
+  const L = () => (lang === 'es' ? 0 : 1);
+  const groupOf = (key) => {
+    const [a, b] = key.split('.');
+    if (a === 'tagline') return COPY.tagline;
+    if (a === 'stars') return COPY.stars[Number(b)];
+    if (a === 'alerts') return COPY.alerts[b];
+    return COPY.btn[b];
+  };
+  const text = (key) => groupOf(key).opts[pick[key] || 0][L()];
+
+  // ---------- Stars ----------
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  document.querySelectorAll('.wanted').forEach((row) => {
-    const n = Number(row.dataset.n || (row.getAttribute('aria-label') || '').match(/\d/)?.[0] || 0);
+  const STAR_D = document.getElementById('star5').getAttribute('d');
+  const buildStars = (row, n) => {
     for (let i = 1; i <= 5; i++) {
       const svg = document.createElementNS(SVG_NS, 'svg');
       svg.setAttribute('viewBox', '0 0 24 24');
@@ -598,44 +798,137 @@ footer { color: var(--muted); font-size: .9rem; border-top: 2px dashed rgba(255,
       const g = document.createElementNS(SVG_NS, 'g');
       g.setAttribute('class', i <= n ? 'on' : 'off');
       const p = document.createElementNS(SVG_NS, 'path');
-      p.setAttribute('d', document.getElementById('star5').getAttribute('d'));
+      p.setAttribute('d', STAR_D);
       g.appendChild(p);
       svg.appendChild(g);
       row.appendChild(svg);
     }
-  });
+  };
+  document.querySelectorAll('.wanted').forEach((row) => buildStars(row, Number(row.dataset.n || 0)));
+  buildStars(document.querySelector('.hero-stars'), 5);
 
-  // Reuse the big minimap inside the HUD preview
-  const mini = document.querySelector('.minimap');
-  const copy = mini.cloneNode(true);
-  const holder = document.querySelector('svg[style*="120px"]');
-  holder.replaceChildren(...[...copy.childNodes].map((n) => {
-    if (n.nodeType === 1 && n.tagName === 'defs') return document.createComment('defs reused');
-    return n;
-  }));
+  // ---------- Minimap copy for the HUD preview ----------
+  const mini = document.getElementById('minimap');
+  document.getElementById('miniCopy').replaceChildren(...[...mini.cloneNode(true).children].filter((n) => n.tagName !== 'defs'));
 
-  // Language toggle (sample of the real ES/EN switch)
-  const setLang = (lang) => {
+  // ---------- Writers' room ----------
+  const room = document.getElementById('room');
+  const makeGroup = (title, note) => {
+    const g = document.createElement('div');
+    g.className = 'room-group';
+    const h = document.createElement('h3');
+    h.textContent = title;
+    g.appendChild(h);
+    if (note) { const p = document.createElement('p'); p.className = 'note'; p.textContent = note; g.appendChild(p); }
+    room.appendChild(g);
+    return g;
+  };
+  const makeRow = (group, key, labelText, stars, alertType) => {
+    const row = document.createElement('div');
+    row.className = 'room-row';
+    const label = document.createElement('div');
+    label.className = 'room-label';
+    label.textContent = labelText;
+    if (stars) { const w = document.createElement('div'); w.className = 'wanted'; buildStars(w, stars); label.appendChild(w); }
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', labelText);
+    groupOf(key).opts.forEach(([es, en], i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.id = 'chip-' + key.replace('.', '-') + '-' + i;
+      b.setAttribute('aria-pressed', String(i === (pick[key] || 0)));
+      b.innerHTML = '<span class="chip-es"></span><span class="chip-en"></span>' + (alertType ? '<span class="fire">▶ Lanzar alerta</span>' : '');
+      b.querySelector('.chip-es').textContent = es;
+      b.querySelector('.chip-en').textContent = en;
+      b.addEventListener('click', () => {
+        pick[key] = i;
+        chips.querySelectorAll('.chip').forEach((c, j) => c.setAttribute('aria-pressed', String(j === i)));
+        applyCopy();
+        if (alertType) openAlert(alertType, b);
+      });
+      chips.appendChild(b);
+    });
+    row.append(label, chips);
+    group.appendChild(row);
+  };
+  makeRow(makeGroup('Portada'), 'tagline', COPY.tagline.name);
+  const gStars = makeGroup('Niveles de estrellas', 'Lo que se lee bajo las estrellas según lo duro que venga el día.');
+  COPY.stars.forEach((s, i) => makeRow(gStars, 'stars.' + i, s.name, i + 1));
+  const gAlerts = makeGroup('Carteles de alerta', 'Cada uno con su efecto: lluvia en la pantalla, calor que deforma, escarcha, ráfagas y relámpagos.');
+  Object.keys(COPY.alerts).forEach((t) => makeRow(gAlerts, 'alerts.' + t, ALERT_LABEL[t], 0, t));
+  const gBtn = makeGroup('Botones');
+  Object.keys(COPY.btn).forEach((k) => makeRow(gBtn, 'btn.' + k, COPY.btn[k].name));
+
+  // ---------- Apply copy + language ----------
+  const applyCopy = () => {
+    document.querySelectorAll('[data-copy]').forEach((el) => { el.textContent = text(el.dataset.copy); });
+    document.querySelectorAll('[data-copy-ph]').forEach((el) => el.setAttribute('placeholder', text(el.dataset.copyPh)));
+    const out = [];
+    out.push('Lema: ' + COPY.tagline.opts[pick.tagline || 0].join(' / '));
+    COPY.stars.forEach((s, i) => out.push(s.name + ': ' + s.opts[pick['stars.' + i] || 0].join(' / ')));
+    Object.keys(COPY.alerts).forEach((t) => out.push('Alerta ' + ALERT_LABEL[t].toLowerCase() + ': ' + COPY.alerts[t].opts[pick['alerts.' + t] || 0].join(' / ')));
+    Object.keys(COPY.btn).forEach((k) => out.push(COPY.btn[k].name + ': ' + COPY.btn[k].opts[pick['btn.' + k] || 0].join(' / ')));
+    document.getElementById('picksOut').value = out.join('\n');
+  };
+  const setLang = (next) => {
+    lang = next;
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
     document.querySelectorAll('[data-' + lang + ']').forEach((el) => { el.textContent = el.dataset[lang]; });
     document.querySelectorAll('[data-' + lang + '-label]').forEach((el) => el.setAttribute('aria-label', el.dataset[lang + 'Label']));
-    document.querySelectorAll('[data-' + lang + '-ph]').forEach((el) => el.setAttribute('placeholder', el.dataset[lang + 'Ph']));
+    applyCopy();
   };
   document.querySelectorAll('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  document.getElementById('searchForm').addEventListener('submit', (e) => e.preventDefault());
+  applyCopy();
 
-  // Full-screen banner
+  // ---------- Copy picks ----------
+  const status = document.getElementById('copyStatus');
+  const outBox = document.getElementById('picksOut');
+  document.getElementById('copyPicks').addEventListener('click', () => {
+    const done = () => { status.textContent = 'Copiado. Pégalo en el chat.'; };
+    const fallback = () => { outBox.focus(); outBox.select(); status.textContent = 'Texto seleccionado: cópialo y pégalo en el chat.'; };
+    try { navigator.clipboard.writeText(outBox.value).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  // ---------- Full-screen alert ----------
   const overlay = document.getElementById('overlay');
-  const opener = document.getElementById('openBanner');
   const closer = document.getElementById('closeBanner');
-  const close = () => { overlay.hidden = true; opener.focus(); };
-  opener.addEventListener('click', () => { overlay.hidden = false; closer.focus(); });
+  let opener = null;
+  const openAlert = (type, from) => {
+    opener = from;
+    overlay.dataset.type = type;
+    document.getElementById('ovWord').textContent = text('alerts.' + type);
+    document.getElementById('ovSub').textContent = COPY.alerts[type].sub[L()];
+    overlay.hidden = false;
+    // restart the entrance animation every time
+    const banner = overlay.querySelector('.banner');
+    banner.style.animation = 'none'; void banner.offsetWidth; banner.style.animation = '';
+    closer.focus();
+  };
+  const close = () => { overlay.hidden = true; if (opener) opener.focus(); };
   closer.addEventListener('click', close);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !overlay.hidden) close(); });
 
-  // Reduced motion: also stop the SVG rain animation
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // ---------- Motion ----------
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
     document.querySelectorAll('svg').forEach((s) => s.pauseAnimations && s.pauseAnimations());
+  } else {
+    // Parallax: layers further forward move more when the pointer moves over a scene
+    document.querySelectorAll('.scene svg').forEach((svg) => {
+      const layers = svg.querySelectorAll('.px');
+      svg.addEventListener('pointermove', (e) => {
+        const r = svg.getBoundingClientRect();
+        const dx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        const dy = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        layers.forEach((l) => { const d = Number(l.dataset.depth); l.style.transform = `translate(${-dx * d}px, ${-dy * d * 0.4}px)`; });
+      });
+      svg.addEventListener('pointerleave', () => layers.forEach((l) => { l.style.transform = ''; }));
+    });
   }
 })();
 </script>

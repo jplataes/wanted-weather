@@ -6,7 +6,7 @@ A weather app that plays like an open-world game: real forecasts, wanted-level s
 
 > 🚧 Work in progress. See [PLAN.md](PLAN.md) for the phases. Screenshots arrive with the final phase.
 
-## What works now (phases 1–5)
+## What works now (phases 1–6)
 - Real current weather from OpenWeatherMap for your location, with Madrid as the fallback if location is refused.
 - City search, ES/EN switch (remembered), last result saved for an instant next visit.
 - HUD: city, temperature, condition, feels like, humidity, wind, sunrise/sunset, an illustrated minimap with the real wind direction and a 1–5 star "wanted level".
@@ -17,6 +17,7 @@ A weather app that plays like an open-world game: real forecasts, wanted-level s
 - Three zones like a game menu: Street (today at a glance), Missions and Arcade.
 - A car radio that is always at hand: four fictional stations with music generated live with the Web Audio API and hosts reading real forecast lines (Speech Synthesis). Off by default, with volume and mute.
 - The Excuse-o-matic: a slot machine that gives you a cheeky excuse to bail on plans, built from today's real weather, ready to copy or share.
+- City Duel: your city against any other in five rounds of real weather (ideal temperature, sky, wind, humidity, daylight), with a stadium scoreboard, cheeky commentary and a shareable result card. Uncle Isobar calls to dare you.
 - Fame zone: a movie poster of today's weather (your city, the real scene, a film genre per weather type), in poster or stories format, ready to download as a PNG or share.
 - A mission phone call from "Uncle Isobar": the phone rings silently on screen and the voice (Speech Synthesis) only plays when you answer.
 
@@ -43,6 +44,7 @@ The published app never contains the key. It calls a tiny Cloudflare Worker (`wo
 - `src/radio.js`, `src/radio-lines.js` – the car radio (Web Audio music) and its hosts
 - `src/excuses.js`, `src/excusometer.js` – the Excuse-o-matic
 - `src/poster.js`, `src/poster-copy.js`, `src/fama.js` – the movie poster of the day and the Fame zone
+- `src/duel.js`, `src/duel-ui.js` – the City Duel
 - `src/i18n.js`, `src/copy.js` – texts in Spanish and English
 - `src/scenes.js`, `src/minimap.js`, `src/icons.js` – illustrations drawn in SVG
 - `src/geo.js`, `src/storage.js` – location and saved data

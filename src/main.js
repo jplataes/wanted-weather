@@ -17,6 +17,8 @@ import { showCall, isCallOpen, hangUp } from './call.js';
 import { initRadio, updateRadio, refreshRadioTexts } from './radio.js';
 import { initExcusometer, updateExcusometer } from './excusometer.js';
 import { initFama, updateFama, onFamaShown } from './fama.js';
+import { initDuel, updateDuel, duelAgainst } from './duel-ui.js';
+import { randomRival, challengeText } from './duel.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
@@ -116,6 +118,7 @@ function render() {
   updateRadio(view, state.mission);
   updateExcusometer(view, state.mission, day ? day.pop : null);
   updateFama(view, summary ? summary.today : null);
+  updateDuel(view, weather);
   return view;
 }
 
@@ -137,10 +140,27 @@ function maybeRing(view) {
   const key = `ww.call.${view.seed}`;
   if (!forced.call && session.get(key)) return;
   ringTimer = setTimeout(() => {
-    if (isAlertOpen()) { maybeRing(view); return; } // wait for the alert to be closed
+    if (isAlertOpen() || isCallOpen()) { maybeRing(view); return; } // wait for the alert or another call to finish
     session.set(key, true);
     showCall({ text: state.mission.script, mode: 'ring', missed: () => setMissedCall(true) });
   }, forced.call ? 800 : 8000); // let people read the weather first
+}
+
+/** Uncle Isobar dares you to a duel, once per visit, the first time you open the Arcade. */
+function maybeChallenge() {
+  if (!state.bundle || session.get('ww.challenge')) return;
+  setTimeout(() => {
+    if (isCallOpen() || isAlertOpen() || session.get('ww.challenge')) return;
+    session.set('ww.challenge', true);
+    const lang = getLang();
+    const view = buildView(state.bundle.weather, lang, state.bundle.geo);
+    const rival = randomRival(view.city);
+    showCall({
+      text: challengeText(rival[lang], lang, view.seed),
+      mode: 'ring',
+      action: { label: t('duel.accept'), onClick: () => duelAgainst(rival) },
+    });
+  }, 2500);
 }
 
 /** Fetch everything for a place and paint it. Older requests are ignored if a newer one started. */
@@ -161,6 +181,7 @@ async function load(place) {
     renderAlternatives(place.source === 'search' ? alternatives : [], pickAlternative);
     maybeAlert(view);
     maybeRing(view);
+    if (zoneFromHash() === 'recreativos') maybeChallenge();
   } catch (error) {
     if (id !== state.requestId) return;
     handleError(error, place);
@@ -230,6 +251,7 @@ function bindEvents() {
     const zone = zoneFromHash();
     showZone(zone, { focus: true });
     if (zone === 'fama') onFamaShown();
+    if (zone === 'recreativos') maybeChallenge();
   });
 
   document.querySelectorAll('[data-lang]').forEach((button) => {
@@ -266,6 +288,7 @@ function start() {
   initRadio();
   initExcusometer();
   initFama();
+  initDuel();
   bindStarsExplanation();
   bindEvents();
 

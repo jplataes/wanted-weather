@@ -238,9 +238,37 @@
         </div>
       </section>
 
+      <section class="machine duel" id="duelMachine" aria-labelledby="duelTitle">
+        <div class="machine-lights" aria-hidden="true"></div>
+        <h3 class="machine-title" id="duelTitle" data-i18n="duel.title">Duelo de ciudades</h3>
+        <p class="machine-sub" data-i18n="duel.sub">Tu ciudad contra otra, en cinco asaltos con el tiempo real. Sin trampas y sin VAR.</p>
+        <form class="duel-form" id="duelForm" novalidate>
+          <p class="duel-you"><span data-i18n="duel.you">Tu ciudad</span>: <strong id="duelYou"></strong></p>
+          <div class="search">
+            <label for="duelRival" class="sr" data-i18n="duel.rivalLabel">Ciudad rival</label>
+            <input id="duelRival" name="duelRival" type="search" maxlength="100" autocomplete="off" enterkeyhint="go" data-i18n-placeholder="duel.placeholder">
+            <button class="btn btn-primary" type="submit" data-i18n="duel.fight">¡Al ring!</button>
+          </div>
+          <button class="btn btn-ghost" type="button" id="duelRandom" data-i18n="duel.random">Rival al azar</button>
+        </form>
+        <p class="duel-status" id="duelStatus" role="status" aria-live="polite"></p>
+        <div class="scoreboard" id="duelBoard" hidden>
+          <div class="sb-head">
+            <span class="sb-team" id="sbYou"></span>
+            <span class="sb-score" id="sbScore" aria-live="polite"></span>
+            <span class="sb-team" id="sbRival"></span>
+          </div>
+          <ol class="sb-rounds" id="sbRounds"></ol>
+          <p class="sb-verdict" id="sbVerdict" aria-live="polite"></p>
+          <div class="buttons">
+            <button class="btn btn-secondary" type="button" id="duelShare" data-i18n="duel.share">Compartir resultado</button>
+            <button class="btn btn-ghost" type="button" id="duelAgain" data-i18n="duel.again">Revancha con otra</button>
+          </div>
+        </div>
+      </section>
+
       <ul class="locked" aria-label="Próximamente" data-i18n-aria="arcadeSoon">
         <li class="locked-machine"><span class="locked-name" data-i18n="soon.dodge">Esquiva el chaparrón</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
-        <li class="locked-machine"><span class="locked-name" data-i18n="soon.duel">Duelo de ciudades</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
         <li class="locked-machine"><span class="locked-name" data-i18n="soon.bet">La apuesta</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
       </ul>
     </div>

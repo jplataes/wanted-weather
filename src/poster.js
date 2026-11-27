@@ -27,7 +27,7 @@ export function wrap(text, max) {
 
 // Fonts embedded once as data URLs, so the downloaded image looks exactly like the preview
 let fontCss = null;
-async function embeddedFonts() {
+export async function embeddedFonts() {
   if (fontCss) return fontCss;
   const toData = async (url) => {
     const buf = await (await fetch(url)).arrayBuffer();
@@ -60,24 +60,34 @@ export async function posterSvg(p, format = 'poster') {
   const sceneH = story ? 1240 : 1040;
 
   // Title: as big as fits, on up to 3 lines
+  // Laid out from the bottom up, so long taglines never run into the credits:
+  // credits at the bottom, then a divider, the tagline above it, the title above that.
+  const creditTop = H - (story ? 330 : 300);
+  const creditLines = wrap(p.text.credits.toLocaleUpperCase(p.lang === 'en' ? 'en' : 'es'), 58).slice(0, 3);
+  const creditsSvg = creditLines.map((line, i) => `<text x="${W / 2}" y="${creditTop + i * 40}" class="credits">${esc(line)}</text>`).join('');
+  const divider = creditTop - 56;
+
+  const taglineLines = wrap(p.text.tagline, 36).slice(0, 3);
+  const TAG_STEP = 54;
+  const taglineFirst = divider - 34 - (taglineLines.length - 1) * TAG_STEP;
+  const taglineSvg = taglineLines.map((line, i) => `<text x="${W / 2}" y="${taglineFirst + i * TAG_STEP}" class="tagline">${esc(line)}</text>`).join('');
+
+  // Title: as big as fits (up to 3 lines), ending just above the tagline and never climbing over the stars
   const titleLines = wrap(p.text.title, 12).slice(0, 3);
   const longest = Math.max(...titleLines.map((l) => l.length));
-  const size = Math.min(170, Math.floor(1000 / (longest * 0.5)));
-  const titleTop = (story ? 1210 : 1000) - (titleLines.length - 1) * size * 0.45;
+  let size = Math.min(170, Math.floor(1000 / (longest * 0.5)));
+  const titleLast = taglineFirst - 84;
+  let titleTop = titleLast - (titleLines.length - 1) * size * 0.92;
+  while (titleTop - size * 0.9 - 40 < 250 && size > 80) {
+    size -= 6;
+    titleTop = titleLast - (titleLines.length - 1) * size * 0.92;
+  }
   const titleSvg = titleLines.map((line, i) => {
     const y = titleTop + i * size * 0.92;
     const t = esc(line);
     return `<text x="${W / 2 + 9}" y="${y + 9}" class="title" font-size="${size}" fill="#ff2e8a">${t}</text>`
       + `<text x="${W / 2}" y="${y}" class="title" font-size="${size}" fill="#ffc93c" stroke="#140a24" stroke-width="${Math.round(size * 0.06)}" paint-order="stroke fill">${t}</text>`;
   }).join('');
-  const afterTitle = titleTop + (titleLines.length - 1) * size * 0.92;
-
-  const taglineLines = wrap(p.text.tagline, 38);
-  const taglineSvg = taglineLines.map((line, i) => `<text x="${W / 2}" y="${afterTitle + 92 + i * 56}" class="tagline">${esc(line)}</text>`).join('');
-
-  const creditTop = H - (story ? 330 : 300);
-  const creditLines = wrap(p.text.credits.toLocaleUpperCase(p.lang === 'en' ? 'en' : 'es'), 58).slice(0, 3);
-  const creditsSvg = creditLines.map((line, i) => `<text x="${W / 2}" y="${creditTop + i * 40}" class="credits">${esc(line)}</text>`).join('');
 
   const stars = Array.from({ length: 5 }, (_, i) => `<path d="${STAR}" transform="translate(${W / 2 - 150 + i * 62} 128) scale(2.2)" fill="${i < p.level ? '#ffc93c' : 'none'}" stroke="${i < p.level ? '#140a24' : '#c9b8e8'}" stroke-width="1.4" stroke-linejoin="round"/>`).join('');
 
@@ -114,7 +124,7 @@ export async function posterSvg(p, format = 'poster') {
   </g>
   ${titleSvg}
   ${taglineSvg}
-  <rect x="80" y="${creditTop - 56}" width="${W - 160}" height="3" fill="#c9b8e8" opacity=".4"/>
+  <rect x="80" y="${divider}" width="${W - 160}" height="3" fill="#c9b8e8" opacity=".4"/>
   ${creditsSvg}
   <g transform="translate(80 ${ratingY})">
     <rect width="${ratingLines.length > 1 ? 560 : 40 + ratingLines[0].length * 17}" height="${ratingLines.length * 32 + 24}" fill="none" stroke="#fff3dc" stroke-width="3"/>
@@ -136,9 +146,8 @@ function loadImage(svg) {
   });
 }
 
-/** Rasterise the SVG to a PNG blob at full size. */
-export async function posterPng(svg, format) {
-  const { w, h } = FORMATS[format];
+/** Rasterise any SVG string to a PNG blob of w × h pixels. */
+export async function svgToPng(svg, w, h) {
   const { img, url } = await loadImage(svg);
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -146,6 +155,12 @@ export async function posterPng(svg, format) {
   canvas.getContext('2d').drawImage(img, 0, 0, w, h);
   URL.revokeObjectURL(url);
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('png failed'))), 'image/png'));
+}
+
+/** Rasterise the poster SVG to a PNG blob at full size. */
+export function posterPng(svg, format) {
+  const { w, h } = FORMATS[format];
+  return svgToPng(svg, w, h);
 }
 
 /** Object URL to show the poster on the page (the caller revokes the previous one). */

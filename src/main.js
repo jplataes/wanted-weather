@@ -303,7 +303,7 @@ function bindEvents() {
 }
 
 function start() {
-  setLang(getLang());
+  setLang(getLang(), { save: false }); // the detected language isn't saved: the phone's setting keeps deciding
   applyStaticTexts();
   showZone(zoneFromHash());
   initRadio();

@@ -93,6 +93,41 @@ test('English switch translates the interface', async ({ page }) => {
   await expect(page.locator('[data-zone-link=calle]')).toContainText('Street');
 });
 
+test.describe('phone in French', () => {
+  test.use({ locale: 'fr-FR' });
+  test('starts in English', async ({ page }) => {
+    await page.goto('./');
+    await ready(page);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('[data-zone-link=calle]')).toContainText('Street');
+  });
+});
+
+test.describe('phone in Mexican Spanish', () => {
+  test.use({ locale: 'es-MX' });
+  test('starts in Spanish', async ({ page }) => {
+    await page.goto('./');
+    await ready(page);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+    await expect(page.locator('[data-zone-link=calle]')).toContainText('Calle');
+  });
+});
+
+test.describe('phone in English', () => {
+  test.use({ locale: 'en-US' });
+  test('starts in English, and a choice made with the switch is remembered', async ({ page }) => {
+    await page.goto('./');
+    await ready(page);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.locator('[data-lang=es]').click();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+    await page.reload();
+    await ready(page);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+    await expect(page.locator('[data-zone-link=calle]')).toContainText('Calle');
+  });
+});
+
 test('no horizontal scroll and no console errors', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));

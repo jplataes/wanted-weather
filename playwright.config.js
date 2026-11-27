@@ -12,6 +12,7 @@ export default defineConfig({
     baseURL: 'http://localhost:4174/',
     trace: 'off',
     permissions: [],
+    locale: 'es-ES', // a phone set to Spanish, unless a test says otherwise
   },
   projects: [
     { name: 'phone', use: { ...devices['Pixel 7'] } },

@@ -21,7 +21,7 @@ Lo que hace:
   - un juego de esquivar lo que cae del cielo.
 - Puedes sacar el **póster de película del día** (por ejemplo, "MADRID: 38° DE FURIA") y compartirlo. Además vas ganando logros y subiendo de apodo hasta llegar a lo más alto.
 
-Funciona en español y en inglés, y está pensada sobre todo para el móvil.
+Funciona en español y en inglés: si tienes el móvil en español se abre en español, y si lo tienes en cualquier otro idioma, en inglés. Está pensada sobre todo para el móvil.
 
 ## Cómo la he hecho
 
@@ -116,7 +116,7 @@ Lo arreglamos todo antes de seguir añadiendo cosas.
 
 - **PageSpeed de Google:** 96 en rendimiento en el móvil, 100 en ordenador y 100 en accesibilidad.
 - **El validador del W3C** no da ningún error.
-- **Pruebas automáticas:** la app tiene casi 80, que se pasan solas cada vez que se propone un cambio, antes de publicarlo.
+- **Pruebas automáticas:** la app tiene casi 90, que se pasan solas cada vez que se propone un cambio, antes de publicarlo.
 - **Pruebas mías:** además he usado la app en mi móvil en cada fase.
 
 ## Para terminar

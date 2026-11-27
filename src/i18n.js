@@ -459,13 +459,35 @@ const STRINGS = {
 };
 
 const LANG_KEY = 'ww.lang';
-let current = local.get(LANG_KEY) === 'en' ? 'en' : 'es';
+
+/**
+ * Starting language. A choice made with the ES/EN switch always wins. Otherwise the
+ * phone's language decides: any Spanish (es, es-MX, es-AR…) gives Spanish, any other
+ * language gives English. With no information at all, Spanish (the app's default).
+ */
+export function pickLang(saved, languages) {
+  if (saved === 'es' || saved === 'en') return saved;
+  const first = (languages || []).find((code) => typeof code === 'string' && code.trim());
+  if (!first) return 'es';
+  return first.trim().toLowerCase().split(/[-_]/)[0] === 'es' ? 'es' : 'en';
+}
+
+function deviceLanguages() {
+  try {
+    return navigator.languages?.length ? navigator.languages : [navigator.language];
+  } catch {
+    return [];
+  }
+}
+
+let current = pickLang(local.get(LANG_KEY), deviceLanguages());
 
 export const getLang = () => current;
 
-export function setLang(lang) {
+/** Change the language. Only a choice made by the user is remembered (save: true). */
+export function setLang(lang, { save = true } = {}) {
   current = lang === 'en' ? 'en' : 'es';
-  local.set(LANG_KEY, current);
+  if (save) local.set(LANG_KEY, current);
   document.documentElement.lang = current;
 }
 

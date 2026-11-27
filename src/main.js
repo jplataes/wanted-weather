@@ -19,6 +19,8 @@ import { initExcusometer, updateExcusometer } from './excusometer.js';
 import { initFama, updateFama, onFamaShown } from './fama.js';
 import { initDuel, updateDuel, duelAgainst } from './duel-ui.js';
 import { randomRival, challengeText } from './duel.js';
+import { initBet, updateBet, settleBets } from './bet-ui.js';
+import { initDodge, updateDodge, pauseDodge, isDodgePlaying } from './dodge.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
@@ -119,6 +121,8 @@ function render() {
   updateExcusometer(view, state.mission, day ? day.pop : null);
   updateFama(view, summary ? summary.today : null);
   updateDuel(view, weather);
+  updateBet(view, weather);
+  updateDodge(view);
   return view;
 }
 
@@ -140,7 +144,7 @@ function maybeRing(view) {
   const key = `ww.call.${view.seed}`;
   if (!forced.call && session.get(key)) return;
   ringTimer = setTimeout(() => {
-    if (isAlertOpen() || isCallOpen()) { maybeRing(view); return; } // wait for the alert or another call to finish
+    if (isAlertOpen() || isCallOpen() || isDodgePlaying()) { maybeRing(view); return; } // wait for the alert, another call or a game to finish
     session.set(key, true);
     showCall({ text: state.mission.script, mode: 'ring', missed: () => setMissedCall(true) });
   }, forced.call ? 800 : 8000); // let people read the weather first
@@ -150,6 +154,7 @@ function maybeRing(view) {
 function maybeChallenge() {
   if (!state.bundle || session.get('ww.challenge')) return;
   setTimeout(() => {
+    if (isDodgePlaying()) { maybeChallenge(); return; } // never interrupt a game
     if (isCallOpen() || isAlertOpen() || session.get('ww.challenge')) return;
     session.set('ww.challenge', true);
     const lang = getLang();
@@ -180,6 +185,12 @@ async function load(place) {
     // Only after a search: a fallback or a location never asks "not this one?"
     renderAlternatives(place.source === 'search' ? alternatives : [], pickAlternative);
     maybeAlert(view);
+    // Bets whose day has come: Uncle Isobar calls first with the result, the mission call waits
+    settleBets(bundle, getLang()).then((text) => {
+      if (!text) return;
+      const ring = () => (isDodgePlaying() ? setTimeout(ring, 3000) : showCall({ text, mode: 'ring' }));
+      ring();
+    }).catch(() => {});
     maybeRing(view);
     if (zoneFromHash() === 'recreativos') maybeChallenge();
   } catch (error) {
@@ -252,7 +263,13 @@ function bindEvents() {
     showZone(zone, { focus: true });
     if (zone === 'fama') onFamaShown();
     if (zone === 'recreativos') maybeChallenge();
+    else pauseDodge();
   });
+
+  // Quick jump to each arcade machine
+  document.querySelectorAll('[data-machine]').forEach((b) => b.addEventListener('click', () => {
+    document.getElementById(b.dataset.machine)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }));
 
   document.querySelectorAll('[data-lang]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -289,6 +306,8 @@ function start() {
   initExcusometer();
   initFama();
   initDuel();
+  initBet();
+  initDodge();
   bindStarsExplanation();
   bindEvents();
 

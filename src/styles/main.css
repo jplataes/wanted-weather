@@ -681,3 +681,44 @@ body.no-data .zone-calle { display: none; }
 .scoreboard[data-result="draw"] .sb-verdict { color: var(--sun); }
 .scoreboard .buttons { justify-content: center; }
 .call-action { justify-self: stretch; }
+
+/* ---------- Arcade layout and index ---------- */
+.arcade-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.arcade-nav button { padding: 8px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--night); color: var(--cream); font: 400 .95rem/1 var(--display); text-transform: uppercase; letter-spacing: .04em; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
+.arcade-nav button:hover { background: var(--purple); }
+.zone-recreativos .machine { scroll-margin-top: 16px; }
+@media (min-width: 1000px) {
+  .zone-recreativos { grid-template-columns: 1fr 1fr; align-items: start; }
+  .zone-recreativos .zone-head { grid-column: 1 / -1; }
+  .zone-recreativos .machine { max-width: none; }
+}
+
+/* ---------- The Bet ---------- */
+.machine-sub strong { color: var(--sun); font-family: var(--display); font-weight: 400; letter-spacing: .03em; text-transform: uppercase; }
+.bet-dial { display: flex; align-items: center; gap: 14px; }
+.bet-step { width: 52px; height: 52px; font: 400 2rem/1 var(--display); }
+.bet-value { min-width: 4ch; padding: 6px 16px; font: 400 clamp(3.4rem, 14vw, 4.6rem)/1 var(--display); color: #6dffb0; text-shadow: 0 0 14px rgba(109, 255, 176, .6); background: #021008; border: 3px solid #1f5c40; border-radius: 10px; text-align: center; font-variant-numeric: tabular-nums; }
+.bet-range { width: min(100%, 360px); accent-color: var(--sun); }
+.bet-status { color: var(--cream); max-width: 46ch; }
+.machine.bet[data-placed="true"] .bet-status { color: var(--sun); font-weight: 700; }
+.machine.bet.stamped .bet-value { animation: stamp .6s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes stamp { 0% { transform: scale(1.4) rotate(-6deg); } 100% { transform: none; } }
+.bet-stats { display: flex; gap: 10px; margin: 0; flex-wrap: wrap; justify-content: center; }
+.bet-stats div { min-width: 92px; padding: 8px 10px; background: var(--ink); border: 2px solid var(--ink); border-radius: 8px; text-align: center; }
+.bet-stats dt { font: 700 .68rem/1.2 var(--body); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.bet-stats dd { margin: 2px 0 0; font: 400 1.6rem/1 var(--display); color: var(--sun); }
+.bet-history { width: 100%; max-width: 460px; text-align: left; }
+.bet-history .mission-sub { color: var(--cream); }
+.bet-history ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .92rem; display: grid; gap: 4px; }
+
+/* ---------- Dodge the Downpour ---------- */
+.dodge-screen { position: relative; width: min(100%, 360px); aspect-ratio: 360 / 440; border: 4px solid var(--ink); border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 3px var(--sun), 6px 6px 0 var(--ink); background: var(--ink); }
+.dodge-screen canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.dodge-overlay { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 20px; text-align: center; background: rgba(20, 10, 36, .72); }
+.dodge-overlay-title { font: 400 clamp(1.8rem, 8vw, 2.4rem)/1 var(--shout); color: var(--sun); -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; letter-spacing: .03em; }
+.dodge-overlay-text { color: var(--cream); font-weight: 700; max-width: 30ch; }
+.dodge-pad { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 360px); }
+.dodge-pad .radio-btn { width: 72px; height: 52px; touch-action: none; }
+.dodge-pad .radio-btn svg { width: 28px; height: 28px; }
+.dodge-best { color: var(--cream); }
+.dodge-best strong { font: 400 1.4rem/1 var(--display); color: var(--sun); }

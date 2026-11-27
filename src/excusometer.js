@@ -97,9 +97,54 @@ async function shareExcuse() {
   }
 }
 
+/** The lever: drag it down (finger or mouse) or just press it (also Enter/Space). */
+function bindLever() {
+  const lever = $('excPull');
+  const TRAVEL = 80;
+  let startY = 0;
+  let dragging = false;
+  let moved = false;
+  let swallowClick = false;
+  const pull = () => {
+    lever.classList.add('pulled');
+    setTimeout(() => lever.classList.remove('pulled'), 380);
+    spin();
+  };
+  lever.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    moved = false;
+    startY = e.clientY;
+    lever.setPointerCapture(e.pointerId);
+    lever.classList.add('dragging');
+  });
+  lever.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dy = Math.max(0, Math.min(TRAVEL, e.clientY - startY));
+    if (dy > 6) moved = true;
+    lever.style.setProperty('--pull', String(dy / TRAVEL));
+  });
+  const release = () => {
+    if (!dragging) return;
+    dragging = false;
+    lever.classList.remove('dragging');
+    const amount = Number(lever.style.getPropertyValue('--pull') || 0);
+    lever.style.removeProperty('--pull');
+    if (moved) {
+      swallowClick = true; // the browser still fires a click after a drag
+      if (amount >= 0.55) pull();
+    }
+  };
+  lever.addEventListener('pointerup', release);
+  lever.addEventListener('pointercancel', release);
+  lever.addEventListener('click', () => {
+    if (swallowClick) { swallowClick = false; return; }
+    pull();
+  });
+}
+
 /** Wire up the machine. Call once. */
 export function initExcusometer() {
-  $('excPull').addEventListener('click', spin);
+  bindLever();
   $('excCopy').addEventListener('click', copyExcuse);
   $('excShare').addEventListener('click', shareExcuse);
   document.querySelectorAll('#excMachine .reel').forEach((reel, i) => {

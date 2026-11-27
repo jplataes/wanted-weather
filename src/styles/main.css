@@ -523,3 +523,58 @@ body { padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px)); }
   .radio-freq { display: none; }
   .radio-station { letter-spacing: .02em; }
 }
+
+/* ---------- Slot machine lever ---------- */
+.reels-row { display: flex; align-items: center; gap: 12px; }
+.lever-wrap { display: grid; justify-items: center; gap: 4px; }
+.lever { --pull: 0; position: relative; width: 50px; height: 168px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none; }
+.lever:active { cursor: grabbing; }
+.lever-base { position: absolute; left: 50%; bottom: 0; width: 30px; height: 40px; transform: translateX(-50%); background: linear-gradient(90deg, #2a1250, #4a2a8a, #2a1250); border: 3px solid var(--ink); border-radius: 8px; box-shadow: 3px 3px 0 var(--ink); }
+.lever-base::after { content: ""; position: absolute; left: 50%; top: 6px; width: 8px; height: 22px; transform: translateX(-50%); background: var(--ink); border-radius: 4px; }
+.lever-stick {
+  position: absolute; left: 50%; bottom: 24px; width: 12px; height: calc(108px - var(--pull) * 78px); transform: translateX(-50%);
+  background: linear-gradient(90deg, #8d93ab, #fff, #8d93ab); border: 2.5px solid var(--ink); border-radius: 6px;
+  transition: height .45s cubic-bezier(.3, 1.8, .5, 1);
+}
+.lever-knob { position: absolute; top: -30px; left: 50%; width: 40px; height: 40px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffb3cf, var(--magenta) 50%, #a3124f); border: 3px solid var(--ink); box-shadow: 2px 3px 0 var(--ink); }
+.lever.dragging .lever-stick { transition: none; }
+.lever.pulled .lever-stick { height: 30px; transition-duration: .12s; }
+.lever:hover .lever-knob { filter: brightness(1.1); }
+.lever:focus-visible { outline: 3px solid var(--sun); outline-offset: 4px; border-radius: 12px; }
+.lever-caption { font: 400 1rem/1 var(--display); text-transform: uppercase; letter-spacing: .08em; color: var(--sun); }
+@media (max-width: 480px) {
+  .machine { --cell: 62px; padding-inline: 12px; }
+  .reels { gap: 6px; padding: 8px; }
+  .reels-row { gap: 8px; }
+}
+
+/* ---------- Radio: hide to a bubble ---------- */
+.radio-bubble { display: none; }
+.radio-hide { background: transparent; border-color: transparent; box-shadow: none; color: var(--muted); }
+@media (max-width: 899px) {
+  .radio::before { content: ""; position: absolute; top: 3px; left: 50%; width: 36px; height: 4px; transform: translateX(-50%); background: rgba(255, 243, 220, .3); border-radius: 2px; }
+}
+body.radio-collapsed { --radio-h: 0px; --dock-h: var(--tabs-h); }
+@media (min-width: 900px) { body.radio-collapsed { padding-bottom: 24px; } }
+.radio[data-collapsed="true"] {
+  left: auto; right: max(12px, env(safe-area-inset-right, 0px)); width: auto; height: auto; padding: 5px; gap: 5px; transform: none;
+  bottom: calc(var(--tabs-h) + 12px + env(safe-area-inset-bottom, 0px));
+  border: 3px solid var(--ink); border-radius: 999px; box-shadow: 4px 4px 0 var(--ink);
+}
+.radio[data-collapsed="true"]::before { display: none; }
+.radio[data-collapsed="true"] > :not(.radio-bubble):not(#radioMute):not(h2) { display: none; }
+.radio[data-collapsed="true"][data-on="false"] #radioMute { display: none; }
+.radio[data-collapsed="true"] #radioMute { border-radius: 50%; width: 40px; height: 40px; }
+.radio[data-collapsed="true"] .radio-bubble {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 44px; min-width: 44px; padding: 0 10px;
+  border: 2px solid var(--ink); border-radius: 999px; background: #3a3352; color: var(--cream); cursor: pointer;
+}
+.radio-bubble svg { width: 22px; height: 22px; }
+.radio[data-on="true"] .radio-bubble { background: var(--magenta); color: var(--ink); }
+.eq { display: none; align-items: flex-end; gap: 2px; height: 14px; }
+.radio[data-on="true"] .eq { display: inline-flex; }
+.eq i { width: 3px; height: 100%; background: currentColor; border-radius: 1px; animation: eq .7s ease-in-out infinite alternate; }
+.eq i:nth-child(2) { animation-delay: -.3s; }
+.eq i:nth-child(3) { animation-delay: -.5s; }
+@keyframes eq { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+.eq i { transform-origin: bottom; }

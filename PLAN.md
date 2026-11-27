@@ -35,7 +35,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** previsión de 5 días como "próximas misiones" y la misión del día (objetivo y equipo recomendado). Las 8 escenas completas (despejado, nubes, lluvia, tormenta, nieve, niebla, viento, noche) y una interfaz que cambia con el tiempo y la hora. **Llamada de teléfono de la misión:** un contacto ficticio te llama y te cuenta la misión con voz sintetizada. **Pantalla viva:** gotas que resbalan por el cristal, calima, escarcha en los bordes y relámpagos que iluminan la interfaz.
 - **Qué verás:** una pantalla distinta cada día, con textos de humor en los dos idiomas para revisar.
 
-### 🟨 Fase 3 — Estructura por zonas, autorradio y Excusómetro (hecha; pendiente de revisión)
+### ✅ Fase 3 — Estructura por zonas, autorradio y Excusómetro
 - **Qué se hace:** la navegación por zonas (Calle, Misiones, Recreativos) con un resumen de la misión en Calle que rellena el hueco de ordenador. Una **autorradio** siempre a mano con emisoras inventadas según el tiempo, música generada en el navegador y locutores que leen la previsión real con humor; apagada al entrar, con volumen y silencio siempre visibles. Y el **Excusómetro**: una tragaperras que te da una excusa natural y gamberra, con datos reales de hoy, para escaquearte de un plan, lista para compartir.
 - **Qué verás:** una app ordenada que se entiende de un vistazo, con banda sonora y el primer minijuego.
 
@@ -96,4 +96,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - La emisora recomendada cambia con el tiempo.
     - Está apagada al entrar; el volumen y el silencio están siempre visibles.
     - Cuando entra la llamada del Tío Isobaras, la radio baja sola.
+  - **Ajustes pedidos por el propietario:**
+    - La palanca del Excusómetro es una palanca de verdad: se arrastra hacia abajo, se pulsa o se usa con el teclado.
+    - La radio se esconde en una burbuja: deslizándola en el móvil o con su botón, y vuelve con un toque. Empieza escondida en el móvil y visible en ordenador, y se recuerda la elección. Si suena, el silencio sigue a mano en la burbuja.
   - 32 pruebas automáticas y prueba completa en navegador, en móvil y en ordenador.

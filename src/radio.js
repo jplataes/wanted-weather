@@ -24,6 +24,8 @@ const state = {
   facts: null,
   lineIndex: Math.floor(Math.random() * 5),
   ducked: false,
+  // Hidden as a small bubble by default on phones (most people won't want it), shown on desktop
+  collapsed: local.get('ww.radio.collapsed', window.matchMedia('(max-width: 899px)').matches) === true,
 };
 
 let ctx, master, music, delayIn, noiseBuf, crackle;
@@ -316,8 +318,53 @@ function tune(delta) {
   djTimer = setTimeout(speakLine, 3000);
 }
 
+// ---------- Hide / show ----------
+function setCollapsed(collapsed, { remember = true, focus = false } = {}) {
+  state.collapsed = collapsed;
+  $('radio').dataset.collapsed = String(collapsed);
+  document.body.classList.toggle('radio-collapsed', collapsed);
+  if (remember) local.set('ww.radio.collapsed', collapsed);
+  if (focus) (collapsed ? $('radioBubble') : $('radioHide')).focus();
+}
+
+/** Swipe the bar down or sideways to hide it (phones). Sliders and buttons keep working normally. */
+function bindSwipe() {
+  const radio = $('radio');
+  let start = null;
+  radio.addEventListener('pointerdown', (e) => {
+    if (state.collapsed || e.pointerType === 'mouse' || e.target.closest('input')) return;
+    start = { x: e.clientX, y: e.clientY };
+  });
+  radio.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    radio.style.transform = dy > Math.abs(dx) ? `translateY(${Math.max(0, dy)}px)` : `translateX(${dx}px)`;
+  });
+  const end = (e) => {
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    start = null;
+    radio.style.transform = '';
+    if (dy > 35 || Math.abs(dx) > 70) {
+      setCollapsed(true);
+      // stop the tap that started the swipe from also pressing a button
+      const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
+      radio.addEventListener('click', swallow, { capture: true });
+      setTimeout(() => radio.removeEventListener('click', swallow, { capture: true }), 350);
+    }
+  };
+  radio.addEventListener('pointerup', end);
+  radio.addEventListener('pointercancel', () => { start = null; radio.style.transform = ''; });
+}
+
 /** Wire up the radio controls. Call once. */
 export function initRadio() {
+  setCollapsed(state.collapsed, { remember: false });
+  $('radioHide').addEventListener('click', () => setCollapsed(true, { focus: true }));
+  $('radioBubble').addEventListener('click', () => setCollapsed(false, { focus: true }));
+  bindSwipe();
   $('radioPower').addEventListener('click', () => (state.on ? powerOff() : powerOn()));
   $('radioPrev').addEventListener('click', () => tune(-1));
   $('radioNext').addEventListener('click', () => tune(1));

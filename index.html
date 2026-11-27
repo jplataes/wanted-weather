@@ -205,12 +205,20 @@
         <div class="machine-lights" aria-hidden="true"></div>
         <h3 class="machine-title" id="excTitle" data-i18n="exc.title">El Excusómetro</h3>
         <p class="machine-sub" data-i18n="exc.sub">¿Plan a la vista y cero ganas? Tira de la palanca y el tiempo de hoy te da la excusa.</p>
-        <div class="reels" aria-hidden="true">
-          <div class="reel"><div class="strip"></div></div>
-          <div class="reel"><div class="strip"></div></div>
-          <div class="reel"><div class="strip"></div></div>
+        <div class="reels-row">
+          <div class="reels" aria-hidden="true">
+            <div class="reel"><div class="strip"></div></div>
+            <div class="reel"><div class="strip"></div></div>
+            <div class="reel"><div class="strip"></div></div>
+          </div>
+          <div class="lever-wrap">
+            <button class="lever" type="button" id="excPull" data-i18n-aria="exc.pull" aria-label="¡Tira de la palanca!">
+              <span class="lever-base" aria-hidden="true"></span>
+              <span class="lever-stick" aria-hidden="true"><span class="lever-knob"></span></span>
+            </button>
+            <p class="lever-caption" aria-hidden="true" data-i18n="exc.pullShort">¡Tira!</p>
+          </div>
         </div>
-        <button class="btn btn-primary lever" type="button" id="excPull" data-i18n="exc.pull">¡Tira de la palanca!</button>
         <blockquote class="excuse-out" id="excOut" hidden>
           <p id="excText" aria-live="polite"></p>
         </blockquote>
@@ -237,8 +245,12 @@
 
 
   <!-- Car radio: always at hand, off until you press power -->
-  <section class="radio" id="radio" aria-labelledby="radioTitle" data-on="false">
+  <section class="radio" id="radio" aria-labelledby="radioTitle" data-on="false" data-collapsed="false">
     <h2 class="sr" id="radioTitle" data-i18n="radio.title">Autorradio</h2>
+    <button class="radio-bubble" type="button" id="radioBubble" data-i18n-aria="radio.show" aria-label="Mostrar la radio">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="20" height="13" rx="3" fill="currentColor"/><path d="M6 8L17 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="14.5" r="3.2" fill="#140a24"/><path d="M14 12h5M14 15h5M14 18h3" stroke="#140a24" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
     <button class="radio-btn radio-power" type="button" id="radioPower" aria-pressed="false" data-i18n-aria="radio.power" aria-label="Encender o apagar la radio">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8M7 6.5a7 7 0 1 0 10 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
     </button>
@@ -259,6 +271,9 @@
     </button>
     <label class="sr" for="radioVol" data-i18n="radio.volume">Volumen</label>
     <input class="radio-vol" type="range" id="radioVol" min="0" max="100" step="5" value="70">
+    <button class="radio-btn radio-hide" type="button" id="radioHide" data-i18n-aria="radio.hide" aria-label="Ocultar la radio">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </section>
 
   <!-- Title card shown while loading the first time -->

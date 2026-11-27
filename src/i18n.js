@@ -81,6 +81,7 @@ const STRINGS = {
       title: 'El Excusómetro',
       sub: '¿Plan a la vista y cero ganas? Tira de la palanca y el tiempo de hoy te da la excusa perfecta.',
       pull: '¡Tira de la palanca!',
+      pullShort: '¡Tira!',
       share: 'Compartir',
       copy: 'Copiar',
       copied: 'Excusa copiada. Úsala con responsabilidad.',
@@ -98,6 +99,8 @@ const STRINGS = {
       hint: 'Pulsa el botón y que suene el día',
       recommended: 'la de hoy',
       unsupported: 'Tu navegador no puede poner la radio.',
+      hide: 'Ocultar la radio',
+      show: 'Mostrar la radio',
     },
     errors: {
       notFound: { title: '¡Fuera del mapa!', body: 'No encontramos «{city}». Revisa cómo se escribe o prueba con otra ciudad.' },
@@ -189,6 +192,7 @@ const STRINGS = {
       title: 'The Excuse-o-matic',
       sub: "Plans coming up and zero motivation? Pull the lever and today's weather hands you the perfect excuse.",
       pull: 'Pull the lever!',
+      pullShort: 'Pull!',
       share: 'Share',
       copy: 'Copy',
       copied: 'Excuse copied. Use it responsibly.',
@@ -206,6 +210,8 @@ const STRINGS = {
       hint: 'Hit the button and give the day a soundtrack',
       recommended: "today's pick",
       unsupported: "Your browser can't play the radio.",
+      hide: 'Hide the radio',
+      show: 'Show the radio',
     },
     errors: {
       notFound: { title: 'Off the map!', body: 'We couldn\'t find "{city}". Check the spelling or try another city.' },

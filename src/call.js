@@ -8,6 +8,7 @@ let ringTimer = null;
 let clockTimer = null;
 let script = '';
 let onMissed = () => {};
+let action = null; // optional button shown during the call, e.g. "Challenge accepted!"
 
 const $ = (sel) => el.querySelector(sel);
 const speechAvailable = () => 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
@@ -38,11 +39,17 @@ function build() {
       <button type="button" class="call-btn answer">${phoneIcon()}<span></span></button>
       <button type="button" class="call-btn decline">${phoneIcon()}<span></span></button>
       <button type="button" class="call-btn hangup" hidden>${phoneIcon()}<span></span></button>
-    </div>`;
+    </div>
+    <button type="button" class="btn btn-primary call-action" hidden></button>`;
   document.body.appendChild(el);
   $('.answer').addEventListener('click', answer);
   $('.decline').addEventListener('click', () => close(true));
   $('.hangup').addEventListener('click', () => close(false));
+  $('.call-action').addEventListener('click', () => {
+    const run = action?.onClick;
+    close(false);
+    run?.();
+  });
 }
 
 function labels() {
@@ -58,6 +65,9 @@ function setState(state) {
   $('.decline').hidden = state !== 'ringing';
   $('.hangup').hidden = state !== 'talking';
   $('#callStatus').textContent = t(`call.${state}`);
+  const btn = $('.call-action');
+  btn.hidden = !action || state === 'ringing';
+  if (action) btn.textContent = action.label;
 }
 
 function stopVoice() {
@@ -120,9 +130,10 @@ function answer() {
  * Show the call. "ring" waits for the user to answer; "now" answers straight away (user asked for it).
  * @param {{text: string, mode: 'ring'|'now', missed?: () => void}} options
  */
-export function showCall({ text, mode, missed }) {
+export function showCall({ text, mode, missed, action: act = null }) {
   if (!el) build();
   close(false);
+  action = act;
   script = text;
   onMissed = missed || (() => {});
   labels();

@@ -20,7 +20,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Voces de la app (decidido tras la fase 3):**
   - **La radio es la ciudad:** da el tiempo de vez en cuando y, entre medias, cuñas de publicidad inventadas, partes de tráfico absurdos, dedicatorias y consejos de abuela. No habla de tu misión.
   - **El Tío Isobaras es tu juego:** el contacto personal, gamberro y con toque de cuñado ("Hazme caso, que de esto yo sé un rato"). Da la misión, el equipo y su consejo de cuñado, y es el narrador que une los minijuegos: llamará para las alertas de tiempo extremo, el resultado de la apuesta (fase 7), los logros y el apodo (fase 8) y los retos de duelo (fase 6).
-- **Los más buscados del planeta:** solo si puede ser dinámico, revisando a diario las ciudades más grandes del mundo y eligiendo las de peor tiempo de ese momento, nunca una lista fija de ganadoras. Se valora en la fase 6; si no se puede hacer bien con el plan gratuito, se descarta.
+- **Los más buscados del planeta (descartado en la fase 6):** la consulta en grupo de OpenWeatherMap no está en el plan gratuito, y hacerlo dinámico exigiría añadir en Cloudflare una tarea programada y un almacén que no se pueden probar desde aquí. Se descarta, como se acordó. La idea original era: solo si puede ser dinámico, revisando a diario las ciudades más grandes del mundo y eligiendo las de peor tiempo de ese momento, nunca una lista fija de ganadoras. Se valora en la fase 6; si no se puede hacer bien con el plan gratuito, se descarta.
 
 ## Fases
 
@@ -50,7 +50,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** un cartel ilustrado del día ("MADRID: 38° DE FURIA") con un género de cine para cada tipo de tiempo. Estrena la zona Fama.
 - **Qué verás:** un póster que se descarga y se comparte como imagen, también en formato vertical para stories (9:16).
 
-### ⬜ Fase 6 — Duelo de ciudades (y los más buscados, si puede ser dinámico)
+### ✅ Fase 6 — Duelo de ciudades
 - **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa, en Recreativos. El Tío Isobaras te llama para retarte. Si es viable con el plan gratuito, "Los más buscados del planeta": las ciudades grandes con peor tiempo en ese momento, calculadas cada pocas horas.
 - **Qué verás:** un resultado que se puede compartir, también como tarjeta vertical para stories.
 
@@ -136,3 +136,12 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - 2 a 3 segundos entre frases;
     - la emisora sigue al tiempo de la ciudad, también al buscar otra con la radio encendida, salvo que la hayas cambiado tú a mano.
   - 41 pruebas automáticas.
+- **Fase 6:** **Duelo de ciudades** en Recreativos.
+  - Tu ciudad contra otra en 5 asaltos con datos reales: temperatura ideal, cielo, viento, humedad y horas de luz.
+  - Marcador de estadio que se rellena asalto a asalto, comentarista gamberro con los valores reales y veredicto final ("¡Victoria para Madrid, 3-2! Que vayan haciendo sitio en la vitrina").
+  - Rival escrito a mano o "Rival al azar" entre 30 ciudades famosas.
+  - Resultado compartible como imagen (1080 × 1350) y registro de duelos guardado para los logros.
+  - **El Tío Isobaras te reta:** la primera vez que entras en Recreativos en cada visita te llama ("me han dicho en Bombay que su tiempo le da mil vueltas al tuyo") con el botón "¡Acepto el reto!".
+  - Arreglo del póster: se maqueta de abajo arriba y la frase ya no se monta con los créditos.
+  - "Los más buscados" se descarta (ver decisiones).
+  - 46 pruebas automáticas.

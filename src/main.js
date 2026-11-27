@@ -7,7 +7,7 @@ import './styles/main.css';
 
 import { getCurrentWeather, getForecast, findCities, findPlaceName, ApiError } from './api.js';
 import { getPosition } from './geo.js';
-import { saveLastResult, loadLastResult, local, session } from './storage.js';
+import { saveLastResult, loadLastResult, session } from './storage.js';
 import { t, getLang, setLang } from './i18n.js';
 import { buildView, otherMatches } from './weather.js';
 import { summarizeForecast } from './forecast.js';
@@ -129,14 +129,14 @@ function maybeAlert(view) {
 }
 
 let ringTimer;
-/** The phone rings once per city and day with the mission (visual only; voice needs a tap). */
+/** The phone rings once per visit and city with the mission (visual only; voice needs a tap). */
 function maybeRing(view) {
   clearTimeout(ringTimer);
   const key = `ww.call.${view.seed}`;
-  if (!forced.call && local.get(key)) return;
+  if (!forced.call && session.get(key)) return;
   ringTimer = setTimeout(() => {
     if (isAlertOpen()) { maybeRing(view); return; } // wait for the alert to be closed
-    local.set(key, true);
+    session.set(key, true);
     showCall({ text: state.mission.script, mode: 'ring', missed: () => setMissedCall(true) });
   }, forced.call ? 800 : 8000); // let people read the weather first
 }

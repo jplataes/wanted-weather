@@ -113,6 +113,7 @@ const STRINGS = {
       recommended: 'la de hoy',
       unsupported: 'Tu navegador no puede poner la radio.',
       hide: 'Ocultar la radio',
+      paused: 'En pausa: estás al teléfono con el Tío Isobaras.',
       show: 'Mostrar la radio',
     },
     errors: {
@@ -237,6 +238,7 @@ const STRINGS = {
       recommended: "today's pick",
       unsupported: "Your browser can't play the radio.",
       hide: 'Hide the radio',
+      paused: "Paused: you're on the phone with Uncle Isobar.",
       show: 'Show the radio',
     },
     errors: {

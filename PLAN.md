@@ -121,3 +121,8 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - Arreglos técnicos: hueco reservado mientras carga (sin saltos), 0 errores del W3C, un único h1 (la marca), la lista de días se recorre con el teclado y robots.txt.
   - Lighthouse en local: rendimiento 99 en móvil y 100 en ordenador; accesibilidad, buenas prácticas y SEO al 100. axe: 0 avisos. 37 pruebas automáticas.
   - Queda para la fase 9: pruebas en navegador dentro del proyecto, CSP, separar `dom.js`, aviso sin JavaScript y posición de la burbuja de la radio.
+- **Ajustes de radio y llamada (tras la fase 4b, pedidos por el propietario):**
+  - Los locutores encadenan frases con 3 a 5 segundos de pausa, así se oyen los anuncios, el tráfico y las dedicatorias.
+  - El texto de la pantalla de la radio se desplaza entero, a velocidad de lectura.
+  - La llamada automática del Tío Isobaras suena una vez en cada visita por ciudad, en vez de una vez al día.
+  - Durante la llamada, la radio se pausa del todo y sigue al colgar o al terminar.

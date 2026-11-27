@@ -24,6 +24,7 @@ const state = {
   facts: null,
   lineIndex: Math.floor(Math.random() * 5),
   ducked: false,
+  paused: false, // true while Uncle Isobar is on the phone
   // Hidden as a small bubble by default on phones (most people won't want it), shown on desktop
   collapsed: local.get('ww.radio.collapsed', window.matchMedia('(max-width: 899px)').matches) === true,
 };
@@ -221,39 +222,70 @@ function applyVolume() {
 // ---------- Hosts (Speech Synthesis) ----------
 const canSpeak = () => 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
 
+// Short gaps: nobody stays long on a weather site, so the hosts keep talking
+const GAP_MIN = 3000;
+const GAP_MAX = 5000;
+let speechToken = 0; // bumps on every stop, so a cancelled line never schedules the next one
+
 function speakLine() {
   clearTimeout(djTimer);
-  if (!state.on || !state.facts) return;
+  if (!state.on || !state.facts || state.paused) return;
   const lang = getLang();
   const line = djLine(state.station, state.lineIndex++, state.facts, lang);
-  $('radioTicker').textContent = line;
-  restartTicker();
-  const next = () => { djTimer = setTimeout(speakLine, 45000 + Math.random() * 15000); };
-  if (!canSpeak() || state.muted || state.ducked) { next(); return; }
+  showTicker(line);
+  const token = ++speechToken;
+  const next = (delay) => {
+    if (token !== speechToken) return;
+    djTimer = setTimeout(speakLine, delay ?? GAP_MIN + Math.random() * (GAP_MAX - GAP_MIN));
+  };
+  if (!canSpeak() || state.muted) {
+    // No voice: give people time to read the scrolling line, then the next one
+    next(Math.max(7000, line.length * 70));
+    return;
+  }
   const utter = new SpeechSynthesisUtterance(line);
   utter.lang = lang === 'en' ? 'en-GB' : 'es-ES';
   const voice = window.speechSynthesis.getVoices().find((v) => v.lang && v.lang.toLowerCase().startsWith(lang));
   if (voice) utter.voice = voice;
   utter.volume = Math.min(1, state.volume + 0.2);
   utter.rate = 1.05;
-  utter.onstart = () => { state.ducked = true; applyVolume(); };
-  utter.onend = () => { state.ducked = false; applyVolume(); next(); };
-  utter.onerror = () => { state.ducked = false; applyVolume(); next(); };
+  utter.onstart = () => { if (token === speechToken) { state.ducked = true; applyVolume(); } };
+  const done = () => {
+    if (token !== speechToken) return;
+    state.ducked = false;
+    applyVolume();
+    next();
+  };
+  utter.onend = done;
+  utter.onerror = done;
   window.speechSynthesis.speak(utter);
 }
 
 function stopSpeech() {
+  speechToken++;
   clearTimeout(djTimer);
   if (canSpeak()) window.speechSynthesis.cancel();
   state.ducked = false;
 }
 
 // ---------- Display ----------
-function restartTicker() {
+let tickerAnim = null;
+/** Put a line on the display and scroll it once from start to end at reading speed. */
+function showTicker(text) {
   const el = $('radioTicker');
-  el.style.animation = 'none';
-  void el.offsetWidth;
-  el.style.animation = '';
+  el.textContent = text;
+  tickerAnim?.cancel();
+  tickerAnim = null;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof el.animate !== 'function') return;
+  const box = el.parentElement.clientWidth;
+  const width = el.scrollWidth;
+  if (width <= box) return; // fits: no need to move
+  const PX_PER_SECOND = 70;
+  // Start with the first word visible, pause a moment, then scroll to the end and hold
+  tickerAnim = el.animate(
+    [{ transform: 'translateX(0)', offset: 0 }, { transform: 'translateX(0)', offset: 0.08 }, { transform: `translateX(${box - width}px)`, offset: 0.92 }, { transform: `translateX(${box - width}px)`, offset: 1 }],
+    { duration: ((width - box) / PX_PER_SECOND) * 1000 / 0.84, iterations: Infinity },
+  );
 }
 
 function renderDisplay() {
@@ -272,6 +304,7 @@ function renderDisplay() {
   const radio = $('radio');
   radio.dataset.on = String(state.on);
   radio.dataset.station = state.station;
+  radio.dataset.paused = String(state.paused);
   $('radioPower').setAttribute('aria-pressed', String(state.on));
   $('radioMute').setAttribute('aria-pressed', String(state.muted));
   $('radioPrev').disabled = !state.on;
@@ -295,11 +328,12 @@ function powerOn() {
   applyVolume();
   $('radioTicker').textContent = '';
   renderDisplay();
-  djTimer = setTimeout(speakLine, 4000);
+  djTimer = setTimeout(speakLine, 1500);
 }
 
 function powerOff() {
   state.on = false;
+  state.paused = false;
   clearInterval(timer);
   stopCrackle();
   stopSpeech();
@@ -317,7 +351,7 @@ function tune(delta) {
   step = 0;
   $('radioTicker').textContent = '';
   renderDisplay();
-  djTimer = setTimeout(speakLine, 3000);
+  djTimer = setTimeout(speakLine, 1500);
 }
 
 // ---------- Hide / show ----------
@@ -386,8 +420,21 @@ export function initRadio() {
   });
   // The mission phone call takes priority: the radio ducks and the host waits
   document.addEventListener('ww:call', (e) => {
-    if (e.detail === 'start') { stopSpeech(); state.ducked = true; } else { state.ducked = false; if (state.on) djTimer = setTimeout(speakLine, 10000); }
-    applyVolume();
+    // The mission call pauses the radio completely; it carries on when the call ends
+    if (e.detail === 'start' && state.on && !state.paused) {
+      state.paused = true;
+      stopSpeech();
+      ctx?.suspend();
+      renderDisplay();
+      showTicker(t('radio.paused'));
+    } else if (e.detail === 'end' && state.paused) {
+      state.paused = false;
+      if (state.on) {
+        ctx?.resume();
+        djTimer = setTimeout(speakLine, 2000);
+      }
+      renderDisplay();
+    }
   });
   renderDisplay();
 }

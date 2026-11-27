@@ -622,3 +622,7 @@ body.no-data .zone-calle { display: none; }
   .alts { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
   .alts-label, .alt-chip { flex: none; white-space: nowrap; }
 }
+/* Radio ticker: moved by JavaScript at reading speed (see radio.js showTicker) */
+.radio-ticker { padding-left: 0; animation: none; white-space: nowrap; line-height: 1.35; will-change: transform; }
+.radio-ticker-wrap { line-height: 1.35; }
+.radio[data-paused="true"] .radio-station { opacity: .55; }

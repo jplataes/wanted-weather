@@ -16,6 +16,7 @@ import { setScreenFx } from './fx.js';
 import { showCall, isCallOpen, hangUp } from './call.js';
 import { initRadio, updateRadio, refreshRadioTexts } from './radio.js';
 import { initExcusometer, updateExcusometer } from './excusometer.js';
+import { initFama, updateFama, onFamaShown } from './fama.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
@@ -27,7 +28,7 @@ const REFRESH_AFTER_MS = 10 * 60 * 1000;
 const SCENES = ['sun', 'clouds', 'rain', 'storm', 'snow', 'fog', 'wind', 'night'];
 const FX = ['rain', 'storm', 'snow', 'fog', 'wind', 'heat', 'cold', 'none'];
 const ALERTS = ['rain', 'heat', 'cold', 'wind', 'storm'];
-const ZONES = ['calle', 'misiones', 'recreativos'];
+const ZONES = ['calle', 'misiones', 'recreativos', 'fama'];
 
 /** Zone from the address (#calle, #misiones, #recreativos), Street by default. */
 const zoneFromHash = () => {
@@ -114,6 +115,7 @@ function render() {
   setMissedCall(false);
   updateRadio(view, state.mission);
   updateExcusometer(view, state.mission, day ? day.pop : null);
+  updateFama(view, summary ? summary.today : null);
   return view;
 }
 
@@ -224,7 +226,11 @@ function bindEvents() {
     showCall({ text: state.mission.script, mode: 'now' });
   }));
 
-  window.addEventListener('hashchange', () => showZone(zoneFromHash(), { focus: true }));
+  window.addEventListener('hashchange', () => {
+    const zone = zoneFromHash();
+    showZone(zone, { focus: true });
+    if (zone === 'fama') onFamaShown();
+  });
 
   document.querySelectorAll('[data-lang]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -259,6 +265,7 @@ function start() {
   showZone(zoneFromHash());
   initRadio();
   initExcusometer();
+  initFama();
   bindStarsExplanation();
   bindEvents();
 

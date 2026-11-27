@@ -25,6 +25,7 @@ const state = {
   lineIndex: Math.floor(Math.random() * 5),
   ducked: false,
   paused: false, // true while Uncle Isobar is on the phone
+  manual: false, // true once the listener changes station by hand
   // Hidden as a small bubble by default on phones (most people won't want it), shown on desktop
   collapsed: local.get('ww.radio.collapsed', window.matchMedia('(max-width: 899px)').matches) === true,
 };
@@ -223,8 +224,8 @@ function applyVolume() {
 const canSpeak = () => 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
 
 // Short gaps: nobody stays long on a weather site, so the hosts keep talking
-const GAP_MIN = 3000;
-const GAP_MAX = 5000;
+const GAP_MIN = 2000;
+const GAP_MAX = 3000;
 let speechToken = 0; // bumps on every stop, so a cancelled line never schedules the next one
 
 function speakLine() {
@@ -269,23 +270,9 @@ function stopSpeech() {
 }
 
 // ---------- Display ----------
-let tickerAnim = null;
-/** Put a line on the display and scroll it once from start to end at reading speed. */
+/** Show the host's whole line as a subtitle above the radio (the small display only shows who's on air). */
 function showTicker(text) {
-  const el = $('radioTicker');
-  el.textContent = text;
-  tickerAnim?.cancel();
-  tickerAnim = null;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof el.animate !== 'function') return;
-  const box = el.parentElement.clientWidth;
-  const width = el.scrollWidth;
-  if (width <= box) return; // fits: no need to move
-  const PX_PER_SECOND = 70;
-  // Start with the first word visible, pause a moment, then scroll to the end and hold
-  tickerAnim = el.animate(
-    [{ transform: 'translateX(0)', offset: 0 }, { transform: 'translateX(0)', offset: 0.08 }, { transform: `translateX(${box - width}px)`, offset: 0.92 }, { transform: `translateX(${box - width}px)`, offset: 1 }],
-    { duration: ((width - box) / PX_PER_SECOND) * 1000 / 0.84, iterations: Infinity },
-  );
+  $('radioCaption').textContent = text;
 }
 
 function renderDisplay() {
@@ -299,8 +286,8 @@ function renderDisplay() {
     $('radioStation').textContent = t('radio.off');
   }
   $('radioGenre').textContent = state.on ? `${st.genre} · ${st.host[lang]}${state.station === state.recommended ? ` · ${t('radio.recommended')}` : ''}` : t('radio.hint');
-  if (!state.on) $('radioTicker').textContent = '';
-  else if (!$('radioTicker').textContent) $('radioTicker').textContent = st.slogan[lang];
+  $('radioTicker').textContent = state.on ? `${t('radio.onAir')} ${st.host[lang]} · ${st.slogan[lang]}` : '';
+  if (!state.on) $('radioCaption').textContent = '';
   const radio = $('radio');
   radio.dataset.on = String(state.on);
   radio.dataset.station = state.station;
@@ -320,6 +307,7 @@ function powerOn() {
   ctx.resume();
   state.on = true;
   state.station = state.recommended;
+  state.manual = false;
   state.lineIndex = 3 * Math.floor(Math.random() * 3); // start with the weather
   step = 0;
   nextTime = ctx.currentTime + 0.1;
@@ -328,7 +316,7 @@ function powerOn() {
   applyVolume();
   $('radioTicker').textContent = '';
   renderDisplay();
-  djTimer = setTimeout(speakLine, 1500);
+  djTimer = setTimeout(speakLine, 1200);
 }
 
 function powerOff() {
@@ -341,17 +329,18 @@ function powerOff() {
   renderDisplay();
 }
 
-function tune(delta) {
+function tune(delta, { manual = true } = {}) {
   if (!state.on) return;
+  if (manual) state.manual = true;
   const i = STATION_IDS.indexOf(state.station);
   state.station = STATION_IDS[(i + delta + STATION_IDS.length) % STATION_IDS.length];
   stopSpeech();
   startCrackle();
   state.lineIndex = Math.ceil(state.lineIndex / 3) * 3; // new station opens with the weather
   step = 0;
-  $('radioTicker').textContent = '';
+  $('radioCaption').textContent = '';
   renderDisplay();
-  djTimer = setTimeout(speakLine, 1500);
+  djTimer = setTimeout(speakLine, 1200);
 }
 
 // ---------- Hide / show ----------
@@ -453,12 +442,18 @@ export function updateRadio(view, mission) {
     mission: mission ? mission.title : '',
   };
   state.recommended = stationFor(view);
+  // Playing and the listener hasn't picked a station by hand: follow the new city's weather
+  if (state.on && !state.manual && !state.paused && state.station !== state.recommended) {
+    const delta = STATION_IDS.indexOf(state.recommended) - STATION_IDS.indexOf(state.station);
+    tune(delta, { manual: false });
+    return;
+  }
   renderDisplay();
 }
 
 /** Re-render labels after a language change. */
 export function refreshRadioTexts() {
-  if (state.on) $('radioTicker').textContent = STATIONS[state.station].slogan[getLang()];
+  if (state.on) $('radioCaption').textContent = '';
   renderDisplay();
 }
 

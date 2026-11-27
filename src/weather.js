@@ -164,6 +164,7 @@ export function buildView(data, lang, place = null) {
     reason: wanted.reason,
     gustShowKmh: Math.round(Math.max(data.wind?.speed ?? 0, data.wind?.gust ?? 0) * 3.6),
     seed: `${data.id}-${cityDay(data)}`,
+    dateKey: cityDay(data),
   };
 }
 

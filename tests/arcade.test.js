@@ -43,6 +43,9 @@ test('radio: recommended station by weather', () => {
   assert.equal(stationFor(view({ kind: 'rain' })), 'chaparron');
   assert.equal(stationFor(view({ kind: 'clear', night: true })), 'neon');
   assert.equal(stationFor(view({ kind: 'clear' })), 'sol');
+  assert.equal(stationFor(view({ kind: 'clouds', feels: 8 })), 'chaparron');
+  assert.equal(stationFor(view({ kind: 'clouds', feels: 22 })), 'sol');
+  assert.equal(stationFor(view({ kind: 'clouds', scene: 'wind' })), 'tormenta');
 });
 
 test('radio: host lines use real facts in both languages', () => {

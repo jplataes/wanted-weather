@@ -380,6 +380,12 @@ const wind = `
 
 const SCENES = { sun, clouds, rain, storm, snow, fog, wind, night };
 
+/** The inside of a scene (no <svg> wrapper), with the night veil when needed. Used by the poster. */
+export function sceneBody(name, night = false) {
+  const base = SCENES[name] ?? SCENES.sun;
+  return night && name !== 'night' ? `${base}<rect x="-20" y="-20" width="440" height="300" fill="#0d0620" opacity=".42"/>` : base;
+}
+
 /** Full SVG markup for a scene, with an accessible description. */
 export function sceneSvg(name, label, night = false) {
   const base = SCENES[name] ?? SCENES.sun;

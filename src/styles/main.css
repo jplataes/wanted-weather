@@ -405,7 +405,7 @@ a { color: var(--sun); }
 body { padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px)); }
 .tabs {
   position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; height: calc(var(--tabs-h) + env(safe-area-inset-bottom, 0px));
-  display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 max(8px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(8px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: repeat(4, 1fr); padding: 0 max(8px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(8px, env(safe-area-inset-left, 0px));
   background: var(--ink); border-top: 3px solid var(--accent);
 }
 .tab { position: relative; display: grid; justify-items: center; align-content: center; gap: 3px; color: var(--muted); text-decoration: none; font: 400 .95rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em; }
@@ -626,3 +626,27 @@ body.no-data .zone-calle { display: none; }
 .radio-ticker { padding-left: 0; animation: none; white-space: nowrap; line-height: 1.35; will-change: transform; }
 .radio-ticker-wrap { line-height: 1.35; }
 .radio[data-paused="true"] .radio-station { opacity: .55; }
+
+/* ---------- Fame zone: poster of the day ---------- */
+@media (max-width: 899px) { .tab { font-size: .85rem; letter-spacing: .03em; } }
+.poster-card { display: grid; gap: 14px; justify-items: center; padding: 20px 16px; background: radial-gradient(circle at 50% 0, rgba(255, 46, 138, .25), transparent 60%), #1d0d3a; border: 4px solid var(--ink); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--ink); }
+.poster-heading { font: 400 clamp(1.6rem, 6vw, 2.2rem)/1 var(--display); text-transform: uppercase; color: var(--cream); letter-spacing: .03em; }
+.poster-frame { position: relative; width: min(100%, 420px); aspect-ratio: 2 / 3; background: var(--ink); border: 6px solid #f4e3bd; box-shadow: 0 0 0 3px var(--ink), 10px 10px 0 var(--ink), 0 0 40px rgba(255, 201, 60, .25); overflow: hidden; }
+.poster-frame[data-format="story"] { aspect-ratio: 9 / 16; width: min(100%, 360px); }
+.poster-frame img { display: block; width: 100%; height: 100%; object-fit: cover; transition: opacity .3s, filter .3s; }
+.poster-developing { position: absolute; inset: auto 0 45%; text-align: center; font: 400 1.2rem/1 var(--display); text-transform: uppercase; letter-spacing: .1em; color: var(--sun); opacity: 0; transition: opacity .3s; }
+.poster-frame.developing img { opacity: .35; filter: sepia(.6) blur(2px); }
+.poster-frame.developing .poster-developing { opacity: 1; animation: blink 1s steps(1) infinite; }
+.poster-controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.segmented { display: inline-flex; border: var(--line) solid var(--ink); border-radius: var(--radius); overflow: hidden; box-shadow: 4px 4px 0 var(--ink); }
+.segmented button { font: 400 1rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; padding: 12px 14px; border: 0; background: var(--night); color: var(--cream); cursor: pointer; }
+.segmented button[aria-pressed="true"] { background: var(--sun); color: var(--ink); }
+
+/* Radio subtitles: the host's whole line, above the radio */
+.radio-caption {
+  display: none; position: absolute; left: 8px; right: 8px; bottom: calc(100% + 8px); margin: 0;
+  padding: 8px 12px; font: 700 .95rem/1.4 var(--body); color: var(--cream);
+  background: rgba(20, 10, 36, .94); border: 2px solid #3fae78; border-radius: 10px; box-shadow: 4px 4px 0 var(--ink);
+}
+.radio[data-on="true"][data-collapsed="false"] .radio-caption:not(:empty) { display: block; }
+.radio-ticker { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }

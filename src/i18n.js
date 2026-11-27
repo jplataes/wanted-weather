@@ -4,6 +4,7 @@ import { local } from './storage.js';
 const STRINGS = {
   es: {
     skip: 'Saltar al contenido',
+    homeLink: 'Wanted Weather: volver al inicio',
     langGroup: 'Idioma',
     searchLabel: 'Buscar ciudad',
     searchPlaceholder: '¿A qué ciudad vamos, jefe?',
@@ -82,6 +83,7 @@ const STRINGS = {
   },
   en: {
     skip: 'Skip to content',
+    homeLink: 'Wanted Weather: back to start',
     langGroup: 'Language',
     searchLabel: 'Search city',
     searchPlaceholder: 'Where to, boss?',

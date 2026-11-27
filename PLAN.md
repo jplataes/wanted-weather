@@ -24,7 +24,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** proyecto Vite con módulos separados (`api.js`, `dom.js`, `main.js` y textos ES/EN). Ubicación automática con Madrid como ciudad de respaldo, buscador de ciudades y el HUD completo: ciudad, temperatura, estado, sensación térmica, humedad, viento, salida y puesta de sol, minimapa y nivel de 1 a 5 estrellas. Cartel a pantalla completa con tiempo extremo. Errores con el estilo del juego, carga con estilo y último resultado guardado. Intermediario de Cloudflare Workers y publicación en GitHub Pages.
 - **Qué verás:** la app con el tiempo real de tu ciudad en una URL pública, en español o inglés, en móvil y ordenador.
 
-### 🟨 Fase 2 — Misión del día y próximas misiones (hecha; pendiente de revisión)
+### ✅ Fase 2 — Misión del día y próximas misiones
 - **Qué se hace:** previsión de 5 días como "próximas misiones" y la misión del día (objetivo y equipo recomendado). Las 8 escenas completas (despejado, nubes, lluvia, tormenta, nieve, niebla, viento, noche) y una interfaz que cambia con el tiempo y la hora. **Llamada de teléfono de la misión:** un contacto ficticio te llama y te cuenta la misión con voz sintetizada. **Pantalla viva:** gotas que resbalan por el cristal, calima, escarcha en los bordes y relámpagos que iluminan la interfaz.
 - **Qué verás:** una pantalla distinta cada día, con textos de humor en los dos idiomas para revisar.
 
@@ -80,3 +80,4 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - Los días de previsión incompletos ya no se muestran.
   - Intermediario con dos rutas nuevas, `/api/geocode` y `/api/reverse`.
   - 26 pruebas automáticas y prueba completa en navegador.
+- **Ajustes tras la fase 2 (pedidos por el propietario):** el logo vuelve al inicio, y la tarjeta del HUD ya no tapa la calle donde están los personajes.

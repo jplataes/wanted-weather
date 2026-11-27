@@ -25,8 +25,9 @@ import { initAchievements, renderFame } from './achievements-ui.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
-  startDaylight, renderMission, renderUpcoming, setMissedCall, showZone, bindStarsExplanation, renderAlternatives,
+  startDaylight, showZone, bindStarsExplanation, renderAlternatives,
 } from './dom.js';
+import { renderMission, renderUpcoming, setMissedCall } from './missions-view.js';
 
 const FALLBACK_CITY = 'Madrid';
 const REFRESH_AFTER_MS = 10 * 60 * 1000;

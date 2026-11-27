@@ -11,6 +11,9 @@
 </head>
 <body data-scene="sun" class="waiting">
   <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+  <noscript>
+    <p class="noscript">Wanted Weather necesita JavaScript para pedir el tiempo y dibujar la ciudad. Actívalo en tu navegador y vuelve a cargar la página. · Wanted Weather needs JavaScript to fetch the weather and draw the city. Please turn it on and reload.</p>
+  </noscript>
 
   <!-- Shared drawings reused by every scene and by the minimap -->
   <svg width="0" height="0" class="defs" aria-hidden="true" focusable="false">
@@ -120,7 +123,7 @@
         <div class="scene-frame" id="scene"></div>
         <div class="hud-card">
           <p class="hud-eyebrow" id="localTime"></p>
-          <h2 class="hud-city"><span id="cityName"></span> <span class="country" id="country"></span></h2>
+          <h2 class="hud-city"><span id="cityName"></span><span class="sr" id="cityPlaceholder">Wanted Weather</span> <span class="country" id="country"></span></h2>
           <div class="hud-main">
             <p class="hud-temp" id="temp"></p>
             <div class="hud-side">
@@ -159,7 +162,7 @@
           <p class="mission-when" id="teaserWhen"></p>
           <p class="mission-stamp" aria-hidden="true" data-i18n="stamp">Confidencial</p>
         </div>
-        <h3 class="teaser-title" id="teaserTitle"></h3>
+        <h3 class="teaser-title" id="teaserTitle">…</h3>
         <ul class="gear compact" id="teaserGear"></ul>
         <div class="buttons">
           <a class="btn btn-primary" href="#misiones" data-i18n="seeMission">Ver misión</a>
@@ -178,7 +181,7 @@
           <p class="mission-when" id="missionWhen"></p>
           <p class="mission-stamp" aria-hidden="true" data-i18n="stamp">Confidencial</p>
         </div>
-        <h2 class="mission-title" id="missionTitle"></h2>
+        <h2 class="mission-title" id="missionTitle">…</h2>
         <p class="mission-objective"><strong data-i18n="objective">Objetivo</strong>: <span id="missionObjective"></span></p>
         <div class="mission-cols">
           <div>
@@ -334,7 +337,7 @@
 
       <section class="profile" aria-labelledby="nickName">
         <p class="profile-eyebrow" data-i18n="fame.nickLabel">En la calle te conocen como</p>
-        <h3 class="profile-nick" id="nickName"></h3>
+        <h3 class="profile-nick" id="nickName">Turista del tiempo</h3>
         <div class="profile-bar" aria-hidden="true"><span id="nickBar"></span></div>
         <p class="profile-next" id="nickNext"></p>
         <dl class="bet-stats profile-stats">
@@ -342,12 +345,17 @@
           <div><dt data-i18n="bet.streak">Racha</dt><dd id="profStreak">0</dd></div>
           <div><dt data-i18n="fame.bestDodge">Récord arcade</dt><dd id="profBest">0</dd></div>
         </dl>
+        <div class="ladder-wrap">
+          <h4 class="ladder-title" data-i18n="fame.ladder">El escalafón</h4>
+          <ol class="ladder" id="ladder"></ol>
+          <p class="ladder-how"><strong data-i18n="fame.howTitle">Cómo se gana respeto:</strong> <span data-i18n="fame.how">la apuesta (hasta 100 por día), sobrevivir al arcade, ganar duelos, desbloquear logros y pasarte cada día a ver el tiempo.</span></p>
+        </div>
       </section>
 
       <section class="poster-card" aria-labelledby="posterHeading">
         <h3 class="poster-heading" id="posterHeading" data-i18n="fama.posterTitle">Póster del día</h3>
         <div class="poster-frame" id="posterFrame" data-format="poster">
-          <img id="posterImg" alt="" width="1080" height="1620">
+          <img id="posterImg" alt="" width="1080" height="1620" src="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27/%3E">
           <p class="poster-developing" aria-hidden="true" data-i18n="fama.making">Revelando el póster…</p>
         </div>
         <p class="why-chip" id="posterWhy"></p>

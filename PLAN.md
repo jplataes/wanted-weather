@@ -62,8 +62,8 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** logros que se desbloquean con el uso (primera tormenta, racha de 7 días, duelo ganado...). El Tío Isobaras llama para darte la noticia.
 - **Qué verás:** avisos de logro conseguido y una vitrina con todos.
 
-### ⬜ Fase 9 — Pulido, validación y publicación
-- **Qué se hace:** accesibilidad, modo de "menos movimiento", validador del W3C, PageSpeed, cero errores de consola, README con capturas, enlace y "hecho con IA", y publicación final. Además, a petición del propietario, un **documento para el profesor del máster** dentro del repositorio. Recogerá los detalles cuidados que marcan la diferencia (y por qué se decidió cada uno), cada punto del temario aplicado con enlaces al código y a los PR, y el proceso de trabajo entre propietario e IA (iteraciones, revisiones, checkpoint), para que se vea el trabajo que hay detrás.
+### ✅ Fase 9 — Pulido, validación y publicación
+- **Qué se hace:** accesibilidad, modo de "menos movimiento", validador del W3C, PageSpeed, cero errores de consola, README con capturas, enlace y "hecho con IA", y publicación final. Además, a petición del propietario, un **documento para el profesor del máster** dentro del repositorio. Recogerá los detalles cuidados que marcan la diferencia (y por qué se decidió cada uno), cada punto del temario aplicado a la app en términos generales (sin enlaces al código, como pidió el propietario), y el proceso de trabajo entre propietario e IA (iteraciones, revisiones, checkpoint), para que se vea el trabajo que hay detrás.
 - **Qué verás:** la URL definitiva lista para entregar.
 
 ## Registro de fases
@@ -169,3 +169,29 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - el Excusómetro dice con qué datos se hizo la excusa;
     - el póster explica su género ("Comedia, porque en Madrid luce el sol").
   - 58 pruebas automáticas.
+- **Fase 9:** escalera de rangos, pulido, auditorías finales y publicación definitiva.
+  - **Escalera de rangos** (pedida por el propietario) en Fama:
+    - todos los apodos en orden, con el tuyo marcado como "Estás aquí";
+    - los superados, tachados;
+    - cuánto respeto falta para cada uno;
+    - una corona en "Mando supremo del clima" como meta.
+    - Debajo se explica cómo se gana respeto.
+  - Más formas de ganar respeto:
+    - +5 por la primera visita de cada día;
+    - en el duelo, +15 por victoria y +5 por empate (se indica en el veredicto).
+  - Los logros conseguidos salen primero en la vitrina.
+  - Pendientes técnicos del checkpoint:
+    - política de seguridad de contenidos: la página solo habla con su web y con el intermediario;
+    - precarga de las letras, para que la pantalla no salte;
+    - aviso para navegadores sin JavaScript;
+    - `dom.js` dividido (las misiones pasan a `missions-view.js`);
+    - la burbuja plegada de la radio, más pequeña en el móvil.
+  - **Pruebas en navegador dentro del proyecto:** 20 pruebas en móvil y ordenador sobre la versión de publicación, con respuestas reales guardadas de la API. Se ejecutan en GitHub en cada PR junto a las 58 de lógica.
+  - **Auditorías finales:**
+    - W3C: 0 errores.
+    - Lighthouse en móvil: 96, 100, 100 y 100.
+    - Lighthouse en ordenador: 100 en todo.
+    - axe: 0 avisos en todas las zonas, animaciones paradas con "menos movimiento" y foco visible con el teclado.
+  - **README final** con capturas, enlace, funciones, calidad, tecnologías y "Built with AI".
+  - **Memoria para el profesor** en `docs/MEMORIA.md`: qué es la app, el proceso por fases entre propietario e IA, los detalles cuidados, cada concepto del temario aplicado y las cifras de calidad.
+  - **Proyecto terminado:** todos los requisitos y funciones están hechos y publicados.

@@ -1,0 +1,28 @@
+# Runs every test on each pull request: the logic tests and the browser tests
+# (real production build in Chromium, phone and desktop, with saved real API responses).
+name: Tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Logic and browser tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Logic tests
+        run: npm test
+      - name: Install the test browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npm run test:e2e

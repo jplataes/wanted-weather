@@ -18,6 +18,8 @@ export function setScreenFx(type) {
   if (!layer) return;
   document.body.dataset.fx = type;
   layer.replaceChildren();
+  // Rain and snow fall on the "glass" in front; gusts and fog drift behind the panels so text stays clean
+  layer.classList.toggle('behind', type === 'wind' || type === 'fog' || type === 'heat');
   const still = reducedMotion();
   const add = (node) => layer.appendChild(node);
 

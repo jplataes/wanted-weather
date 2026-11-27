@@ -42,7 +42,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** la navegación por zonas (Calle, Misiones, Recreativos) con un resumen de la misión en Calle que rellena el hueco de ordenador. Una **autorradio** siempre a mano con emisoras inventadas según el tiempo, música generada en el navegador y locutores que leen la previsión real con humor; apagada al entrar, con volumen y silencio siempre visibles. Y el **Excusómetro**: una tragaperras que te da una excusa natural y gamberra, con datos reales de hoy, para escaquearte de un plan, lista para compartir.
 - **Qué verás:** una app ordenada que se entiende de un vistazo, con banda sonora y el primer minijuego.
 
-### 🟨 Fase 4 — Checkpoint a mitad de camino (informe entregado; el propietario decide qué arreglar)
+### ✅ Fase 4 — Checkpoint a mitad de camino (y arreglos 4b)
 - **Qué se hace:** revisión con dos miradas. Un desarrollador experto revisa código, rendimiento, accesibilidad y errores. Un usuario normal comprueba si entiende el tiempo en 3 segundos y si se lo pasa bien.
 - **Qué verás:** un informe corto con lo que está bien y lo que hay que corregir. El propietario decide qué se arregla antes de seguir.
 
@@ -112,3 +112,12 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - axe: 2 avisos. W3C: 2 errores.
   - Experiencia del usuario: datos en menos de 1 s, pero la llamada tapa el HUD, el viento cruza los textos, no se entienden las estrellas, el "ES" confunde y "Santiago" lleva a Costa Rica.
   - Se propone una fase 4b de arreglos.
+- **Fase 4b (arreglos del checkpoint, aprobados por el propietario):**
+  - La llamada llega como notificación pequeña arriba, a los 8 segundos, sin tapar el tiempo.
+  - El viento, la niebla y la calima pasan por detrás de los paneles.
+  - Al tocar las estrellas se explica el motivo ("Por el viento: rachas de 43 km/h").
+  - El país sale completo ("España").
+  - Al buscar, "¿No era esta?" ofrece las otras ciudades con el mismo nombre ("Santiago, Chile"…); solo tras una búsqueda.
+  - Arreglos técnicos: hueco reservado mientras carga (sin saltos), 0 errores del W3C, un único h1 (la marca), la lista de días se recorre con el teclado y robots.txt.
+  - Lighthouse en local: rendimiento 99 en móvil y 100 en ordenador; accesibilidad, buenas prácticas y SEO al 100. axe: 0 avisos. 37 pruebas automáticas.
+  - Queda para la fase 9: pruebas en navegador dentro del proyecto, CSP, separar `dom.js`, aviso sin JavaScript y posición de la burbuja de la radio.

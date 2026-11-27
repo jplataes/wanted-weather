@@ -5,11 +5,11 @@ import '@fontsource/barlow/500.css';
 import '@fontsource/barlow/700.css';
 import './styles/main.css';
 
-import { getCurrentWeather, getForecast, findCity, findPlaceName, ApiError } from './api.js';
+import { getCurrentWeather, getForecast, findCities, findPlaceName, ApiError } from './api.js';
 import { getPosition } from './geo.js';
 import { saveLastResult, loadLastResult, local, session } from './storage.js';
 import { t, getLang, setLang } from './i18n.js';
-import { buildView } from './weather.js';
+import { buildView, otherMatches } from './weather.js';
 import { summarizeForecast } from './forecast.js';
 import { buildMission, upcomingCard } from './missions.js';
 import { setScreenFx } from './fx.js';
@@ -19,7 +19,7 @@ import { initExcusometer, updateExcusometer } from './excusometer.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
-  startDaylight, renderMission, renderUpcoming, setMissedCall, showZone,
+  startDaylight, renderMission, renderUpcoming, setMissedCall, showZone, bindStarsExplanation, renderAlternatives,
 } from './dom.js';
 
 const FALLBACK_CITY = 'Madrid';
@@ -54,11 +54,11 @@ const forced = {
   call: params.get('llamada') === '1',
 };
 
-/** Keep only the place names we need from a geocoding result. */
+/** Keep only what we need from a geocoding result. */
 function slimGeo(geo) {
   if (!geo) return null;
   const names = geo.local_names || {};
-  return { name: geo.name, local_names: { es: names.es, en: names.en } };
+  return { name: geo.name, local_names: { es: names.es, en: names.en }, state: geo.state, country: geo.country, lat: geo.lat, lon: geo.lon };
 }
 
 /**
@@ -68,9 +68,12 @@ function slimGeo(geo) {
  */
 async function fetchBundle(place, lang) {
   let coords;
-  let geo = null;
+  let geo = place.geo ?? null; // a city picked from the "Not this one?" list already has its name
+  let alternatives = [];
   if (place.city) {
-    geo = await findCity(place.city);
+    const results = await findCities(place.city);
+    geo = results[0];
+    alternatives = otherMatches(results).map(slimGeo);
     coords = { lat: geo.lat, lon: geo.lon };
   } else {
     coords = { lat: place.lat, lon: place.lon };
@@ -80,10 +83,16 @@ async function fetchBundle(place, lang) {
     getForecast(coords, lang).catch(() => null),
     geo ? Promise.resolve(geo) : findPlaceName(coords).catch(() => null),
   ]);
-  return { weather, forecast, geo: slimGeo(name) };
+  return { weather, forecast, geo: slimGeo(name), alternatives };
+}
+
+/** The user picked another city with the same name. */
+function pickAlternative(geo) {
+  load({ lat: geo.lat, lon: geo.lon, geo, source: 'search' });
 }
 
 function render() {
+  document.body.classList.remove('waiting', 'no-data');
   const lang = getLang();
   const { weather, forecast, geo } = state.bundle;
   const view = buildView(weather, lang, geo);
@@ -129,7 +138,7 @@ function maybeRing(view) {
     if (isAlertOpen()) { maybeRing(view); return; } // wait for the alert to be closed
     local.set(key, true);
     showCall({ text: state.mission.script, mode: 'ring', missed: () => setMissedCall(true) });
-  }, forced.call ? 800 : 3500);
+  }, forced.call ? 800 : 8000); // let people read the weather first
 }
 
 /** Fetch everything for a place and paint it. Older requests are ignored if a newer one started. */
@@ -142,9 +151,12 @@ async function load(place) {
   try {
     const bundle = await fetchBundle(place, getLang());
     if (id !== state.requestId) return;
-    Object.assign(state, { bundle, place, savedAt: Date.now(), fromCache: false });
-    saveLastResult(bundle, place);
+    const { alternatives, ...data } = bundle;
+    Object.assign(state, { bundle: data, place, savedAt: Date.now(), fromCache: false });
+    saveLastResult(data, place);
     const view = render();
+    // Only after a search: a fallback or a location never asks "not this one?"
+    renderAlternatives(place.source === 'search' ? alternatives : [], pickAlternative);
     maybeAlert(view);
     maybeRing(view);
   } catch (error) {
@@ -160,6 +172,7 @@ async function load(place) {
 
 function handleError(error, place) {
   const kind = error instanceof ApiError ? error.kind : 'unknown';
+  if (!state.bundle) document.body.classList.add('no-data'); // nothing to show behind the error
   if (!(error instanceof ApiError)) console.warn(error);
   const actions = [];
   if (kind === 'notFound') {
@@ -246,6 +259,7 @@ function start() {
   showZone(zoneFromHash());
   initRadio();
   initExcusometer();
+  bindStarsExplanation();
   bindEvents();
 
   const last = loadLastResult();

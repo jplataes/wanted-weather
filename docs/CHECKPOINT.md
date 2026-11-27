@@ -92,3 +92,19 @@ Para hacer ahora, antes del póster (lo que más impacto tiene por menos esfuerz
 6. **D1 + D2 + D3 + D4** Salto de diseño, errores del W3C, h1 y teclado en la lista. Son técnicos y rápidos, y suben las notas que pide el curso.
 
 Para dejar a la fase 9 de pulido: **D5** (pruebas en navegador dentro del proyecto), CSP, separar `dom.js`, aviso sin JavaScript y **U6** (posición de la burbuja).
+
+---
+
+## 4. Resultado tras los arreglos (fase 4b)
+
+El propietario aprobó toda la propuesta. Medido después de los arreglos, en la versión de producción:
+
+| Prueba | Móvil | Ordenador |
+|---|---|---|
+| Lighthouse · Rendimiento | **99** (antes 91) | **100** (antes 81) |
+| Lighthouse · Accesibilidad / Buenas prácticas / SEO | 100 / 100 / 100 | 100 / 100 / 100 |
+| Saltos de diseño (CLS) | 0,08 (antes 0,10) | 0,04 (antes 0,40) |
+| axe, todas las zonas | 0 avisos | — |
+| Validador W3C | 0 errores | — |
+
+Las cinco molestias del usuario de a pie (U1 a U5) están resueltas. U6 (la burbuja de la radio) queda para la fase 9.

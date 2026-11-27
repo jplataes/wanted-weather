@@ -4,7 +4,7 @@
 // Endpoints (GET only):
 //   /api/weather?lat=40.4&lon=-3.7&lang=es    current weather (or ?q=Madrid)
 //   /api/forecast?lat=40.4&lon=-3.7&lang=en   5-day forecast, 3-hour steps (or ?q=Madrid)
-//   /api/geocode?q=Sevilla                    city name -> coordinates and local names
+//   /api/geocode?q=Sevilla                    city name -> up to 5 matches with coordinates and local names
 //   /api/reverse?lat=37.39&lon=-5.98          coordinates -> place name and local names
 
 const UPSTREAM = 'https://api.openweathermap.org';
@@ -57,7 +57,7 @@ export function cleanParams(searchParams, kind = 'weather') {
   if (kind === 'geocode') {
     if (!q) return null;
     out.set('q', q);
-    out.set('limit', '1');
+    out.set('limit', '5'); // several matches, so the user can pick the right "Santiago"
     return out;
   }
   if (kind === 'reverse') {

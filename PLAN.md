@@ -20,7 +20,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué verás:** la página `muestra/index.html`, publicada también como página privada para verla en el móvil.
 - **Resultado:** aprobada por el propietario.
 
-### ⬜ Fase 1 — HUD con datos reales
+### 🟨 Fase 1 — HUD con datos reales (hecha; falta publicarla)
 - **Qué se hace:** proyecto Vite con módulos separados (`api.js`, `dom.js`, `main.js` y textos ES/EN). Ubicación automática con Madrid como ciudad de respaldo, buscador de ciudades y el HUD completo: ciudad, temperatura, estado, sensación térmica, humedad, viento, salida y puesta de sol, minimapa y nivel de 1 a 5 estrellas. Cartel a pantalla completa con tiempo extremo. Errores con el estilo del juego, carga con estilo y último resultado guardado. Intermediario de Cloudflare Workers y publicación en GitHub Pages.
 - **Qué verás:** la app con el tiempo real de tu ciudad en una URL pública, en español o inglés, en móvil y ordenador.
 
@@ -58,3 +58,12 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 
 ## Registro de fases
 - **Fase 0:** página de muestra creada en `muestra/index.html`. Paleta de atardecer, tipografías Anton, Bangers y Barlow (licencia libre OFL), estrellas, minimapa, botones, cartel "¡EMPAPADO!" y escenas de sol, lluvia y noche dibujadas en SVG. Aprobada. Versión 2 con más chulería, personajes y efectos. Textos fusionados: rotan entre las opciones propuestas. Fase cerrada.
+- **Fase 1:** app Vite con módulos separados y datos reales de OpenWeatherMap. Incluye:
+  - Ubicación automática con Madrid de respaldo, buscador e idioma ES/EN recordado.
+  - HUD completo con escena ilustrada, minimapa propio de cada ciudad con el viento real y nivel de estrellas.
+  - Alerta a pantalla completa con tiempo extremo y errores con estilo de juego.
+  - Pantalla de carga de portada y último resultado guardado.
+  - Intermediario de Cloudflare Workers con la key protegida y publicación automática en GitHub Pages.
+  - 15 pruebas automáticas y prueba completa en navegador con la API real.
+  - **Pendiente para publicar:** que el propietario añada 3 secretos en GitHub y active GitHub Pages.
+  - **Limitación conocida:** el nombre de la ciudad sale como lo da la API; por ejemplo, con ubicación puede salir "Seville" en vez de "Sevilla". Se puede resolver en la fase 2 con la búsqueda de nombres locales de OpenWeatherMap.

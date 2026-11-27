@@ -1,0 +1,10 @@
+# Cloudflare Worker that keeps the OpenWeatherMap key out of the browser.
+# The key is NOT here: it is uploaded as a secret (OPENWEATHER_API_KEY) by the deploy workflow.
+name = "wanted-weather-proxy"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+# Websites allowed to call the proxy (the published app and local development)
+ALLOWED_ORIGINS = "https://jplataes.github.io,http://localhost:5173,http://localhost:4173"

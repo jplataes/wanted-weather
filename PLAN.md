@@ -54,7 +54,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa, en Recreativos. El Tío Isobaras te llama para retarte. Si es viable con el plan gratuito, "Los más buscados del planeta": las ciudades grandes con peor tiempo en ese momento, calculadas cada pocas horas.
 - **Qué verás:** un resultado que se puede compartir, también como tarjeta vertical para stories.
 
-### ⬜ Fase 7 — La apuesta y "Esquiva el chaparrón"
+### ✅ Fase 7 — La apuesta y "Esquiva el chaparrón"
 - **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo. Y el minijuego arcade "Esquiva el chaparrón": 20 segundos esquivando lo que cae según el tiempo real, que también da respeto. El Tío Isobaras te llama al día siguiente con el resultado de la apuesta.
 - **Qué verás:** un motivo para volver cada día, y un apodo de jugador que cambia con tus rachas (por ejemplo "Rey del Chubasco").
 
@@ -145,3 +145,16 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - Arreglo del póster: se maqueta de abajo arriba y la frase ya no se monta con los créditos.
   - "Los más buscados" se descarta (ver decisiones).
   - 46 pruebas automáticas.
+- **Fase 7:** dos máquinas nuevas en Recreativos e índice de máquinas arriba de la zona.
+  - **La apuesta:** eliges con un dial la máxima de mañana en tu ciudad.
+    - Al día siguiente, al abrir la app, se comprueba con la máxima de ese día (lectura actual más pronóstico de ese mismo día). Es el dato real más fiable del plan gratuito, que no incluye historial.
+    - El **Tío Isobaras te llama con el resultado** y su comentario de cuñado.
+    - Respeto según la distancia (clavada 100, a 1° 60, a 2° 30, a 3° 10). La racha crece con aciertos (a 2° o menos) en días seguidos.
+    - Las apuestas de otras ciudades se comprueban solas, y las que se quedan sin visita caducan.
+  - **Esquiva el chaparrón:** arcade de 20 s en canvas.
+    - Lo que cae sale del tiempo real: gotas, rayos, copos, soles, hojas o nubes.
+    - La dificultad sube con las estrellas del día y el viento real empuja lo que cae.
+    - Tres estrellas de vida, se maneja con el dedo, las flechas o los botones, y da respeto y récord.
+    - Se pausa al salir de la zona, y las llamadas esperan a que termine la partida.
+  - El respeto, las rachas y el récord se guardan en el dispositivo; el apodo llega en la fase 8.
+  - 53 pruebas automáticas.

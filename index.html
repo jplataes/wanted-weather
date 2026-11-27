@@ -209,6 +209,12 @@
       <div class="zone-head">
         <h2 class="section-title" data-i18n="zone.recreativos">Recreativos</h2>
         <p class="note" data-i18n="arcadeIntro">Máquinas para echar el rato con el tiempo de hoy.</p>
+        <div class="arcade-nav" role="group" data-i18n-aria="arcadeNav" aria-label="Máquinas">
+          <button type="button" data-machine="excMachine" data-i18n="exc.title">El Excusómetro</button>
+          <button type="button" data-machine="duelMachine" data-i18n="duel.title">Duelo de ciudades</button>
+          <button type="button" data-machine="betMachine" data-i18n="bet.title">La apuesta</button>
+          <button type="button" data-machine="dodgeMachine" data-i18n="dodge.title">Esquiva el chaparrón</button>
+        </div>
       </div>
 
       <section class="machine" id="excMachine" aria-labelledby="excTitle">
@@ -267,10 +273,49 @@
         </div>
       </section>
 
-      <ul class="locked" aria-label="Próximamente" data-i18n-aria="arcadeSoon">
-        <li class="locked-machine"><span class="locked-name" data-i18n="soon.dodge">Esquiva el chaparrón</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
-        <li class="locked-machine"><span class="locked-name" data-i18n="soon.bet">La apuesta</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
-      </ul>
+      <section class="machine bet" id="betMachine" aria-labelledby="betTitle">
+        <div class="machine-lights" aria-hidden="true"></div>
+        <h3 class="machine-title" id="betTitle" data-i18n="bet.title">La apuesta</h3>
+        <p class="machine-sub"><span data-i18n="bet.sub">Adivina la máxima de mañana en</span> <strong id="betCity"></strong>. <span data-i18n="bet.sub2">Mañana lo comprobamos con el dato del día y el Tío Isobaras te llama con el resultado.</span></p>
+        <div class="bet-dial">
+          <button class="radio-btn bet-step" type="button" id="betMinus" data-i18n-aria="bet.minus" aria-label="Un grado menos">−</button>
+          <output class="bet-value" id="betValue" for="betRange" aria-live="polite">15°</output>
+          <button class="radio-btn bet-step" type="button" id="betPlus" data-i18n-aria="bet.plus" aria-label="Un grado más">+</button>
+        </div>
+        <label class="sr" for="betRange" data-i18n="bet.rangeLabel">Temperatura máxima de mañana</label>
+        <input class="bet-range" type="range" id="betRange" min="-30" max="50" step="1" value="15">
+        <button class="btn btn-primary" type="button" id="betPlace" data-i18n="bet.place">¡Apuesto!</button>
+        <p class="bet-status" id="betStatus" role="status" aria-live="polite"></p>
+        <dl class="bet-stats">
+          <div><dt data-i18n="bet.respect">Respeto</dt><dd id="betRespect">0</dd></div>
+          <div><dt data-i18n="bet.streak">Racha</dt><dd id="betStreak">0</dd></div>
+          <div><dt data-i18n="bet.best">Mejor racha</dt><dd id="betBest">0</dd></div>
+        </dl>
+        <div class="bet-history" id="betHistoryWrap" hidden>
+          <h4 class="mission-sub" data-i18n="bet.history">Últimas apuestas</h4>
+          <ul id="betHistory"></ul>
+        </div>
+      </section>
+
+      <section class="machine dodge" id="dodgeMachine" aria-labelledby="dodgeTitle">
+        <div class="machine-lights" aria-hidden="true"></div>
+        <h3 class="machine-title" id="dodgeTitle" data-i18n="dodge.title">Esquiva el chaparrón</h3>
+        <p class="machine-sub" id="dodgeSub"></p>
+        <div class="dodge-screen">
+          <canvas id="dodgeCanvas" width="360" height="440" role="img" tabindex="0"></canvas>
+          <div class="dodge-overlay" id="dodgeOverlay">
+            <p class="dodge-overlay-title" id="dodgeOverlayTitle" data-i18n="dodge.ready">¿Listo?</p>
+            <p class="dodge-overlay-text" id="dodgeOverlayText" data-i18n="dodge.howto">Muévete con el dedo, las flechas o los botones. Tienes 3 estrellas y 20 segundos.</p>
+            <button class="btn btn-primary" type="button" id="dodgeStart" data-i18n="dodge.play">¡Jugar!</button>
+          </div>
+        </div>
+        <div class="dodge-pad">
+          <button class="radio-btn" type="button" id="dodgeLeft" data-i18n-aria="dodge.left" aria-label="Izquierda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-8 7 8 7z" fill="currentColor"/></svg></button>
+          <p class="dodge-best"><span data-i18n="dodge.best">Récord</span>: <strong id="dodgeBest">0</strong></p>
+          <button class="radio-btn" type="button" id="dodgeRight" data-i18n-aria="dodge.right" aria-label="Derecha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l8 7-8 7z" fill="currentColor"/></svg></button>
+        </div>
+        <p class="sr" id="dodgeInfo" aria-live="polite"></p>
+      </section>
     </div>
 
     <!-- Zone 4: fame — the poster of the day (achievements and nickname come later) -->

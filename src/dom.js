@@ -3,7 +3,6 @@ import { t, getLang } from './i18n.js';
 import { sceneSvg } from './scenes.js';
 import { minimapSvg } from './minimap.js';
 import { STAR_LINES, ALERTS, TAGLINES, LOADING_TIPS, pickBySeed, pickRandom } from './copy.js';
-import { weatherIcon, gearIcon } from './icons.js';
 import { placeLabel } from './weather.js';
 
 const $ = (id) => document.getElementById(id);
@@ -65,6 +64,7 @@ export function renderWeather(view) {
   bindParallax($('scene').querySelector('svg'));
 
   $('cityName').textContent = view.city;
+  document.getElementById('cityPlaceholder')?.remove(); // only there so the heading isn't empty before data
   $('country').textContent = view.country;
   $('localTime').textContent = t('localTime', { time: view.localTime });
   $('temp').textContent = `${view.temp}°`;
@@ -223,42 +223,6 @@ export function startDaylight(view) {
   daylightTimer = setInterval(tick, 1000);
 }
 
-/** The mission briefing card. */
-export function renderMission(mission) {
-  $('missionWhen').textContent = t(mission.when === 'today' ? 'missionToday' : 'missionTomorrow');
-  $('missionTitle').textContent = mission.title;
-  $('missionObjective').textContent = mission.objective;
-  $('missionIntel').replaceChildren(...mission.intel.map((line) => {
-    const li = document.createElement('li');
-    li.textContent = line;
-    return li;
-  }));
-  $('missionGear').replaceChildren(...mission.gear.map((item) => {
-    const li = document.createElement('li');
-    li.innerHTML = gearIcon(item.id);
-    const span = document.createElement('span');
-    span.textContent = item.label;
-    li.appendChild(span);
-    return li;
-  }));
-  $('missionTip').textContent = `«${mission.tip}»`;
-  $('mission').dataset.theme = mission.theme;
-  $('mission').hidden = false;
-
-  // Short version for the Street zone
-  $('teaserWhen').textContent = $('missionWhen').textContent;
-  $('teaserTitle').textContent = mission.title;
-  $('teaserGear').replaceChildren(...$('missionGear').cloneNode(true).children);
-  $('teaser').hidden = false;
-}
-
-/** Show or hide the "missed call" badge on the call button. */
-export function setMissedCall(missed) {
-  document.querySelectorAll('.js-call').forEach((b) => b.classList.toggle('missed', missed));
-  document.querySelectorAll('.js-call-label').forEach((l) => { l.textContent = t(missed ? 'missedCall' : 'callBtn'); });
-  $('missedDot').hidden = !missed;
-}
-
 /** Show one zone (calle, misiones, recreativos) and mark its tab as current. */
 export function showZone(zone, { focus = false } = {}) {
   document.querySelectorAll('.zone[data-zone]').forEach((el) => { el.hidden = el.dataset.zone !== zone; });
@@ -273,47 +237,6 @@ export function showZone(zone, { focus = false } = {}) {
   }
 }
 
-/** Upcoming days as mission cards. Pass null when the forecast is not available. */
-export function renderUpcoming(cards) {
-  const list = $('upcomingList');
-  $('upcoming').hidden = false;
-  if (!cards || !cards.length) {
-    list.replaceChildren();
-    $('upcomingNote').textContent = t('upcomingUnavailable');
-    $('upcomingNote').hidden = false;
-    return;
-  }
-  $('upcomingNote').hidden = true;
-  list.replaceChildren(...cards.map((c) => {
-    const li = document.createElement('li');
-    li.className = 'up-card';
-    li.dataset.theme = c.theme;
-    const day = document.createElement('p');
-    day.className = 'up-day';
-    day.textContent = c.weekday;
-    const icon = document.createElement('div');
-    icon.className = 'up-icon';
-    icon.innerHTML = weatherIcon(c.kind);
-    const temps = document.createElement('p');
-    temps.className = 'up-temps';
-    temps.setAttribute('aria-label', t('maxMinAria', { max: c.max, min: c.min }));
-    temps.innerHTML = `<span class="up-max"></span> <span class="up-min"></span>`;
-    temps.querySelector('.up-max').textContent = `${c.max}°`;
-    temps.querySelector('.up-min').textContent = `${c.min}°`;
-    const desc = document.createElement('p');
-    desc.className = 'up-desc';
-    desc.textContent = c.pop >= 20 ? `${c.description} · ${t('rainShort', { pop: c.pop })}` : c.description;
-    const stars = document.createElement('div');
-    stars.className = 'wanted small';
-    stars.setAttribute('role', 'img');
-    renderStars(stars, c.level);
-    const code = document.createElement('p');
-    code.className = 'up-code';
-    code.textContent = c.codename;
-    li.append(day, icon, temps, desc, stars, code);
-    return li;
-  }));
-}
 
 /** Tap the stars to see what caused them. */
 export function bindStarsExplanation() {

@@ -12,3 +12,8 @@ worker/.dev.vars
 # System files
 .DS_Store
 *.log
+
+# Browser test build and reports
+dist-e2e/
+test-results/
+playwright-report/

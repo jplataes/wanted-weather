@@ -779,3 +779,31 @@ body.no-data .zone-calle { display: none; }
 .unlock-text small { font-weight: 700; color: var(--teal); }
 .profile-stats div { min-width: 0; flex: 1 1 0; }
 .profile-stats { width: min(100%, 420px); flex-wrap: nowrap; }
+
+/* ---------- Fame: the ladder of nicknames ---------- */
+.ladder-wrap { width: min(100%, 420px); display: grid; gap: 8px; text-align: left; margin-top: 6px; }
+.ladder-title { font: 400 1.1rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em; color: var(--cream); text-align: center; }
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.rung { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 12px 8px 34px; border: 2px solid var(--ink); border-radius: 8px; background: rgba(20, 10, 36, .7); }
+.rung::before { content: ""; position: absolute; left: 10px; top: 50%; width: 14px; height: 14px; transform: translateY(-50%) rotate(45deg); border: 2px solid var(--muted); border-radius: 2px; }
+.rung-name { font: 400 1rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .03em; color: #8b7fa8; }
+.rung-need { font: 700 .75rem/1.2 var(--body); color: var(--muted); white-space: nowrap; }
+.rung.done .rung-name { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 2px; }
+.rung.done::before { background: var(--teal); border-color: var(--teal); }
+.rung.here { background: linear-gradient(90deg, #3f1e78, #2a1250); border-color: var(--sun); box-shadow: 0 0 0 2px var(--ink), 0 0 16px rgba(255, 201, 60, .35); }
+.rung.here .rung-name { color: var(--sun); font-size: 1.15rem; }
+.rung.here .rung-need { color: var(--sun); text-transform: uppercase; letter-spacing: .1em; }
+.rung.here::before { background: var(--sun); border-color: var(--ink); animation: rungPulse 1.6s ease-out infinite; }
+@keyframes rungPulse { from { box-shadow: 0 0 0 0 rgba(255, 201, 60, .7); } to { box-shadow: 0 0 0 8px rgba(255, 201, 60, 0); } }
+.rung.top .rung-name::after { content: " ♛"; color: var(--sun); }
+.ladder-how { font-size: .85rem; color: var(--muted); text-align: center; }
+.ladder-how strong { color: var(--cream); }
+.noscript { margin: 16px auto; max-width: 640px; padding: 16px; background: var(--sun); color: var(--ink); font-weight: 700; border: 3px solid var(--ink); border-radius: var(--radius); }
+/* Smaller radio bubble on phones, so it covers less of the page */
+@media (max-width: 899px) {
+  .radio[data-collapsed="true"] { padding: 3px; gap: 3px; }
+  .radio[data-collapsed="true"] .radio-bubble { height: 36px; min-width: 36px; padding: 0 8px; }
+  .radio[data-collapsed="true"] .radio-bubble svg { width: 18px; height: 18px; }
+  .radio[data-collapsed="true"] #radioMute { width: 34px; height: 34px; }
+}
+@media (max-width: 899px) { body.waiting .hud-card { min-height: 250px; } }

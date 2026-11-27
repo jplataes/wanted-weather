@@ -79,6 +79,18 @@ export function renderFame() {
   $('nickBar').style.width = next ? `${Math.round(((p.respect - cur.min) / (next.min - cur.min)) * 100)}%` : '100%';
   $('nickNext').textContent = next ? t('fame.next', { n: next.min - p.respect, nick: next[lang] }) : t('fame.top');
 
+  // The full ladder: ranks passed, where you are, and what's still ahead (with the crown at the top)
+  const tier = tierFor(p.respect);
+  $('ladder').replaceChildren(...NICKNAMES.map((n, i) => {
+    const li = document.createElement('li');
+    li.className = `rung ${i < tier ? 'done' : i === tier ? 'here' : 'ahead'}${i === NICKNAMES.length - 1 ? ' top' : ''}`;
+    li.innerHTML = '<span class="rung-name"></span><span class="rung-need"></span>';
+    li.querySelector('.rung-name').textContent = n[lang];
+    li.querySelector('.rung-need').textContent = i === tier ? t('fame.here') : i < tier ? t('fame.done') : t('fame.need', { n: n.min });
+    if (i === tier) li.setAttribute('aria-current', 'step');
+    return li;
+  }).reverse());
+
   const count = Object.keys(store.unlocked).length;
   $('badgeCount').textContent = `${count}/${ACHIEVEMENTS.length}`;
   // Unlocked first, newest first; then the ones still to get
@@ -100,6 +112,16 @@ export function renderFame() {
 // ---------- Events ----------
 function handle(event) {
   const store = loadStore();
+  // Daily visit: a few respect points the first time you check the weather each day
+  if (event.type === 'weather') {
+    const today = new Date().toISOString().slice(0, 10);
+    if (store.lastDaily !== today) {
+      store.lastDaily = today;
+      saveStore(store);
+      addRespect(5);
+      return handle(event);
+    }
+  }
   if (event.type === 'weather' && event.view?.id && !store.cities.includes(event.view.id)) store.cities = [...store.cities, event.view.id].slice(-50);
   if (event.type === 'excuse') store.pulls = (store.pulls || 0) + 1;
   const ids = evaluate(event, store, getProgress());

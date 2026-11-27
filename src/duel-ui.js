@@ -5,6 +5,7 @@ import { localName } from './weather.js';
 import { playDuel, ROUND_NAMES, roundLine, verdict, randomRival } from './duel.js';
 import { embeddedFonts, svgToPng } from './poster.js';
 import { local } from './storage.js';
+import { addRespect } from './progress.js';
 import { toast, reducedMotion } from './dom.js';
 
 let mine = null; // { weather, name }
@@ -49,6 +50,10 @@ async function fight(query, shownName) {
     const duel = playDuel(mine.weather, theirs);
     last = { duel, you: mine.name, rival: rivalName, verdict: verdict(duel, mine.name, rivalName, lang, `${mine.weather.id}-${theirs.id}`) };
     remember(duel.result, rivalName);
+    // Winning a duel earns respect (a draw, a little)
+    const earned = { win: 15, draw: 5, lose: 0 }[duel.result];
+    if (earned) addRespect(earned);
+    last.earned = earned;
     document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'duel', result: duel.result, score: duel.score } }));
     status('');
     show(last);
@@ -88,7 +93,7 @@ function show({ duel, you, rival, verdict: line }) {
       if (r.winner === 'you') you2++;
       if (r.winner === 'rival') rival2++;
       $('sbScore').textContent = `${you2} – ${rival2}`;
-      if (i === duel.rounds.length - 1) $('sbVerdict').textContent = line;
+      if (i === duel.rounds.length - 1) $('sbVerdict').textContent = last.earned ? `${line} ${t('fame.reward', { n: last.earned })}.` : line;
     }, step * (i + 1));
   });
   $('duelBoard').scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'nearest' });

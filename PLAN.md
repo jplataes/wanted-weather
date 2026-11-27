@@ -42,7 +42,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** la navegación por zonas (Calle, Misiones, Recreativos) con un resumen de la misión en Calle que rellena el hueco de ordenador. Una **autorradio** siempre a mano con emisoras inventadas según el tiempo, música generada en el navegador y locutores que leen la previsión real con humor; apagada al entrar, con volumen y silencio siempre visibles. Y el **Excusómetro**: una tragaperras que te da una excusa natural y gamberra, con datos reales de hoy, para escaquearte de un plan, lista para compartir.
 - **Qué verás:** una app ordenada que se entiende de un vistazo, con banda sonora y el primer minijuego.
 
-### ⬜ Fase 4 — Checkpoint a mitad de camino
+### 🟨 Fase 4 — Checkpoint a mitad de camino (informe entregado; el propietario decide qué arreglar)
 - **Qué se hace:** revisión con dos miradas. Un desarrollador experto revisa código, rendimiento, accesibilidad y errores. Un usuario normal comprueba si entiende el tiempo en 3 segundos y si se lo pasa bien.
 - **Qué verás:** un informe corto con lo que está bien y lo que hay que corregir. El propietario decide qué se arregla antes de seguir.
 
@@ -107,3 +107,8 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - La radio deja de repetir la misión: el tiempo cada tres turnos, y entre medias 16 piezas por idioma de publicidad inventada, tráfico, dedicatorias y consejos de abuela.
   - El Tío Isobaras gana su toque de cuñado: un consejo según el tiempo en cada llamada, que también sale escrito en el dossier.
   - Corregido "1 grados" → "1 grado".
+- **Fase 4 (checkpoint):** informe en `docs/CHECKPOINT.md`.
+  - Lighthouse: rendimiento 91 en móvil y 81 en ordenador; accesibilidad, buenas prácticas y SEO al 100.
+  - axe: 2 avisos. W3C: 2 errores.
+  - Experiencia del usuario: datos en menos de 1 s, pero la llamada tapa el HUD, el viento cruza los textos, no se entienden las estrellas, el "ES" confunde y "Santiago" lleva a Costa Rica.
+  - Se propone una fase 4b de arreglos.

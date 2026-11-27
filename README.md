@@ -1,6 +1,6 @@
 # Wanted Weather
 
-A weather app that plays like an open-world game. Your city is the map and today's weather is the mission. You get real forecasts, wanted-level stars, extreme-weather alerts, daily missions, a car radio, arcade mini-games, achievements and a shareable movie poster of the day. Spanish by default, with an ES/EN switch. Built with AI for the AI Maker programme (Project 2).
+A weather app that plays like an open-world game. Your city is the map and today's weather is the mission. You get real forecasts, wanted-level stars, extreme-weather alerts, daily missions, a car radio, arcade mini-games, achievements and a shareable movie poster of the day. It opens in Spanish on phones set to Spanish and in English on any other language, with an ES/EN switch that is remembered. Built with AI for the AI Maker programme (Project 2).
 
 **Live:** https://jplataes.github.io/wanted-weather/
 
@@ -44,8 +44,8 @@ A weather app that plays like an open-world game. Your city is the map and today
 - W3C HTML validator: 0 errors.
 - Content Security Policy: the page can only talk to its own site and the weather proxy.
 - Tests:
-  - 58 logic tests (`npm test`);
-  - 20 browser tests on phone and desktop (`npm run test:e2e`), run in Chromium against the real production build with saved real API responses.
+  - 63 logic tests (`npm test`);
+  - 26 browser tests on phone and desktop (`npm run test:e2e`), run in Chromium against the real production build with saved real API responses.
   - Both run on every pull request.
 
 ## Run it locally

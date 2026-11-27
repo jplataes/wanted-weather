@@ -195,3 +195,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - **README final** con capturas, enlace, funciones, calidad, tecnologías y "Built with AI".
   - **Memoria para el profesor** en `docs/MEMORIA.md`: qué es la app, el proceso por fases entre propietario e IA, los detalles cuidados, cada concepto del temario aplicado y las cifras de calidad.
   - **Proyecto terminado:** todos los requisitos y funciones están hechos y publicados.
+- **Mejora tras el cierre: idioma automático** (pedida por el propietario).
+  - La app mira el idioma del teléfono: cualquier español (España, México, Argentina…) la abre en español, y cualquier otro idioma (inglés, francés, italiano…), en inglés.
+  - Si el usuario elige idioma con el botón ES/EN, esa elección se recuerda y manda siempre.
+  - 63 pruebas de lógica y 26 en navegador (nuevas: teléfono en francés, en español de México y en inglés).

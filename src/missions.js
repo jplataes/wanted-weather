@@ -82,6 +82,35 @@ export const GEAR = {
   tshirt: { es: 'Ropa ligera', en: 'Light clothes' },
 };
 
+// Uncle Isobar is the know-it-all brother-in-law of the family: every call comes with "expert" advice
+export const CUNADO = {
+  generic: {
+    es: [
+      'Hazme caso, que de esto yo sé un rato.',
+      'Esto ya lo vi yo venir el martes. No digo nada, pero lo vi.',
+      'Los del telediario no tienen ni idea. Esto se mira por la rodilla, y a mí la rodilla no me falla.',
+      'Yo a tu edad salía en manga corta con lo que fuera. Pero tú no, ¿eh? Tú hazme caso.',
+      'Lo que yo te diga: el que madruga pasa frío. Pero madruga.',
+    ],
+    en: [
+      'Trust me, I know a thing or two about this.',
+      "I saw this coming on Tuesday. Not saying anything. But I saw it.",
+      "The telly weather lot haven't got a clue. You read this stuff in your knee, and my knee's never wrong.",
+      'At your age I went out in a T-shirt whatever the weather. But not you, eh? You listen to me.',
+      'Mark my words: the early bird gets cold. But it gets the worm.',
+    ],
+  },
+  clear: { es: 'Crema solar aunque esté nublado, que el sol te pilla igual. Eso lo sabe todo el mundo menos tú.', en: "Sunscreen even when it's cloudy, the sun gets you anyway. Everyone knows that but you." },
+  clouds: { es: 'Día gris, día de chaqueta vaquera. Es ciencia.', en: "Grey day, denim jacket day. It's science." },
+  rain: { es: 'El paraguas, siempre en el coche. Siempre. Yo llevo tres.', en: 'Umbrella in the car. Always. I keep three.' },
+  storm: { es: 'Con tormenta, nada de ducharse. Lo leí en un sitio muy serio.', en: 'No showers during a storm. I read it somewhere very serious.' },
+  snow: { es: 'Cadenas en el maletero aunque no tengas coche. Por si acaso.', en: "Snow chains in the boot even if you haven't got a car. Just in case." },
+  fog: { es: 'Con niebla, luces cortas. Las largas son para los que no saben.', en: 'In fog, dipped headlights. Full beams are for amateurs.' },
+  wind: { es: 'Con este viento, gorra no: gorro. La diferencia es la vida.', en: 'In this wind, no cap: a beanie. That difference is life itself.' },
+  heat: { es: 'El truco es beber agua antes de tener sed. Eso no lo sabe nadie. Solo yo.', en: "The trick is drinking water before you're thirsty. Nobody knows that. Just me." },
+  cold: { es: 'Un buen forro polar y a correr. El forro polar es el mayor invento de la humanidad, y no hay más que hablar.', en: "A decent fleece and off you go. The fleece is humanity's greatest invention, end of discussion." },
+};
+
 const CALL = {
   greet: {
     es: ['Eh, soy el Tío Isobaras. Atento, que no lo repito.', 'Tío Isobaras al aparato. Tengo trabajo para ti.'],
@@ -160,6 +189,8 @@ export function buildMission({ day, when, view, lang }) {
   if (when === 'today' && view.sunset && view.sunset !== '–') intel.push(fill(t.sunset, { sunset: view.sunset }));
 
   const gear = gearFor(d).map((id) => ({ id, label: GEAR[id][lang] }));
+  // Brother-in-law advice: the one for today's weather, or one of his classics
+  const tip = pickBySeed([CUNADO[theme][lang], CUNADO[theme][lang], ...CUNADO.generic[lang]].slice(0, 4), `${seed}-tip`);
 
   const script = [
     pickBySeed(CALL.greet[lang], `${seed}-greet`),
@@ -167,10 +198,11 @@ export function buildMission({ day, when, view, lang }) {
     objective,
     intel.length ? `${intel.join('. ')}.` : '',
     fill(CALL.bring[lang], { list: gear.map((g) => g.label.toLowerCase()).join(', ') }),
+    tip,
     pickBySeed(CALL.bye[lang], `${seed}-bye`),
   ].filter(Boolean).join(' ');
 
-  return { when, theme, title, objective, intel, gear, script };
+  return { when, theme, title, objective, intel, gear, tip, script };
 }
 
 /** Short card data for an upcoming day. */

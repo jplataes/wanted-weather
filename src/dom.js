@@ -238,6 +238,7 @@ export function renderMission(mission) {
     li.appendChild(span);
     return li;
   }));
+  $('missionTip').textContent = `«${mission.tip}»`;
   $('mission').dataset.theme = mission.theme;
   $('mission').hidden = false;
 

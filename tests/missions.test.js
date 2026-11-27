@@ -60,6 +60,7 @@ test('mission has title, objective, intel from real data, gear and a call script
   assert.ok(m.intel.some((l) => l.includes('90%') && l.includes('15:00')));
   assert.ok(m.gear.some((g) => g.label === 'Paraguas'));
   assert.ok(m.script.includes('Testville'));
+  assert.ok(m.tip && m.script.includes(m.tip), 'brother-in-law advice in the call');
   const en = buildMission({ day: days[0], when: 'tomorrow', view, lang: 'en' });
   assert.ok(en.gear.some((g) => g.label === 'Umbrella'));
 });

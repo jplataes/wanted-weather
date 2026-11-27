@@ -127,10 +127,12 @@ export const STATION_IDS = Object.keys(STATIONS);
 
 /** Station that fits today's weather best. */
 export function stationFor(view) {
-  if (view.kind === 'storm' || view.scene === 'wind') return 'tormenta';
-  if (['rain', 'fog', 'snow', 'clouds'].includes(view.kind)) return 'chaparron';
+  if (view.kind === 'storm' || view.kind === 'wind' || view.scene === 'wind') return 'tormenta';
+  if (['rain', 'fog', 'snow'].includes(view.kind)) return 'chaparron';
   if (view.night) return 'neon';
-  return 'sol';
+  if (view.kind === 'clear') return 'sol';
+  // Daytime clouds: funk if it's mild, lo-fi if it's chilly
+  return view.feels >= 18 ? 'sol' : 'chaparron';
 }
 
 /**

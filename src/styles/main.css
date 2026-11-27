@@ -641,3 +641,12 @@ body.no-data .zone-calle { display: none; }
 .segmented { display: inline-flex; border: var(--line) solid var(--ink); border-radius: var(--radius); overflow: hidden; box-shadow: 4px 4px 0 var(--ink); }
 .segmented button { font: 400 1rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; padding: 12px 14px; border: 0; background: var(--night); color: var(--cream); cursor: pointer; }
 .segmented button[aria-pressed="true"] { background: var(--sun); color: var(--ink); }
+
+/* Radio subtitles: the host's whole line, above the radio */
+.radio-caption {
+  display: none; position: absolute; left: 8px; right: 8px; bottom: calc(100% + 8px); margin: 0;
+  padding: 8px 12px; font: 700 .95rem/1.4 var(--body); color: var(--cream);
+  background: rgba(20, 10, 36, .94); border: 2px solid #3fae78; border-radius: 10px; box-shadow: 4px 4px 0 var(--ink);
+}
+.radio[data-on="true"][data-collapsed="false"] .radio-caption:not(:empty) { display: block; }
+.radio-ticker { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }

@@ -46,7 +46,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** revisión con dos miradas. Un desarrollador experto revisa código, rendimiento, accesibilidad y errores. Un usuario normal comprueba si entiende el tiempo en 3 segundos y si se lo pasa bien.
 - **Qué verás:** un informe corto con lo que está bien y lo que hay que corregir. El propietario decide qué se arregla antes de seguir.
 
-### ⬜ Fase 5 — Póster de película y zona Fama
+### ✅ Fase 5 — Póster de película y zona Fama
 - **Qué se hace:** un cartel ilustrado del día ("MADRID: 38° DE FURIA") con un género de cine para cada tipo de tiempo. Estrena la zona Fama.
 - **Qué verás:** un póster que se descarga y se comparte como imagen, también en formato vertical para stories (9:16).
 
@@ -126,3 +126,13 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - El texto de la pantalla de la radio se desplaza entero, a velocidad de lectura.
   - La llamada automática del Tío Isobaras suena una vez en cada visita por ciudad, en vez de una vez al día.
   - Durante la llamada, la radio se pausa del todo y sigue al colgar o al terminar.
+- **Fase 5:** nueva zona **Fama** (cuarta pestaña) con el **póster de película del día**.
+  - La ilustración es la escena real del tiempo. El título lleva la ciudad y los grados ("MADRID: 38° DE FURIA"), junto con una frase promocional con datos reales, el género según el tiempo y un bloque de créditos ("Protagonizada por Madrid · Dirigida por el Tío Isobaras").
+  - Cada cartel lleva una calificación de broma ("No recomendada para paraguas débiles"), las estrellas del día y la fecha.
+  - 10 géneros, uno por tipo de tiempo: acción, comedia, drama, thriller, catástrofe, aventura, misterio, western, cine negro y supervivencia. Los títulos son inventados.
+  - Dos formatos: póster 2:3 y stories 9:16. Botones "Otro título", **Descargar** (PNG a 1080 px) y **Compartir** (menú del sistema en el móvil). Logros y "Respeto y apodo" quedan "fuera de servicio" hasta sus fases.
+  - Ajustes de radio pedidos por el propietario:
+    - la frase del locutor sale entera como subtítulo encima de la radio;
+    - 2 a 3 segundos entre frases;
+    - la emisora sigue al tiempo de la ciudad, también al buscar otra con la radio encendida, salvo que la hayas cambiado tú a mano.
+  - 41 pruebas automáticas.

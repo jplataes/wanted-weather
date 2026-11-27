@@ -308,6 +308,7 @@ function powerOn() {
   state.on = true;
   state.station = state.recommended;
   state.manual = false;
+  document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'radio' } }));
   state.lineIndex = 3 * Math.floor(Math.random() * 3); // start with the weather
   step = 0;
   nextTime = ctx.currentTime + 0.1;

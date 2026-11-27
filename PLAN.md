@@ -58,12 +58,12 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo. Y el minijuego arcade "Esquiva el chaparrón": 20 segundos esquivando lo que cae según el tiempo real, que también da respeto. El Tío Isobaras te llama al día siguiente con el resultado de la apuesta.
 - **Qué verás:** un motivo para volver cada día, y un apodo de jugador que cambia con tus rachas (por ejemplo "Rey del Chubasco").
 
-### ⬜ Fase 8 — Logros
+### ✅ Fase 8 — Logros y apodo
 - **Qué se hace:** logros que se desbloquean con el uso (primera tormenta, racha de 7 días, duelo ganado...). El Tío Isobaras llama para darte la noticia.
 - **Qué verás:** avisos de logro conseguido y una vitrina con todos.
 
 ### ⬜ Fase 9 — Pulido, validación y publicación
-- **Qué se hace:** accesibilidad, modo de "menos movimiento", validador del W3C, PageSpeed, cero errores de consola, README con capturas, enlace y "hecho con IA", y publicación final.
+- **Qué se hace:** accesibilidad, modo de "menos movimiento", validador del W3C, PageSpeed, cero errores de consola, README con capturas, enlace y "hecho con IA", y publicación final. Además, a petición del propietario, un **documento para el profesor del máster** dentro del repositorio. Recogerá los detalles cuidados que marcan la diferencia (y por qué se decidió cada uno), cada punto del temario aplicado con enlaces al código y a los PR, y el proceso de trabajo entre propietario e IA (iteraciones, revisiones, checkpoint), para que se vea el trabajo que hay detrás.
 - **Qué verás:** la URL definitiva lista para entregar.
 
 ## Registro de fases
@@ -158,3 +158,14 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - Se pausa al salir de la zona, y las llamadas esperan a que termine la partida.
   - El respeto, las rachas y el récord se guardan en el dispositivo; el apodo llega en la fase 8.
   - 53 pruebas automáticas.
+- **Fase 8:** logros y apodo en la zona **Fama**, y pistas sutiles de que todo sigue al tiempo real.
+  - **Perfil:** tu **apodo** según el respeto ("Turista del tiempo" → "Mirón de nubes" → … → "Mando supremo del clima"), con barra hacia el siguiente y "en racha" si encadenas aciertos en La apuesta.
+  - **Vitrina de 23 logros:** el tiempo que consultas (tormenta, nieve, 35° de sensación, un día de 5 estrellas, 10 ciudades…) y lo que haces (duelos, paliza 5-0, apuesta clavada, rachas, sobrevivir sin perder estrellas, tirar 10 veces del Excusómetro…).
+  - Cada logro da respeto y sale con un aviso de **"¡Logro desbloqueado!"**.
+  - **El Tío Isobaras te llama cuando subes de apodo** ("Yo siempre lo dije… lo dije en la comida familiar").
+  - **Pistas sutiles** pedidas por el propietario, para que se note sin decirlo que todo sale del tiempo real:
+    - el juego muestra un pequeño parte del día (icono, temperatura, viento y hacia dónde empuja) y la **dificultad de hoy** con nombre ("Paseo"… "Infierno");
+    - el narrador remata la partida relacionándola con el día ("Hoy Madrid te lo ha puesto fácil. Vuelve un día de tormenta, si te atreves.");
+    - el Excusómetro dice con qué datos se hizo la excusa;
+    - el póster explica su género ("Comedia, porque en Madrid luce el sol").
+  - 58 pruebas automáticas.

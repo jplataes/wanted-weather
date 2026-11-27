@@ -36,7 +36,9 @@ async function render() {
   const id = ++renderId;
   const { view, today } = data;
   const lang = getLang();
-  text = posterText(posterTheme(view), facts(view, today, lang), lang, variant);
+  const theme = posterTheme(view);
+  text = posterText(theme, facts(view, today, lang), lang, variant);
+  $('posterWhy').textContent = t('fama.why', { genre: text.genre, city: view.city, reason: t(`fama.reason.${theme}`) });
   const dateLabel = new Date(`${view.dateKey}T12:00:00Z`).toLocaleDateString(lang === 'en' ? 'en-GB' : 'es-ES', { day: 'numeric', month: 'short', timeZone: 'UTC' }).replace('.', '');
   const url = `${window.location.host}${window.location.pathname}`.replace(/\/$/, '');
   $('posterFrame').classList.add('developing');
@@ -75,6 +77,7 @@ async function onDownload() {
   try {
     download(await posterPng(svg, format));
     toast(t('fama.downloaded'));
+    document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'poster' } }));
   } catch {
     toast(t('fama.error'));
   }
@@ -88,6 +91,7 @@ async function onShare() {
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: text.title, text: t('fama.shareText') });
+        document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'poster' } }));
       } catch {
         /* closed the share sheet */
       }

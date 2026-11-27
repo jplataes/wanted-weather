@@ -21,6 +21,7 @@ import { initDuel, updateDuel, duelAgainst } from './duel-ui.js';
 import { randomRival, challengeText } from './duel.js';
 import { initBet, updateBet, settleBets } from './bet-ui.js';
 import { initDodge, updateDodge, pauseDodge, isDodgePlaying } from './dodge.js';
+import { initAchievements, renderFame } from './achievements-ui.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
@@ -123,6 +124,7 @@ function render() {
   updateDuel(view, weather);
   updateBet(view, weather);
   updateDodge(view);
+  document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'weather', view } }));
   return view;
 }
 
@@ -277,6 +279,7 @@ function bindEvents() {
       setLang(button.dataset.lang);
       applyStaticTexts();
       refreshRadioTexts();
+      renderFame();
       if (isCallOpen()) hangUp();
       if (state.bundle) {
         render(); // instant switch of our own texts
@@ -308,6 +311,7 @@ function start() {
   initDuel();
   initBet();
   initDodge();
+  initAchievements();
   bindStarsExplanation();
   bindEvents();
 

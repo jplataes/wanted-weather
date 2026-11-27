@@ -238,6 +238,7 @@
         <blockquote class="excuse-out" id="excOut" hidden>
           <p id="excText" aria-live="polite"></p>
         </blockquote>
+        <p class="why-chip" id="excWhy" hidden></p>
         <div class="buttons" id="excActions" hidden>
           <button class="btn btn-secondary" type="button" id="excShare" data-i18n="exc.share">Compartir</button>
           <button class="btn btn-ghost" type="button" id="excCopy" data-i18n="exc.copy">Copiar</button>
@@ -301,6 +302,12 @@
         <div class="machine-lights" aria-hidden="true"></div>
         <h3 class="machine-title" id="dodgeTitle" data-i18n="dodge.title">Esquiva el chaparrón</h3>
         <p class="machine-sub" id="dodgeSub"></p>
+        <div class="day-report" id="dodgeReport">
+          <span class="day-report-icon" id="dodgeIcon" aria-hidden="true"></span>
+          <span class="day-report-text" id="dodgeReportText"></span>
+          <span class="difficulty" id="dodgeDifficulty" role="img"><i></i><i></i><i></i><i></i><i></i></span>
+          <strong class="difficulty-label" id="dodgeDifficultyLabel"></strong>
+        </div>
         <div class="dodge-screen">
           <canvas id="dodgeCanvas" width="360" height="440" role="img" tabindex="0"></canvas>
           <div class="dodge-overlay" id="dodgeOverlay">
@@ -325,12 +332,25 @@
         <p class="note" data-i18n="famaIntro">Tu ciudad, en cartelera. Descarga el póster de hoy y presume.</p>
       </div>
 
+      <section class="profile" aria-labelledby="nickName">
+        <p class="profile-eyebrow" data-i18n="fame.nickLabel">En la calle te conocen como</p>
+        <h3 class="profile-nick" id="nickName"></h3>
+        <div class="profile-bar" aria-hidden="true"><span id="nickBar"></span></div>
+        <p class="profile-next" id="nickNext"></p>
+        <dl class="bet-stats profile-stats">
+          <div><dt data-i18n="bet.respect">Respeto</dt><dd id="profRespect">0</dd></div>
+          <div><dt data-i18n="bet.streak">Racha</dt><dd id="profStreak">0</dd></div>
+          <div><dt data-i18n="fame.bestDodge">Récord arcade</dt><dd id="profBest">0</dd></div>
+        </dl>
+      </section>
+
       <section class="poster-card" aria-labelledby="posterHeading">
         <h3 class="poster-heading" id="posterHeading" data-i18n="fama.posterTitle">Póster del día</h3>
         <div class="poster-frame" id="posterFrame" data-format="poster">
           <img id="posterImg" alt="" width="1080" height="1620">
           <p class="poster-developing" aria-hidden="true" data-i18n="fama.making">Revelando el póster…</p>
         </div>
+        <p class="why-chip" id="posterWhy"></p>
         <div class="poster-controls">
           <div class="segmented" role="group" data-i18n-aria="fama.format" aria-label="Formato">
             <button type="button" data-format="poster" aria-pressed="true" data-i18n="fama.poster">Póster</button>
@@ -342,10 +362,13 @@
         </div>
       </section>
 
-      <ul class="locked" aria-label="Próximamente" data-i18n-aria="arcadeSoon">
-        <li class="locked-machine"><span class="locked-name" data-i18n="soon.achievements">Logros</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
-        <li class="locked-machine"><span class="locked-name" data-i18n="soon.respect">Respeto y apodo</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
-      </ul>
+      <section class="showcase" aria-labelledby="showcaseTitle">
+        <div class="showcase-head">
+          <h3 class="poster-heading" id="showcaseTitle" data-i18n="fame.showcase">Vitrina de logros</h3>
+          <span class="badge-count" id="badgeCount"></span>
+        </div>
+        <ul class="badges" id="badges"></ul>
+      </section>
     </div>
 
     <p class="updated" id="updated" role="status" aria-live="polite"></p>
@@ -421,6 +444,16 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Achievement unlocked -->
+  <div class="unlock" id="unlock" role="status" aria-live="polite" hidden>
+    <span class="unlock-icon" id="unlockIcon" aria-hidden="true"></span>
+    <span class="unlock-text">
+      <span class="unlock-label" data-i18n="fame.unlockedBanner">¡Logro desbloqueado!</span>
+      <strong id="unlockName"></strong>
+      <small id="unlockReward"></small>
+    </span>
+  </div>
 
   <!-- Living screen: weather effects over the interface (decorative, never blocks clicks) -->
   <div class="screenfx" id="screenfx" aria-hidden="true"></div>

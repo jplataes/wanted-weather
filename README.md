@@ -1,12 +1,12 @@
 # Wanted Weather
 
-A weather app that plays like an open-world game: real forecasts, wanted-level stars, extreme-weather alerts, daily missions and (coming soon) radio and shareable movie posters. Spanish by default, with an ES/EN switch. Built with AI for the AI Maker programme.
+A weather app that plays like an open-world game: real forecasts, wanted-level stars, extreme-weather alerts, daily missions, a car radio, arcade mini-games and (coming soon) shareable movie posters. Spanish by default, with an ES/EN switch. Built with AI for the AI Maker programme.
 
 **Live:** https://jplataes.github.io/wanted-weather/
 
 > 🚧 Work in progress. See [PLAN.md](PLAN.md) for the phases. Screenshots arrive with the final phase.
 
-## What works now (phases 1–2)
+## What works now (phases 1–3)
 - Real current weather from OpenWeatherMap for your location, with Madrid as the fallback if location is refused.
 - City search, ES/EN switch (remembered), last result saved for an instant next visit.
 - HUD: city, temperature, condition, feels like, humidity, wind, sunrise/sunset, an illustrated minimap with the real wind direction and a 1–5 star "wanted level".
@@ -14,6 +14,9 @@ A weather app that plays like an open-world game: real forecasts, wanted-level s
 - Errors explained in the game's style: city not found, invalid key, quota reached, no connection, service down.
 - Mission of the day (objective, real intel and recommended gear) and the next days as "upcoming missions".
 - Eight illustrated scenes with their own characters, a "living screen" layer (rain on the glass, snow, fog, gusts, lightning, heat haze, frost) and a daylight countdown.
+- Three zones like a game menu: Street (today at a glance), Missions and Arcade.
+- A car radio that is always at hand: four fictional stations with music generated live with the Web Audio API and hosts reading real forecast lines (Speech Synthesis). Off by default, with volume and mute.
+- The Excuse-o-matic: a slot machine that gives you a cheeky excuse to bail on plans, built from today's real weather, ready to copy or share.
 - A mission phone call from "Uncle Isobar": the phone rings silently on screen and the voice (Speech Synthesis) only plays when you answer.
 
 ## Run it locally
@@ -36,6 +39,8 @@ The published app never contains the key. It calls a tiny Cloudflare Worker (`wo
 - `src/weather.js` – game logic: wanted level, scenes, formatting
 - `src/forecast.js`, `src/missions.js` – daily forecast summary, mission of the day and gear
 - `src/call.js`, `src/fx.js` – the mission phone call and the living-screen effects
+- `src/radio.js`, `src/radio-lines.js` – the car radio (Web Audio music) and its hosts
+- `src/excuses.js`, `src/excusometer.js` – the Excuse-o-matic
 - `src/i18n.js`, `src/copy.js` – texts in Spanish and English
 - `src/scenes.js`, `src/minimap.js`, `src/icons.js` – illustrations drawn in SVG
 - `src/geo.js`, `src/storage.js` – location and saved data

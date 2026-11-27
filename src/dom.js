@@ -240,12 +240,33 @@ export function renderMission(mission) {
   }));
   $('mission').dataset.theme = mission.theme;
   $('mission').hidden = false;
+
+  // Short version for the Street zone
+  $('teaserWhen').textContent = $('missionWhen').textContent;
+  $('teaserTitle').textContent = mission.title;
+  $('teaserGear').replaceChildren(...$('missionGear').cloneNode(true).children);
+  $('teaser').hidden = false;
 }
 
 /** Show or hide the "missed call" badge on the call button. */
 export function setMissedCall(missed) {
-  $('callBtn').classList.toggle('missed', missed);
-  $('callBtnLabel').textContent = t(missed ? 'missedCall' : 'callBtn');
+  document.querySelectorAll('.js-call').forEach((b) => b.classList.toggle('missed', missed));
+  document.querySelectorAll('.js-call-label').forEach((l) => { l.textContent = t(missed ? 'missedCall' : 'callBtn'); });
+  $('missedDot').hidden = !missed;
+}
+
+/** Show one zone (calle, misiones, recreativos) and mark its tab as current. */
+export function showZone(zone, { focus = false } = {}) {
+  document.querySelectorAll('.zone[data-zone]').forEach((el) => { el.hidden = el.dataset.zone !== zone; });
+  document.querySelectorAll('[data-zone-link]').forEach((a) => {
+    if (a.dataset.zoneLink === zone) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  document.body.dataset.currentZone = zone;
+  if (focus) {
+    window.scrollTo({ top: 0, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    document.getElementById(`zone-${zone}`)?.focus({ preventScroll: true });
+  }
 }
 
 /** Upcoming days as mission cards. Pass null when the forecast is not available. */

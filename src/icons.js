@@ -29,6 +29,7 @@ const GEAR = {
   sunscreen: `<rect x="12" y="11" width="16" height="25" rx="4" fill="#ff7a1a" stroke="${INK}" stroke-width="2.2"/><rect x="15" y="4" width="10" height="7" rx="1.5" fill="#fff3dc" stroke="${INK}" stroke-width="2"/><circle cx="20" cy="23" r="4" fill="#ffc93c" stroke="${INK}" stroke-width="1.6"/>`,
   cap: `<path d="M7 25q0-15 13-15t13 15z" fill="#ff2e8a" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M20 25h17q0 5-8 5h-9z" fill="#ff2e8a" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="20" cy="10" r="1.6" fill="${INK}"/>`,
   water: `<path d="M15 9h10v4q5 2 5 7v14q0 3-3 3H13q-3 0-3-3V20q0-5 5-7z" fill="#bfe9ff" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><rect x="14" y="3" width="12" height="6" rx="1.5" fill="#16c7b7" stroke="${INK}" stroke-width="2"/><path d="M10 24h20" stroke="${INK}" stroke-width="1.6"/>`,
+  sofa: `<path d="M5 18q0-4 4-4h22q4 0 4 4v4H5z" fill="#6e2bc4" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M3 21q0-3 3-3t3 3v4h22v-4q0-3 3-3t3 3v9H3z" fill="#ff2e8a" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/><path d="M7 30v4M33 30v4" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/><path d="M14 25h12" stroke="${INK}" stroke-width="1.6"/>`,
   tshirt: `<path d="M8 12l7-5q5 4 10 0l7 5-3 7-3-2v17H14V17l-3 2z" fill="#ffc93c" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/>`,
 };
 

@@ -13,6 +13,22 @@ The owner directs the project and does not write code. You write all the code.
 - Update PLAN.md at the end of every phase.
 - Never invent facts. Product facts and requirements come from CONTENIDO.md. Humorous copy (missions, radio lines, poster titles) is yours to write, in both languages, following the tone below; the owner reviews it.
 
+## Course concepts (permanent reference)
+Every PR description includes a section called "Conceptos del curso". In plain Spanish and without code, it explains which of these syllabus concepts the phase applied and what for (only the ones that actually apply):
+- What JavaScript is
+- Data types, objects and arrays
+- DOM and BOM (including geolocation)
+- Asynchrony, fetch and async/await
+- HTTP methods, and query params versus body
+- REST endpoint design
+- JSON and status codes
+- Reading an API's documentation
+- Authentication with an API key
+- Error handling in real requests
+- Modules with Vite
+- Command line, npm, package.json, environment variables, .env and .gitignore
+- Resolving merge conflicts with AI
+
 ## Mandatory requirements (course syllabus)
 1. Vite project with ES modules, one responsibility each (at least `api.js`, `dom.js`, `main.js`).
 2. Real requests to the OpenWeatherMap API with `fetch` and `async/await` (current weather and 5-day forecast).

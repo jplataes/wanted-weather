@@ -18,4 +18,9 @@ Use only what is written here for facts. Anything marked PENDING must be asked, 
 - GitHub Pages (or the option recommended and approved in the key-protection decision).
 
 ## Delivery requirements on the platform
-- PENDING: copy them from the Project 2 page in thePower.
+Delivered as a link (or a zip up to 15 MB). The app must:
+1. Consume a real public weather API and show up-to-date data.
+2. Let the user search the weather for any city.
+3. Handle errors correctly.
+4. Keep the API key protected: it must not appear in the code uploaded to GitHub.
+5. Be deployed and publicly accessible.

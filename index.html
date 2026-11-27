@@ -91,6 +91,10 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="12" width="18" height="8" rx="2" fill="currentColor"/><path d="M8 12V7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="5.5" r="2.6" fill="currentColor"/><circle cx="14" cy="16" r="1.4" fill="#140a24"/><circle cx="17.5" cy="16" r="1.4" fill="#140a24"/></svg>
       <span data-i18n="zone.recreativos">Recreativos</span>
     </a>
+    <a class="tab" href="#fama" data-zone-link="fama">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6Z" fill="currentColor"/></svg>
+      <span data-i18n="zone.fama">Fama</span>
+    </a>
   </nav>
 
   <main id="main" class="app">
@@ -238,6 +242,36 @@
         <li class="locked-machine"><span class="locked-name" data-i18n="soon.dodge">Esquiva el chaparrón</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
         <li class="locked-machine"><span class="locked-name" data-i18n="soon.duel">Duelo de ciudades</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
         <li class="locked-machine"><span class="locked-name" data-i18n="soon.bet">La apuesta</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
+      </ul>
+    </div>
+
+    <!-- Zone 4: fame — the poster of the day (achievements and nickname come later) -->
+    <div class="zone zone-fama" id="zone-fama" data-zone="fama" tabindex="-1" hidden>
+      <div class="zone-head">
+        <h2 class="section-title" data-i18n="zone.fama">Fama</h2>
+        <p class="note" data-i18n="famaIntro">Tu ciudad, en cartelera. Descarga el póster de hoy y presume.</p>
+      </div>
+
+      <section class="poster-card" aria-labelledby="posterHeading">
+        <h3 class="poster-heading" id="posterHeading" data-i18n="fama.posterTitle">Póster del día</h3>
+        <div class="poster-frame" id="posterFrame" data-format="poster">
+          <img id="posterImg" alt="" width="1080" height="1620">
+          <p class="poster-developing" aria-hidden="true" data-i18n="fama.making">Revelando el póster…</p>
+        </div>
+        <div class="poster-controls">
+          <div class="segmented" role="group" data-i18n-aria="fama.format" aria-label="Formato">
+            <button type="button" data-format="poster" aria-pressed="true" data-i18n="fama.poster">Póster</button>
+            <button type="button" data-format="story" aria-pressed="false" data-i18n="fama.story">Stories</button>
+          </div>
+          <button class="btn btn-ghost" type="button" id="posterReroll" data-i18n="fama.reroll">Otro título</button>
+          <button class="btn btn-primary" type="button" id="posterDownload" data-i18n="fama.download">Descargar</button>
+          <button class="btn btn-secondary" type="button" id="posterShare" data-i18n="fama.share">Compartir</button>
+        </div>
+      </section>
+
+      <ul class="locked" aria-label="Próximamente" data-i18n-aria="arcadeSoon">
+        <li class="locked-machine"><span class="locked-name" data-i18n="soon.achievements">Logros</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
+        <li class="locked-machine"><span class="locked-name" data-i18n="soon.respect">Respeto y apodo</span><span class="locked-tape" aria-hidden="true"></span><span class="locked-status" data-i18n="outOfOrder">Fuera de servicio</span></li>
       </ul>
     </div>
 

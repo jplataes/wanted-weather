@@ -6,7 +6,7 @@ A weather app that plays like an open-world game: real forecasts, wanted-level s
 
 > 🚧 Work in progress. See [PLAN.md](PLAN.md) for the phases. Screenshots arrive with the final phase.
 
-## What works now (phases 1–7)
+## What works now (phases 1–8)
 - Real current weather from OpenWeatherMap for your location, with Madrid as the fallback if location is refused.
 - City search, ES/EN switch (remembered), last result saved for an instant next visit.
 - HUD: city, temperature, condition, feels like, humidity, wind, sunrise/sunset, an illustrated minimap with the real wind direction and a 1–5 star "wanted level".
@@ -20,6 +20,7 @@ A weather app that plays like an open-world game: real forecasts, wanted-level s
 - City Duel: your city against any other in five rounds of real weather (ideal temperature, sky, wind, humidity, daylight), with a stadium scoreboard, cheeky commentary and a shareable result card. Uncle Isobar calls to dare you.
 - The Bet: guess tomorrow's high; it's checked the next day and Uncle Isobar calls with the result. Earn respect points and streaks (saved on the device).
 - Dodge the Downpour: a 20-second canvas arcade game where what falls comes from today's real weather and the real wind pushes it sideways.
+- Achievements and nickname: 23 achievements from the weather you look up and what you do, a nickname that grows with your respect, and Uncle Isobar calls when it goes up.
 - Fame zone: a movie poster of today's weather (your city, the real scene, a film genre per weather type), in poster or stories format, ready to download as a PNG or share.
 - A mission phone call from "Uncle Isobar": the phone rings silently on screen and the voice (Speech Synthesis) only plays when you answer.
 
@@ -49,6 +50,7 @@ The published app never contains the key. It calls a tiny Cloudflare Worker (`wo
 - `src/duel.js`, `src/duel-ui.js` – the City Duel
 - `src/bet.js`, `src/bet-ui.js`, `src/progress.js` – The Bet, respect and streaks
 - `src/dodge.js` – Dodge the Downpour (canvas game)
+- `src/achievements.js`, `src/achievements-ui.js` – achievements, nickname and trophy cabinet
 - `src/i18n.js`, `src/copy.js` – texts in Spanish and English
 - `src/scenes.js`, `src/minimap.js`, `src/icons.js` – illustrations drawn in SVG
 - `src/geo.js`, `src/storage.js` – location and saved data

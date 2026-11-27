@@ -62,6 +62,9 @@ function spin() {
   setTimeout(() => {
     $('excText').textContent = excuse;
     out.hidden = false;
+    $('excWhy').textContent = t('exc.why', { city: view.city, temp: view.temp, hum: view.humidity });
+    $('excWhy').hidden = false;
+    document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'excuse' } }));
     $('excActions').hidden = false;
     machine.classList.remove('spinning');
     spinning = false;

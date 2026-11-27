@@ -49,6 +49,7 @@ async function fight(query, shownName) {
     const duel = playDuel(mine.weather, theirs);
     last = { duel, you: mine.name, rival: rivalName, verdict: verdict(duel, mine.name, rivalName, lang, `${mine.weather.id}-${theirs.id}`) };
     remember(duel.result, rivalName);
+    document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'duel', result: duel.result, score: duel.score } }));
     status('');
     show(last);
   } catch (error) {

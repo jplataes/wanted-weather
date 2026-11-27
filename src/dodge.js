@@ -3,6 +3,7 @@
 // and the real wind pushes everything sideways.
 import { t, getLang } from './i18n.js';
 import { recordDodge, getProgress } from './progress.js';
+import { weatherIcon } from './icons.js';
 
 const W = 360;
 const H = 440;
@@ -301,7 +302,10 @@ function end() {
   const lang = getLang();
   $('dodgeOverlayTitle').textContent = survived ? t('dodge.survived', { city: view.city }) : t(`dodge.lost.${hazardFor(view)}`, { city: view.city });
   $('dodgeBest').textContent = progress.bestDodge;
-  $('dodgeOverlayText').textContent = t('dodge.result', { score, respect, best: progress.bestDodge }) + (record ? ` ${t('dodge.record')}` : '');
+  // The narrator links the result to today's weather, so a hard game reads as a rough day, not a bug
+  const band = view.level <= 2 ? 'easy' : view.level === 3 ? 'mid' : 'hard';
+  $('dodgeOverlayText').textContent = `${t('dodge.result', { score, respect, best: progress.bestDodge })}${record ? ` ${t('dodge.record')}` : ''} ${t(`dodge.verdict.${band}`, { city: view.city })}`;
+  document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'dodge', survived, lives } }));
   $('dodgeStart').textContent = t('dodge.again');
   $('dodgeOverlay').hidden = false;
   $('dodgeInfo').textContent = $('dodgeOverlayText').textContent;
@@ -371,5 +375,15 @@ export function updateDodge(v) {
   $('dodgeSub').textContent = t('dodge.sub', { city: v.city, hazard: t(`dodge.hazard.${hazard}`), level: v.level });
   $('dodgeBest').textContent = getProgress().bestDodge;
   canvas.setAttribute('aria-label', t('dodge.canvas', { hazard: t(`dodge.hazard.${hazard}`) }));
+  // A small "weather report" so players can tell the game follows today's real weather
+  $('dodgeIcon').innerHTML = weatherIcon(v.kind === 'wind' ? 'wind' : v.kind);
+  const push = windPush(v.windKmh, v.windDeg);
+  const windText = Math.abs(push) >= 15 ? ` · ${t('dodge.windPush', { arrow: push > 0 ? '→' : '←' })}` : '';
+  $('dodgeReportText').textContent = `${v.description} · ${v.temp}° · ${t('wind').toLowerCase()} ${v.windKmh} km/h${windText}`;
+  const bars = $('dodgeDifficulty').children;
+  for (let i = 0; i < bars.length; i++) bars[i].classList.toggle('on', i < v.level);
+  $('dodgeDifficulty').dataset.level = String(v.level);
+  $('dodgeDifficulty').setAttribute('aria-label', t('dodge.difficultyAria', { n: v.level }));
+  $('dodgeDifficultyLabel').textContent = t(`dodge.difficulty.${v.level}`);
   if (state !== 'playing') draw();
 }

@@ -140,7 +140,10 @@ async function settle(store, bundle, lang) {
   }
 
   // Oldest first, so the streak is counted in order
-  settled.sort((a, b) => a.date.localeCompare(b.date)).forEach((s) => recordBet(s.date, s.hit, s.points));
+  settled.sort((a, b) => a.date.localeCompare(b.date)).forEach((s) => {
+    recordBet(s.date, s.hit, s.points);
+    if (!s.expired) document.dispatchEvent(new CustomEvent('ww:track', { detail: { type: 'bet', grade: s.grade } }));
+  });
   store.pending = waiting;
   store.history = [...settled.reverse(), ...store.history].slice(0, 10);
   saveStore(store);

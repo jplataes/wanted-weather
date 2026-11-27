@@ -1,0 +1,83 @@
+# Publishes Wanted Weather on every push to main:
+# 1) deploys the Cloudflare Worker (the proxy that keeps the API key secret),
+# 2) builds the app pointing at that Worker and publishes it on GitHub Pages.
+#
+# Repository secrets needed (Settings > Secrets and variables > Actions):
+#   CLOUDFLARE_API_TOKEN   token with the "Edit Cloudflare Workers" template
+#   CLOUDFLARE_ACCOUNT_ID  your Cloudflare account ID
+#   OPENWEATHER_API_KEY    your OpenWeatherMap key (goes only to the Worker)
+# Optional repository variable:
+#   PROXY_URL              the Worker URL, if you want to set it by hand
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    name: Deploy the API proxy (Cloudflare Worker)
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: "4.161.0"
+          secrets: |
+            OPENWEATHER_API_KEY
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+  pages:
+    name: Build and publish the app (GitHub Pages)
+    needs: worker
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Build
+        env:
+          VITE_PROXY_URL: ${{ vars.PROXY_URL || needs.worker.outputs.url }}
+        run: |
+          if [ -z "$VITE_PROXY_URL" ]; then
+            echo "::error::No Worker URL. Set the PROXY_URL repository variable."
+            exit 1
+          fi
+          npm run build
+      - name: Check that no API key reached the build
+        run: |
+          if grep -rq "appid" dist; then
+            echo "::error::The build contains an API key parameter."
+            exit 1
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: publish
+        uses: actions/deploy-pages@v4

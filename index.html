@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wanted Weather</title>
+  <meta name="description" content="El tiempo de tu ciudad como si fuera un videojuego de mundo abierto: datos reales, nivel de estrellas y alertas con mucha calle.">
+  <meta name="theme-color" content="#2a1250">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6Z' fill='%23ffc93c' stroke='%23140a24' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body data-scene="sun">
+  <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+
+  <!-- Shared drawings reused by every scene and by the minimap -->
+  <svg width="0" height="0" class="defs" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.7" fill="#140a24"/></pattern>
+      <pattern id="dotsLight" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.3" fill="#fff3dc"/></pattern>
+      <path id="skyline" d="M0 232V182H22V152H48V170H62V122H70V110H78V122H92V162H110V142H138V176H150V96H168V84H178V96H196V150H214V132H240V166H258V116H290V152H306V172H322V126H334V108H346V126H360V162H380V142H400V232Z"/>
+      <clipPath id="skyClip"><use href="#skyline"/></clipPath>
+      <pattern id="winDay" width="12" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#9a63e6"/></pattern>
+      <pattern id="winWarm" width="12" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#ffc93c"/></pattern>
+      <pattern id="winNeon" width="24" height="14" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="5" height="7" fill="#ff2e8a"/><rect x="15" y="3" width="5" height="7" fill="#16c7b7"/></pattern>
+      <filter id="rimCream" x="-20%" y="-20%" width="140%" height="140%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="grow"/>
+        <feFlood flood-color="#fff3dc"/><feComposite in2="grow" operator="in"/>
+        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="rimNeon" x="-30%" y="-30%" width="160%" height="160%">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="grow"/>
+        <feFlood flood-color="#ff2e8a"/><feComposite in2="grow" operator="in" result="rim"/>
+        <feGaussianBlur in="rim" stdDeviation="2" result="glow"/>
+        <feMerge><feMergeNode in="glow"/><feMergeNode in="rim"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="haze">
+        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.09" numOctaves="1" seed="3">
+          <animate attributeName="baseFrequency" values="0.01 0.09;0.01 0.13;0.01 0.09" dur="1.8s" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" scale="10"/>
+      </filter>
+      <g id="palm">
+        <path d="M0 0C-2 -40 4 -80 18 -112" fill="none" stroke="#140a24" stroke-width="13" stroke-linecap="round"/>
+        <path d="M0 0C-2 -40 4 -80 18 -112" fill="none" stroke="var(--trunk, #8a4b2a)" stroke-width="6" stroke-linecap="round"/>
+        <g transform="translate(18 -112)" stroke="#140a24" stroke-width="3" stroke-linejoin="round" fill="var(--frond, #0e7a66)">
+          <path d="M0 0C-18 -14 -42 -10 -58 8C-40 -2 -20 -2 0 0Z"/>
+          <path d="M0 0C-12 -24 -34 -34 -52 -28C-30 -22 -14 -14 0 0Z"/>
+          <path d="M0 0C6 -26 26 -38 46 -34C26 -26 12 -14 0 0Z"/>
+          <path d="M0 0C20 -12 46 -8 60 10C40 0 20 -2 0 0Z"/>
+          <path d="M0 0C14 4 30 18 34 38C24 22 12 10 0 0Z"/>
+          <path d="M0 0C-12 6 -26 20 -28 40C-20 24 -10 12 0 0Z"/>
+        </g>
+      </g>
+      <g id="car">
+        <path d="M2 30L6 19L26 15L40 4H72L88 15L108 19L111 30Z" stroke="#140a24" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M44 8H58V15H34Z M62 8H70L80 15H62Z" fill="#bfe9ff" stroke="#140a24" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="26" cy="30" r="8" fill="#140a24"/><circle cx="26" cy="30" r="3" fill="#fff3dc"/>
+        <circle cx="88" cy="30" r="8" fill="#140a24"/><circle cx="88" cy="30" r="3" fill="#fff3dc"/>
+      </g>
+      <g id="cloudShape"><circle cx="40" cy="40" r="26"/><circle cx="76" cy="28" r="30"/><circle cx="112" cy="40" r="24"/><rect x="18" y="40" width="118" height="24" rx="12"/></g>
+      <g id="cloud">
+        <use href="#cloudShape" fill="#140a24" stroke="#140a24" stroke-width="8"/>
+        <use href="#cloudShape" fill="var(--cloud, #4b5a80)"/>
+      </g>
+      <path id="star5" d="M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6Z"/>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#star5" fill="#ffc93c" stroke="#140a24" stroke-width="2" stroke-linejoin="round"/></svg>
+      <span>Wanted</span> <span>Weather</span>
+    </div>
+    <div class="lang" role="group" data-i18n-aria="langGroup">
+      <button type="button" data-lang="es" aria-pressed="true" lang="es">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+    </div>
+  </header>
+
+  <main id="main" class="app">
+    <div class="controls">
+      <form class="search" role="search" id="searchForm" novalidate>
+        <label for="city" class="sr" data-i18n="searchLabel">Buscar ciudad</label>
+        <input id="city" name="city" type="search" autocomplete="address-level2" enterkeyhint="search" maxlength="100" data-i18n-placeholder="searchPlaceholder">
+        <button class="btn btn-primary" type="submit" data-i18n="go">¡Dale!</button>
+      </form>
+      <button class="btn btn-secondary" type="button" id="locate">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#140a24" stroke-width="2.5"><circle cx="12" cy="12" r="7"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/><circle cx="12" cy="12" r="2" fill="#140a24"/></svg>
+        <span data-i18n="locate">Localízame</span>
+      </button>
+    </div>
+
+    <div id="error" class="error-slot" role="alert" hidden></div>
+
+    <section class="stage" id="stage" aria-labelledby="cityName" hidden>
+      <div class="scene-frame" id="scene"></div>
+      <div class="hud-card">
+        <p class="hud-eyebrow" id="localTime"></p>
+        <h1 class="hud-city"><span id="cityName"></span> <span class="country" id="country"></span></h1>
+        <div class="hud-main">
+          <p class="hud-temp" id="temp"></p>
+          <div class="hud-side">
+            <p class="hud-cond" id="condition"></p>
+            <div class="wanted" id="wanted" role="img"></div>
+            <p class="wanted-label" id="wantedLabel"></p>
+          </div>
+        </div>
+      </div>
+      <div class="busy-star" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><use href="#star5" fill="#ffc93c" stroke="#140a24" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+    </section>
+
+    <section class="panel details" id="details" aria-labelledby="detailsTitle" hidden>
+      <h2 class="sr" id="detailsTitle" data-i18n="details">Detalles del día</h2>
+      <dl class="hud-details">
+        <div><dt data-i18n="feelsLike">Sensación</dt><dd id="feels"></dd></div>
+        <div><dt data-i18n="humidity">Humedad</dt><dd id="humidity"></dd></div>
+        <div><dt data-i18n="wind">Viento</dt><dd id="wind"></dd></div>
+        <div><dt data-i18n="sunrise">Amanecer</dt><dd id="sunrise"></dd></div>
+        <div><dt data-i18n="sunset">Atardecer</dt><dd id="sunset"></dd></div>
+      </dl>
+      <div class="minimap-wrap">
+        <div id="minimap"></div>
+        <p class="wind-note" id="windNote"></p>
+      </div>
+    </section>
+
+    <p class="updated" id="updated" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="footer">
+    <p><strong>Wanted Weather</strong> · <span data-i18n="footerMade">Hecho con IA para el programa AI Maker.</span></p>
+    <p><span data-i18n="footerData">Datos del tiempo</span>: <a href="https://openweathermap.org/" rel="noopener" target="_blank">OpenWeatherMap</a> · <a href="https://www.linkedin.com/in/javierplata/" rel="noopener" target="_blank">LinkedIn</a> · <a href="https://github.com/jplataes" rel="noopener" target="_blank">GitHub</a></p>
+  </footer>
+
+  <!-- Title card shown while loading the first time -->
+  <div class="loading" id="loading" hidden>
+    <div class="burst" aria-hidden="true"></div>
+    <p class="loading-logo" aria-hidden="true"><span>Wanted</span><span>Weather</span></p>
+    <p class="tape" id="loadingTagline"></p>
+    <p class="loading-text" id="loadingText" role="status"></p>
+    <p class="loading-tip" id="loadingTip"></p>
+    <svg class="loading-city" viewBox="0 80 1200 156" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g id="loadingCity">
+        <use href="#skyline" fill="#140a24"/>
+        <rect y="80" width="400" height="152" fill="url(#winNeon)" clip-path="url(#skyClip)" opacity=".7"/>
+      </g>
+      <use href="#loadingCity" x="400"/><use href="#loadingCity" x="800"/>
+      <rect y="230" width="1200" height="10" fill="#140a24"/>
+      <g style="--trunk:#140a24; --frond:#140a24"><use href="#palm" transform="translate(470 236) scale(.9)"/><use href="#palm" transform="translate(735 236) scale(-.8 .8)"/><use href="#palm" transform="translate(120 236) scale(.8)"/><use href="#palm" transform="translate(1090 236) scale(-.9 .9)"/></g>
+    </svg>
+  </div>
+
+  <!-- Extreme weather banner -->
+  <div class="overlay" id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alertWord" aria-describedby="alertSub" hidden>
+    <div class="fx" aria-hidden="true"></div>
+    <div class="overlay-inner">
+      <div class="banner">
+        <p class="banner-word" id="alertWord"></p>
+        <p class="banner-sub" id="alertSub"></p>
+      </div>
+      <button class="btn btn-ghost" type="button" id="alertClose" data-i18n="closeAlert">Recibido, jefe</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -64,11 +64,14 @@ function stopVoice() {
   if (speechAvailable()) window.speechSynthesis.cancel();
 }
 
+const signal = (detail) => document.dispatchEvent(new CustomEvent('ww:call', { detail }));
+
 function close(missed) {
   clearTimeout(ringTimer);
   clearInterval(clockTimer);
   stopVoice();
   if (!el) return;
+  if (el.dataset.state === 'talking' || el.dataset.state === 'ended') signal('end');
   el.hidden = true;
   if (missed) onMissed();
 }
@@ -86,6 +89,7 @@ function startClock() {
 
 function answer() {
   clearTimeout(ringTimer);
+  signal('start'); // the radio ducks while the call is on
   setState('talking');
   $('.call-subs').textContent = script;
   $('.hangup').focus();

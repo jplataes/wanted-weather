@@ -11,6 +11,13 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Textos (fase 0):** el propietario lo deja en manos de Claude y pide fusionarlo todo. Los niveles de estrellas, las alertas y el lema rotan entre las 3 opciones de cada uno: se elige una por ciudad y día, para que cada visita sorprenda sin cambiar a cada segundo. Los botones llevan un texto fijo para que se entiendan siempre: "¡Dale!", "¿A qué ciudad vamos, jefe?", "Localízame", "Dale caña a la radio" y "Recibido, jefe" (en inglés: "Hit it", "Where to, boss?", "Find me", "Crank the radio", "Copy that").
 - **Ideas de enganche aprobadas:** llamada de teléfono de la misión y pantalla viva (fase 2), tarjeta vertical para stories (fases 5 y 6) y apodo de jugador según tus rachas (fases 7 y 8).
 - **Estilo:** con la actitud del género de mundo abierto, sin copiar nada propio de GTA (nombres, logos, letras, diseños ni frases).
+- **Estructura de la app (decidida tras la fase 2):** para que todo tenga coherencia y no sea un scroll infinito, la app se organiza en zonas, como el menú de un juego, con una barra de pestañas (abajo en móvil, arriba en ordenador):
+  - **Calle:** el tiempo de un vistazo. Escena, temperatura, estrellas, detalles, minimapa y un resumen de la misión de hoy.
+  - **Misiones:** el dossier completo, la llamada del Tío Isobaras y las próximas misiones.
+  - **Recreativos:** los minijuegos como máquinas de un salón recreativo (Excusómetro, Esquiva el chaparrón, duelo, apuesta).
+  - **Fama** (llega con el póster): póster, logros, respeto y apodo.
+  - **La radio** no es una zona: es la autorradio del coche, una barra fija siempre a mano en cualquier zona.
+- **Los más buscados del planeta:** solo si puede ser dinámico, revisando a diario las ciudades más grandes del mundo y eligiendo las de peor tiempo de ese momento, nunca una lista fija de ganadoras. Se valora en la fase 6; si no se puede hacer bien con el plan gratuito, se descarta.
 
 ## Fases
 
@@ -28,24 +35,24 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué se hace:** previsión de 5 días como "próximas misiones" y la misión del día (objetivo y equipo recomendado). Las 8 escenas completas (despejado, nubes, lluvia, tormenta, nieve, niebla, viento, noche) y una interfaz que cambia con el tiempo y la hora. **Llamada de teléfono de la misión:** un contacto ficticio te llama y te cuenta la misión con voz sintetizada. **Pantalla viva:** gotas que resbalan por el cristal, calima, escarcha en los bordes y relámpagos que iluminan la interfaz.
 - **Qué verás:** una pantalla distinta cada día, con textos de humor en los dos idiomas para revisar.
 
-### ⬜ Fase 3 — La radio
-- **Qué se hace:** emisoras inventadas según el tiempo, música generada en el navegador y locutores que leen la previsión. Apagada al entrar, con volumen y silencio siempre a mano.
-- **Qué verás:** un botón de radio con banda sonora del día.
+### 🟨 Fase 3 — Estructura por zonas, autorradio y Excusómetro (hecha; pendiente de revisión)
+- **Qué se hace:** la navegación por zonas (Calle, Misiones, Recreativos) con un resumen de la misión en Calle que rellena el hueco de ordenador. Una **autorradio** siempre a mano con emisoras inventadas según el tiempo, música generada en el navegador y locutores que leen la previsión real con humor; apagada al entrar, con volumen y silencio siempre visibles. Y el **Excusómetro**: una tragaperras que te da una excusa natural y gamberra, con datos reales de hoy, para escaquearte de un plan, lista para compartir.
+- **Qué verás:** una app ordenada que se entiende de un vistazo, con banda sonora y el primer minijuego.
 
 ### ⬜ Fase 4 — Checkpoint a mitad de camino
 - **Qué se hace:** revisión con dos miradas. Un desarrollador experto revisa código, rendimiento, accesibilidad y errores. Un usuario normal comprueba si entiende el tiempo en 3 segundos y si se lo pasa bien.
 - **Qué verás:** un informe corto con lo que está bien y lo que hay que corregir. El propietario decide qué se arregla antes de seguir.
 
-### ⬜ Fase 5 — Póster de película
-- **Qué se hace:** un cartel ilustrado del día ("MADRID: 38° DE FURIA") con un género de cine para cada tipo de tiempo.
+### ⬜ Fase 5 — Póster de película y zona Fama
+- **Qué se hace:** un cartel ilustrado del día ("MADRID: 38° DE FURIA") con un género de cine para cada tipo de tiempo. Estrena la zona Fama.
 - **Qué verás:** un póster que se descarga y se comparte como imagen, también en formato vertical para stories (9:16).
 
-### ⬜ Fase 6 — Duelo de ciudades
-- **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa.
+### ⬜ Fase 6 — Duelo de ciudades (y los más buscados, si puede ser dinámico)
+- **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa, en Recreativos. Si es viable con el plan gratuito, "Los más buscados del planeta": las ciudades grandes con peor tiempo en ese momento, calculadas cada pocas horas.
 - **Qué verás:** un resultado que se puede compartir, también como tarjeta vertical para stories.
 
-### ⬜ Fase 7 — La apuesta
-- **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo.
+### ⬜ Fase 7 — La apuesta y "Esquiva el chaparrón"
+- **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo. Y el minijuego arcade "Esquiva el chaparrón": 20 segundos esquivando lo que cae según el tiempo real, que también da respeto.
 - **Qué verás:** un motivo para volver cada día, y un apodo de jugador que cambia con tus rachas (por ejemplo "Rey del Chubasco").
 
 ### ⬜ Fase 8 — Logros
@@ -81,3 +88,12 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - Intermediario con dos rutas nuevas, `/api/geocode` y `/api/reverse`.
   - 26 pruebas automáticas y prueba completa en navegador.
 - **Ajustes tras la fase 2 (pedidos por el propietario):** el logo vuelve al inicio, y la tarjeta del HUD ya no tapa la calle donde están los personajes.
+- **Fase 3:** la app se ordena en zonas con pestañas (abajo en móvil, arriba en ordenador). Incluye:
+  - **Calle:** escena, temperatura, detalles y un resumen de la misión, que rellena el hueco de ordenador.
+  - **Misiones:** el dossier, la llamada y los próximos días. La pestaña muestra un punto si hay una llamada perdida.
+  - **Recreativos:** el **Excusómetro**, una tragaperras de tres rodillos que da excusas naturales y gamberras con datos reales de hoy (unas 45 por idioma, escritas aparte en cada uno), con copiar y compartir. Las próximas máquinas salen "fuera de servicio".
+  - **Autorradio** fija en todas las zonas: cuatro emisoras inventadas (Neón Nocturno, Sol de Justicia FM, Lo-Fi Chaparrón y Radio Tormenta), cada una con su música generada en el navegador y su locutor. Los locutores leen frases con los datos reales de hoy.
+    - La emisora recomendada cambia con el tiempo.
+    - Está apagada al entrar; el volumen y el silencio están siempre visibles.
+    - Cuando entra la llamada del Tío Isobaras, la radio baja sola.
+  - 32 pruebas automáticas y prueba completa en navegador, en móvil y en ordenador.

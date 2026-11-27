@@ -14,10 +14,12 @@ import { summarizeForecast } from './forecast.js';
 import { buildMission, upcomingCard } from './missions.js';
 import { setScreenFx } from './fx.js';
 import { showCall, isCallOpen, hangUp } from './call.js';
+import { initRadio, updateRadio, refreshRadioTexts } from './radio.js';
+import { initExcusometer, updateExcusometer } from './excusometer.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
-  startDaylight, renderMission, renderUpcoming, setMissedCall,
+  startDaylight, renderMission, renderUpcoming, setMissedCall, showZone,
 } from './dom.js';
 
 const FALLBACK_CITY = 'Madrid';
@@ -25,6 +27,13 @@ const REFRESH_AFTER_MS = 10 * 60 * 1000;
 const SCENES = ['sun', 'clouds', 'rain', 'storm', 'snow', 'fog', 'wind', 'night'];
 const FX = ['rain', 'storm', 'snow', 'fog', 'wind', 'heat', 'cold', 'none'];
 const ALERTS = ['rain', 'heat', 'cold', 'wind', 'storm'];
+const ZONES = ['calle', 'misiones', 'recreativos'];
+
+/** Zone from the address (#calle, #misiones, #recreativos), Street by default. */
+const zoneFromHash = () => {
+  const zone = window.location.hash.slice(1);
+  return ZONES.includes(zone) ? zone : 'calle';
+};
 
 const state = {
   bundle: null, // { weather, forecast, geo } — last good data
@@ -94,6 +103,8 @@ function render() {
   renderMission(state.mission);
   renderUpcoming(summary ? summary.days.map((d) => upcomingCard(d, lang, view.seed)) : null);
   setMissedCall(false);
+  updateRadio(view, state.mission);
+  updateExcusometer(view, state.mission, day ? day.pop : null);
   return view;
 }
 
@@ -194,17 +205,20 @@ function bindEvents() {
 
   document.getElementById('locate').addEventListener('click', () => locate({ automatic: false }));
 
-  document.getElementById('callBtn').addEventListener('click', () => {
+  document.querySelectorAll('.js-call').forEach((button) => button.addEventListener('click', () => {
     if (!state.mission) return;
     setMissedCall(false);
     showCall({ text: state.mission.script, mode: 'now' });
-  });
+  }));
+
+  window.addEventListener('hashchange', () => showZone(zoneFromHash(), { focus: true }));
 
   document.querySelectorAll('[data-lang]').forEach((button) => {
     button.addEventListener('click', () => {
       if (button.dataset.lang === getLang()) return;
       setLang(button.dataset.lang);
       applyStaticTexts();
+      refreshRadioTexts();
       if (isCallOpen()) hangUp();
       if (state.bundle) {
         render(); // instant switch of our own texts
@@ -229,6 +243,9 @@ function bindEvents() {
 function start() {
   setLang(getLang());
   applyStaticTexts();
+  showZone(zoneFromHash());
+  initRadio();
+  initExcusometer();
   bindEvents();
 
   const last = loadLastResult();

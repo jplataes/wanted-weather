@@ -63,3 +63,10 @@ export function pickBySeed(options, seed) {
 export function pickRandom(options) {
   return options[Math.floor(Math.random() * options.length)];
 }
+
+/** "1 grados" -> "1 grado", "1 degrees" -> "1 degree" (and -1). */
+export function fixDegrees(text) {
+  return text
+    .replace(/(^|[^\d.,])(-?1) grados/g, '$1$2 grado')
+    .replace(/(^|[^\d.,])(-?1) degrees/g, '$1$2 degree');
+}

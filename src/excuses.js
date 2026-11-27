@@ -1,3 +1,5 @@
+import { fixDegrees } from './copy.js';
+
 // excuses.js — the Excuse-o-matic: natural, cheeky excuses to bail on plans, based on today's real weather.
 // Written separately in each language. Placeholders are filled with real data.
 
@@ -172,7 +174,7 @@ export function excuseThemes(view) {
 /** Every excuse available today, with real numbers filled in. Lines that need a number we don't have are skipped. */
 export function excusePool(view, lang, facts) {
   const known = (line) => [...line.matchAll(/\{(\w+)\}/g)].every(([, k]) => facts[k] !== null && facts[k] !== undefined);
-  const fill = (line) => line.replace(/\{(\w+)\}/g, (_, k) => facts[k]);
+  const fill = (line) => fixDegrees(line.replace(/\{(\w+)\}/g, (_, k) => facts[k]));
   return excuseThemes(view).flatMap((theme) => EXCUSES[theme][lang].filter(known).map(fill));
 }
 

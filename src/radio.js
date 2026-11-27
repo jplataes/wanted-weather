@@ -287,6 +287,7 @@ function powerOn() {
   ctx.resume();
   state.on = true;
   state.station = state.recommended;
+  state.lineIndex = 3 * Math.floor(Math.random() * 3); // start with the weather
   step = 0;
   nextTime = ctx.currentTime + 0.1;
   timer = setInterval(schedule, 25);
@@ -312,6 +313,7 @@ function tune(delta) {
   state.station = STATION_IDS[(i + delta + STATION_IDS.length) % STATION_IDS.length];
   stopSpeech();
   startCrackle();
+  state.lineIndex = Math.ceil(state.lineIndex / 3) * 3; // new station opens with the weather
   step = 0;
   $('radioTicker').textContent = '';
   renderDisplay();

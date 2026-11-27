@@ -17,6 +17,9 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
   - **Recreativos:** los minijuegos como máquinas de un salón recreativo (Excusómetro, Esquiva el chaparrón, duelo, apuesta).
   - **Fama** (llega con el póster): póster, logros, respeto y apodo.
   - **La radio** no es una zona: es la autorradio del coche, una barra fija siempre a mano en cualquier zona.
+- **Voces de la app (decidido tras la fase 3):**
+  - **La radio es la ciudad:** da el tiempo de vez en cuando y, entre medias, cuñas de publicidad inventadas, partes de tráfico absurdos, dedicatorias y consejos de abuela. No habla de tu misión.
+  - **El Tío Isobaras es tu juego:** el contacto personal, gamberro y con toque de cuñado ("Hazme caso, que de esto yo sé un rato"). Da la misión, el equipo y su consejo de cuñado, y es el narrador que une los minijuegos: llamará para las alertas de tiempo extremo, el resultado de la apuesta (fase 7), los logros y el apodo (fase 8) y los retos de duelo (fase 6).
 - **Los más buscados del planeta:** solo si puede ser dinámico, revisando a diario las ciudades más grandes del mundo y eligiendo las de peor tiempo de ese momento, nunca una lista fija de ganadoras. Se valora en la fase 6; si no se puede hacer bien con el plan gratuito, se descarta.
 
 ## Fases
@@ -48,15 +51,15 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
 - **Qué verás:** un póster que se descarga y se comparte como imagen, también en formato vertical para stories (9:16).
 
 ### ⬜ Fase 6 — Duelo de ciudades (y los más buscados, si puede ser dinámico)
-- **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa, en Recreativos. Si es viable con el plan gratuito, "Los más buscados del planeta": las ciudades grandes con peor tiempo en ese momento, calculadas cada pocas horas.
+- **Qué se hace:** tu ciudad contra otra, como un marcador de partido con guasa, en Recreativos. El Tío Isobaras te llama para retarte. Si es viable con el plan gratuito, "Los más buscados del planeta": las ciudades grandes con peor tiempo en ese momento, calculadas cada pocas horas.
 - **Qué verás:** un resultado que se puede compartir, también como tarjeta vertical para stories.
 
 ### ⬜ Fase 7 — La apuesta y "Esquiva el chaparrón"
-- **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo. Y el minijuego arcade "Esquiva el chaparrón": 20 segundos esquivando lo que cae según el tiempo real, que también da respeto.
+- **Qué se hace:** adivinar la temperatura de mañana, comprobarla al día siguiente y ganar puntos de "respeto" y rachas, guardados en el dispositivo. Y el minijuego arcade "Esquiva el chaparrón": 20 segundos esquivando lo que cae según el tiempo real, que también da respeto. El Tío Isobaras te llama al día siguiente con el resultado de la apuesta.
 - **Qué verás:** un motivo para volver cada día, y un apodo de jugador que cambia con tus rachas (por ejemplo "Rey del Chubasco").
 
 ### ⬜ Fase 8 — Logros
-- **Qué se hace:** logros que se desbloquean con el uso (primera tormenta, racha de 7 días, duelo ganado...).
+- **Qué se hace:** logros que se desbloquean con el uso (primera tormenta, racha de 7 días, duelo ganado...). El Tío Isobaras llama para darte la noticia.
 - **Qué verás:** avisos de logro conseguido y una vitrina con todos.
 
 ### ⬜ Fase 9 — Pulido, validación y publicación
@@ -100,3 +103,7 @@ Leyenda de estado: ⬜ pendiente · 🟨 en curso · ✅ terminada
     - La palanca del Excusómetro es una palanca de verdad: se arrastra hacia abajo, se pulsa o se usa con el teclado.
     - La radio se esconde en una burbuja: deslizándola en el móvil o con su botón, y vuelve con un toque. Empieza escondida en el móvil y visible en ordenador, y se recuerda la elección. Si suena, el silencio sigue a mano en la burbuja.
   - 32 pruebas automáticas y prueba completa en navegador, en móvil y en ordenador.
+- **Voces (tras la fase 3):**
+  - La radio deja de repetir la misión: el tiempo cada tres turnos, y entre medias 16 piezas por idioma de publicidad inventada, tráfico, dedicatorias y consejos de abuela.
+  - El Tío Isobaras gana su toque de cuñado: un consejo según el tiempo en cada llamada, que también sale escrito en el dossier.
+  - Corregido "1 grados" → "1 grado".

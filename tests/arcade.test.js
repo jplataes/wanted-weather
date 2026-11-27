@@ -2,7 +2,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EXCUSES, excuseThemes, excusePool, makePicker } from '../src/excuses.js';
-import { STATIONS, stationFor, djLine } from '../src/radio-lines.js';
+import { STATIONS, BITS, stationFor, djLine } from '../src/radio-lines.js';
+import { fixDegrees } from '../src/copy.js';
 
 const view = (over = {}) => ({ kind: 'clear', feels: 18, windKmh: 5, night: false, scene: 'sun', ...over });
 const facts = { temp: 12, feels: 10, wind: 40, humidity: 85, pop: 70, time: '21:30', city: 'Madrid' };
@@ -53,4 +54,21 @@ test('radio: host lines use real facts in both languages', () => {
       }
     }
   }
+});
+
+test('radio: weather every third turn, bits in between, never the mission', () => {
+  const f = { ...facts, desc: 'nubes', sunset: '17:50' };
+  assert.ok(djLine('sol', 0, f, 'es').includes('Madrid'));
+  assert.ok(BITS.es.includes(djLine('sol', 1, f, 'es')));
+  assert.ok(BITS.es.includes(djLine('sol', 2, f, 'es')));
+  assert.ok(!BITS.es.includes(djLine('sol', 3, f, 'es')));
+  assert.equal(BITS.es.length, BITS.en.length);
+  for (const id of Object.keys(STATIONS)) for (const lang of ['es', 'en']) assert.ok(STATIONS[id].lines[lang].every((l) => !l.includes('{mission}')));
+});
+
+test('singular degrees', () => {
+  assert.equal(fixDegrees('sensación de 1 grados'), 'sensación de 1 grado');
+  assert.equal(fixDegrees('feels like -1 degrees'), 'feels like -1 degree');
+  assert.equal(fixDegrees('hace 11 grados'), 'hace 11 grados');
+  assert.equal(fixDegrees('hace 21 grados'), 'hace 21 grados');
 });

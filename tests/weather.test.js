@@ -1,7 +1,7 @@
 // Tests for the game logic (wanted level, scene choice, formatting).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kindFromCode, sceneFor, wantedLevel, compassIndex, cityTime, buildView } from '../src/weather.js';
+import { kindFromCode, sceneFor, screenFxFor, localName, wantedLevel, compassIndex, cityTime, buildView } from '../src/weather.js';
 
 const base = (over = {}) => ({
   id: 1, name: 'Testville', dt: 1700000000, timezone: 3600,
@@ -22,10 +22,28 @@ test('weather kinds from condition codes', () => {
   assert.equal(kindFromCode(803), 'clouds');
 });
 
-test('scene: rain wins over night, otherwise night or sun', () => {
+test('scene: bad weather wins over night, then wind, night, clouds or sun', () => {
   assert.equal(sceneFor('rain', true), 'rain');
+  assert.equal(sceneFor('snow', false), 'snow');
+  assert.equal(sceneFor('clear', false, 45), 'wind');
   assert.equal(sceneFor('clear', true), 'night');
-  assert.equal(sceneFor('clouds', false), 'sun');
+  assert.equal(sceneFor('clouds', false), 'clouds');
+  assert.equal(sceneFor('clear', false), 'sun');
+});
+
+test('screen effect follows the real conditions', () => {
+  assert.equal(screenFxFor('rain', 10, 5), 'rain');
+  assert.equal(screenFxFor('clear', 33, 5), 'heat');
+  assert.equal(screenFxFor('clouds', 1, 5), 'cold');
+  assert.equal(screenFxFor('clear', 15, 35), 'wind');
+  assert.equal(screenFxFor('clear', 15, 5), 'none');
+});
+
+test('place name in the app language', () => {
+  const geo = { name: 'Seville', local_names: { es: 'Sevilla', en: 'Seville' } };
+  assert.equal(localName(geo, 'es'), 'Sevilla');
+  assert.equal(localName(geo, 'en'), 'Seville');
+  assert.equal(localName(null, 'es', 'Fallback'), 'Fallback');
 });
 
 test('a mild clear day is 1 star with no alert', () => {

@@ -5,64 +5,137 @@ import '@fontsource/barlow/500.css';
 import '@fontsource/barlow/700.css';
 import './styles/main.css';
 
-import { getCurrentWeather, ApiError } from './api.js';
+import { getCurrentWeather, getForecast, findCity, findPlaceName, ApiError } from './api.js';
 import { getPosition } from './geo.js';
-import { saveLastResult, loadLastResult, session } from './storage.js';
+import { saveLastResult, loadLastResult, local, session } from './storage.js';
 import { t, getLang, setLang } from './i18n.js';
 import { buildView } from './weather.js';
+import { summarizeForecast } from './forecast.js';
+import { buildMission, upcomingCard } from './missions.js';
+import { setScreenFx } from './fx.js';
+import { showCall, isCallOpen, hangUp } from './call.js';
 import {
   applyStaticTexts, renderWeather, setUpdated, showLoading, hideLoading, setBusy,
   showError, clearError, toast, showAlert, closeAlert, isAlertOpen,
+  startDaylight, renderMission, renderUpcoming, setMissedCall,
 } from './dom.js';
 
 const FALLBACK_CITY = 'Madrid';
 const REFRESH_AFTER_MS = 10 * 60 * 1000;
+const SCENES = ['sun', 'clouds', 'rain', 'storm', 'snow', 'fog', 'wind', 'night'];
+const FX = ['rain', 'storm', 'snow', 'fog', 'wind', 'heat', 'cold', 'none'];
+const ALERTS = ['rain', 'heat', 'cold', 'wind', 'storm'];
 
 const state = {
-  data: null, // last good API response
+  bundle: null, // { weather, forecast, geo } — last good data
   place: null, // {city} or {lat, lon}, plus source: 'geo' | 'search' | 'fallback'
   savedAt: 0,
   fromCache: false,
   requestId: 0,
+  mission: null,
 };
 
-// Test helpers for the owner: ?alerta=storm shows a banner, ?escena=rain forces a scene.
+// Test helpers for the owner: ?alerta=storm, ?escena=snow, ?efecto=rain, ?llamada=1
 const params = new URLSearchParams(window.location.search);
-const forcedAlert = ['rain', 'heat', 'cold', 'wind', 'storm'].includes(params.get('alerta')) ? params.get('alerta') : null;
-const forcedScene = ['sun', 'rain', 'night'].includes(params.get('escena')) ? params.get('escena') : null;
+const pickParam = (name, list) => (list.includes(params.get(name)) ? params.get(name) : null);
+const forced = {
+  alert: pickParam('alerta', ALERTS),
+  scene: pickParam('escena', SCENES),
+  fx: pickParam('efecto', FX),
+  call: params.get('llamada') === '1',
+};
+
+/** Keep only the place names we need from a geocoding result. */
+function slimGeo(geo) {
+  if (!geo) return null;
+  const names = geo.local_names || {};
+  return { name: geo.name, local_names: { es: names.es, en: names.en } };
+}
+
+/**
+ * Everything for one place, in parallel where possible:
+ * a city search first finds the coordinates; then weather, forecast and the local place name.
+ * The forecast and the name are extras: if they fail, the HUD still works.
+ */
+async function fetchBundle(place, lang) {
+  let coords;
+  let geo = null;
+  if (place.city) {
+    geo = await findCity(place.city);
+    coords = { lat: geo.lat, lon: geo.lon };
+  } else {
+    coords = { lat: place.lat, lon: place.lon };
+  }
+  const [weather, forecast, name] = await Promise.all([
+    getCurrentWeather(coords, lang),
+    getForecast(coords, lang).catch(() => null),
+    geo ? Promise.resolve(geo) : findPlaceName(coords).catch(() => null),
+  ]);
+  return { weather, forecast, geo: slimGeo(name) };
+}
 
 function render() {
-  const view = buildView(state.data, getLang());
-  if (forcedScene) view.scene = forcedScene;
+  const lang = getLang();
+  const { weather, forecast, geo } = state.bundle;
+  const view = buildView(weather, lang, geo);
+  if (forced.scene) view.scene = forced.scene;
+  if (forced.fx) view.fx = forced.fx;
+
   renderWeather(view);
   setUpdated(state.savedAt, state.fromCache);
+  startDaylight(view);
+  setScreenFx(view.fx);
+
+  // Mission: today if there are still forecast hours left today, otherwise tomorrow
+  const summary = forecast ? summarizeForecast(forecast) : null;
+  const useToday = !summary || (summary.today && summary.today.slots >= 2);
+  const day = summary ? (useToday ? summary.today : summary.days[0]) : null;
+  state.mission = buildMission({ day: day ?? null, when: useToday ? 'today' : 'tomorrow', view, lang });
+  renderMission(state.mission);
+  renderUpcoming(summary ? summary.days.map((d) => upcomingCard(d, lang, view.seed)) : null);
+  setMissedCall(false);
   return view;
 }
 
-/** Show the extreme-weather banner once per city, day and type. */
+/** Show the extreme-weather banner once per city, day and type. Returns true if shown. */
 function maybeAlert(view) {
-  const type = forcedAlert || view.extreme;
-  if (!type) return;
+  const type = forced.alert || view.extreme;
+  if (!type) return false;
   const key = `ww.alert.${view.seed}.${type}`;
-  if (!forcedAlert && session.get(key)) return;
+  if (!forced.alert && session.get(key)) return false;
   session.set(key, true);
   showAlert(type, view.seed);
+  return true;
 }
 
-/** Fetch the weather for a place and paint it. Older requests are ignored if a newer one started. */
+let ringTimer;
+/** The phone rings once per city and day with the mission (visual only; voice needs a tap). */
+function maybeRing(view) {
+  clearTimeout(ringTimer);
+  const key = `ww.call.${view.seed}`;
+  if (!forced.call && local.get(key)) return;
+  ringTimer = setTimeout(() => {
+    if (isAlertOpen()) { maybeRing(view); return; } // wait for the alert to be closed
+    local.set(key, true);
+    showCall({ text: state.mission.script, mode: 'ring', missed: () => setMissedCall(true) });
+  }, forced.call ? 800 : 3500);
+}
+
+/** Fetch everything for a place and paint it. Older requests are ignored if a newer one started. */
 async function load(place) {
   const id = ++state.requestId;
   clearError();
-  if (state.data) setBusy(true);
+  if (state.bundle) setBusy(true);
   else showLoading(place.city ? t('loadingCity', { city: place.city }) : t('loading'));
 
   try {
-    const data = await getCurrentWeather(place, getLang());
+    const bundle = await fetchBundle(place, getLang());
     if (id !== state.requestId) return;
-    Object.assign(state, { data, place, savedAt: Date.now(), fromCache: false });
-    saveLastResult(data, place);
+    Object.assign(state, { bundle, place, savedAt: Date.now(), fromCache: false });
+    saveLastResult(bundle, place);
     const view = render();
     maybeAlert(view);
+    maybeRing(view);
   } catch (error) {
     if (id !== state.requestId) return;
     handleError(error, place);
@@ -80,7 +153,7 @@ function handleError(error, place) {
   const actions = [];
   if (kind === 'notFound') {
     actions.push({ label: t('searchLabel'), primary: true, onClick: () => { clearError(); document.getElementById('city').focus(); } });
-    if (!state.data) actions.push({ label: t('backHome', { city: FALLBACK_CITY }), onClick: () => load({ city: FALLBACK_CITY, source: 'fallback' }) });
+    if (!state.bundle) actions.push({ label: t('backHome', { city: FALLBACK_CITY }), onClick: () => load({ city: FALLBACK_CITY, source: 'fallback' }) });
   } else if (kind !== 'badKey' && kind !== 'config') {
     actions.push({ label: t('retry'), primary: true, onClick: () => load(place) });
   }
@@ -89,16 +162,15 @@ function handleError(error, place) {
 
 /** Use the browser's location; if it's refused or fails, fall back. */
 async function locate({ automatic }) {
-  if (!state.data) showLoading(t('loading'));
+  if (!state.bundle) showLoading(t('loading'));
   else setBusy(true);
   try {
     const { lat, lon } = await getPosition();
     await load({ lat, lon, source: 'geo' });
   } catch (error) {
     const denied = error && error.code === 1;
-    const message = t(denied ? 'geoDenied' : 'geoFailed', { city: FALLBACK_CITY });
-    if (automatic || !state.data) {
-      toast(message);
+    if (automatic || !state.bundle) {
+      toast(t(denied ? 'geoDenied' : 'geoFailed', { city: FALLBACK_CITY }));
       await load({ city: FALLBACK_CITY, source: 'fallback' });
     } else {
       setBusy(false);
@@ -122,12 +194,19 @@ function bindEvents() {
 
   document.getElementById('locate').addEventListener('click', () => locate({ automatic: false }));
 
+  document.getElementById('callBtn').addEventListener('click', () => {
+    if (!state.mission) return;
+    setMissedCall(false);
+    showCall({ text: state.mission.script, mode: 'now' });
+  });
+
   document.querySelectorAll('[data-lang]').forEach((button) => {
     button.addEventListener('click', () => {
       if (button.dataset.lang === getLang()) return;
       setLang(button.dataset.lang);
       applyStaticTexts();
-      if (state.data) {
+      if (isCallOpen()) hangUp();
+      if (state.bundle) {
         render(); // instant switch of our own texts
         load(state.place); // fetch descriptions in the new language
       }
@@ -137,10 +216,11 @@ function bindEvents() {
   document.getElementById('alertClose').addEventListener('click', closeAlert);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isAlertOpen()) closeAlert();
+    else if (e.key === 'Escape' && isCallOpen()) hangUp();
   });
 
   // Keep "updated X min ago" honest, and refresh when coming back after a while
-  setInterval(() => { if (state.data) setUpdated(state.savedAt, state.fromCache); }, 60000);
+  setInterval(() => { if (state.bundle) setUpdated(state.savedAt, state.fromCache); }, 60000);
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && state.place && Date.now() - state.savedAt > REFRESH_AFTER_MS) load(state.place);
   });
@@ -152,8 +232,10 @@ function start() {
   bindEvents();
 
   const last = loadLastResult();
-  if (last) {
-    Object.assign(state, { data: last.data, place: last.place, savedAt: last.savedAt, fromCache: true });
+  // Phase 1 saved only the current weather; wrap it so old visitors still get an instant screen
+  const bundle = last && (last.data.weather && last.data.main ? { weather: last.data, forecast: null, geo: null } : last.data);
+  if (last && bundle && bundle.weather) {
+    Object.assign(state, { bundle, place: last.place, savedAt: last.savedAt, fromCache: true });
     render();
   }
 

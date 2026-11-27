@@ -3,8 +3,16 @@
 // In local development (npm run dev) it can call OpenWeatherMap directly with the key from .env.
 
 const PROXY_URL = (import.meta.env.VITE_PROXY_URL || '').replace(/\/$/, '');
-const OWM_BASE = 'https://api.openweathermap.org/data/2.5';
+const OWM = 'https://api.openweathermap.org';
 const TIMEOUT_MS = 10000;
+
+// Our endpoint name -> OpenWeatherMap path
+const PATHS = {
+  weather: '/data/2.5/weather', // current weather
+  forecast: '/data/2.5/forecast', // 5 days, every 3 hours
+  geocode: '/geo/1.0/direct', // city name -> coordinates and local names
+  reverse: '/geo/1.0/reverse', // coordinates -> place name and local names
+};
 
 /** An error with a "kind" the interface knows how to explain. */
 export class ApiError extends Error {
@@ -29,24 +37,7 @@ export function kindFromStatus(status) {
   return 'unknown';
 }
 
-/**
- * Build the query parameters for a place: a city name or coordinates.
- * @param {{city?: string, lat?: number, lon?: number}} place
- * @param {'es'|'en'} lang
- */
-function placeParams(place, lang) {
-  const params = new URLSearchParams();
-  if (place.city) {
-    params.set('q', place.city.trim());
-  } else {
-    params.set('lat', String(place.lat));
-    params.set('lon', String(place.lon));
-  }
-  params.set('lang', lang);
-  return params;
-}
-
-/** Build the full URL for an endpoint ("weather" or "forecast"). */
+/** Build the full URL for one of our endpoints. */
 function buildUrl(endpoint, params) {
   if (PROXY_URL) {
     return `${PROXY_URL}/api/${endpoint}?${params}`;
@@ -55,19 +46,20 @@ function buildUrl(endpoint, params) {
     // Development only: this branch is removed from the production build.
     const key = import.meta.env.VITE_OPENWEATHER_API_KEY;
     if (!key) throw new ApiError('config');
-    params.set('units', 'metric');
+    if (endpoint === 'weather' || endpoint === 'forecast') params.set('units', 'metric');
+    else params.set('limit', '1');
     params.set('appid', key);
-    return `${OWM_BASE}/${endpoint}?${params}`;
+    return `${OWM}${PATHS[endpoint]}?${params}`;
   }
   throw new ApiError('config');
 }
 
 /** GET a JSON resource with a timeout and translate every failure into an ApiError. */
-async function request(endpoint, place, lang) {
+async function request(endpoint, params) {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     throw new ApiError('offline');
   }
-  const url = buildUrl(endpoint, placeParams(place, lang));
+  const url = buildUrl(endpoint, params);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
@@ -90,12 +82,31 @@ async function request(endpoint, place, lang) {
   }
 }
 
-/** Current weather for a city or coordinates. */
-export function getCurrentWeather(place, lang) {
-  return request('weather', place, lang);
+const coordParams = ({ lat, lon }, lang) => {
+  const p = new URLSearchParams({ lat: String(lat), lon: String(lon) });
+  if (lang) p.set('lang', lang);
+  return p;
+};
+
+/** Current weather at some coordinates. */
+export function getCurrentWeather(coords, lang) {
+  return request('weather', coordParams(coords, lang));
 }
 
-/** 5-day forecast in 3-hour steps for a city or coordinates. */
-export function getForecast(place, lang) {
-  return request('forecast', place, lang);
+/** 5-day forecast in 3-hour steps at some coordinates. */
+export function getForecast(coords, lang) {
+  return request('forecast', coordParams(coords, lang));
+}
+
+/** Find a city by name. Resolves to the best match, or throws "notFound". */
+export async function findCity(name) {
+  const results = await request('geocode', new URLSearchParams({ q: name.trim() }));
+  if (!Array.isArray(results) || results.length === 0) throw new ApiError('notFound', 404);
+  return results[0];
+}
+
+/** Name of the place at some coordinates (null if unknown). */
+export async function findPlaceName(coords) {
+  const results = await request('reverse', coordParams(coords));
+  return Array.isArray(results) && results.length ? results[0] : null;
 }

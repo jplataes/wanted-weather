@@ -65,7 +65,7 @@ function stepUp(value, steps) {
 
 /**
  * How rough the day is, from 1 to 5 stars, and which factor is to blame.
- * @returns {{level: number, factors: Record<string, number>, extreme: null|'rain'|'heat'|'cold'|'wind'|'storm'}}
+ * @returns {{level: number, factors: Record<string, number>, extreme: null|'rain'|'heat'|'cold'|'wind'|'storm', reason: string}}
  */
 export function wantedLevel(data) {
   const id = data.weather?.[0]?.id ?? 800;
@@ -87,18 +87,34 @@ export function wantedLevel(data) {
   }
 
   const level = Math.max(1, ...Object.values(factors));
+  // What caused the stars, to explain them to the user
+  let reason = 'calm';
+  if (level > 1) {
+    reason = ['storm', 'rain', 'wind', 'heat', 'cold', 'fog'].find((k) => factors[k] === level) ?? 'calm';
+    if (reason === 'cold' && SNOW_LEVEL[id] === level) reason = 'snow';
+  }
   let extreme = null;
   if (level >= 4) {
     // Ties go to the most dramatic factor
     extreme = ['storm', 'rain', 'wind', 'heat', 'cold'].find((k) => factors[k] === level) ?? null;
   }
-  return { level, factors, extreme };
+  return { level, factors, extreme, reason };
 }
 
 /** Local time at the city, using the offset (in seconds) that the API sends. */
 export function cityTime(unixSeconds, tzOffsetSeconds, lang) {
   const date = new Date((unixSeconds + tzOffsetSeconds) * 1000);
   return date.toLocaleTimeString(lang === 'en' ? 'en-GB' : 'es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+}
+
+/** Full country name in the app language ("ES" -> "España"), or the code if the browser can't tell. */
+export function countryName(code, lang) {
+  if (!code) return '';
+  try {
+    return new Intl.DisplayNames([lang === 'en' ? 'en' : 'es'], { type: 'region' }).of(code) || code;
+  } catch {
+    return code;
+  }
 }
 
 /** Compass sector (0–7: N, NE, E, SE, S, SW, W, NW) for a wind direction in degrees. */
@@ -123,7 +139,7 @@ export function buildView(data, lang, place = null) {
   return {
     id: data.id,
     city: localName(place, lang, data.name),
-    country: data.sys?.country ?? '',
+    country: countryName(data.sys?.country ?? '', lang),
     lat: data.coord?.lat ?? 0,
     lon: data.coord?.lon ?? 0,
     temp: Math.round(data.main?.temp ?? 0),
@@ -145,6 +161,28 @@ export function buildView(data, lang, place = null) {
     fx: screenFxFor(kind, data.main?.feels_like ?? 15, Math.max(data.wind?.speed ?? 0, (data.wind?.gust ?? 0) * 0.8) * 3.6),
     level: wanted.level,
     extreme: wanted.extreme,
+    reason: wanted.reason,
+    gustShowKmh: Math.round(Math.max(data.wind?.speed ?? 0, data.wind?.gust ?? 0) * 3.6),
     seed: `${data.id}-${cityDay(data)}`,
   };
+}
+
+/**
+ * Other cities with the same name, without duplicates and without the chosen one.
+ * @param {object[]} results geocoding results, best first (the first one is the chosen city)
+ */
+export function otherMatches(results) {
+  const key = (g) => `${g.name}|${g.state ?? ''}|${g.country}`;
+  const seen = new Set([key(results[0])]);
+  return results.slice(1).filter((g) => {
+    const k = key(g);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+/** "Santiago, Santiago Metropolitan Region, Chile" in the app language. */
+export function placeLabel(geo, lang) {
+  return [localName(geo, lang), geo.state, countryName(geo.country, lang)].filter(Boolean).join(', ');
 }

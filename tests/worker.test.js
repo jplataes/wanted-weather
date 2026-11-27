@@ -75,12 +75,12 @@ test('passes upstream error status codes through', async () => {
   }
 });
 
-test('geocode needs a city name and asks for one result', async () => {
+test('geocode needs a city name and asks for up to five results', async () => {
   assert.equal((await call('/api/geocode')).status, 400);
   const calls = mockUpstream(200, [{ name: 'Seville', local_names: { es: 'Sevilla' } }]);
   const res = await call('/api/geocode?q=Sevilla&lang=es');
   assert.equal(res.status, 200);
-  assert.match(calls[0], /\/geo\/1\.0\/direct\?q=Sevilla&limit=1&appid=test-key/);
+  assert.match(calls[0], /\/geo\/1\.0\/direct\?q=Sevilla&limit=5&appid=test-key/);
 });
 
 test('reverse geocoding needs coordinates', async () => {

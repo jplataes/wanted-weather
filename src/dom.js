@@ -4,6 +4,7 @@ import { sceneSvg } from './scenes.js';
 import { minimapSvg } from './minimap.js';
 import { STAR_LINES, ALERTS, TAGLINES, LOADING_TIPS, pickBySeed, pickRandom } from './copy.js';
 import { weatherIcon, gearIcon } from './icons.js';
+import { placeLabel } from './weather.js';
 
 const $ = (id) => document.getElementById(id);
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -69,6 +70,8 @@ export function renderWeather(view) {
   $('temp').textContent = `${view.temp}°`;
   $('condition').textContent = view.description;
   renderStars($('wanted'), view.level);
+  $('wantedBtn').setAttribute('aria-label', `${t('starsAria', { n: view.level })}. ${t('whyHint')}`);
+  $('wantedWhy').textContent = t(`why.${view.reason}`, { desc: view.description.toLowerCase(), feels: view.feels, gust: view.gustShowKmh });
   $('wantedLabel').textContent = pickBySeed(STAR_LINES[view.level][lang], `${view.seed}-stars`);
 
   $('feels').textContent = `${view.feels}°`;
@@ -310,4 +313,36 @@ export function renderUpcoming(cards) {
     li.append(day, icon, temps, desc, stars, code);
     return li;
   }));
+}
+
+/** Tap the stars to see what caused them. */
+export function bindStarsExplanation() {
+  $('wantedBtn').addEventListener('click', () => {
+    const open = $('wantedWhy').hidden;
+    $('wantedWhy').hidden = !open;
+    $('wantedBtn').setAttribute('aria-expanded', String(open));
+  });
+}
+
+/** "Not this one? Try:" with other cities that have the same name. Pass [] to hide it. */
+export function renderAlternatives(list, onPick) {
+  const box = $('altCities');
+  if (!list || !list.length) {
+    box.hidden = true;
+    box.replaceChildren();
+    return;
+  }
+  const label = document.createElement('span');
+  label.className = 'alts-label';
+  label.textContent = t('altLabel');
+  const buttons = list.slice(0, 4).map((geo) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'alt-chip';
+    b.textContent = placeLabel(geo, getLang());
+    b.addEventListener('click', () => { renderAlternatives([], onPick); onPick(geo); });
+    return b;
+  });
+  box.replaceChildren(label, ...buttons);
+  box.hidden = false;
 }

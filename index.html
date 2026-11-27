@@ -6,10 +6,10 @@
   <title>Wanted Weather</title>
   <meta name="description" content="El tiempo de tu ciudad como si fuera un videojuego de mundo abierto: datos reales, nivel de estrellas y alertas con mucha calle.">
   <meta name="theme-color" content="#2a1250">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2L14.9 8.6L22 9.3L16.6 14L18.2 21L12 17.3L5.8 21L7.4 14L2 9.3L9.1 8.6Z' fill='%23ffc93c' stroke='%23140a24' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202L14.9%208.6L22%209.3L16.6%2014L18.2%2021L12%2017.3L5.8%2021L7.4%2014L2%209.3L9.1%208.6Z'%20fill='%23ffc93c'%20stroke='%23140a24'%20stroke-width='2'%20stroke-linejoin='round'/%3E%3C/svg%3E">
   <script type="module" src="/src/main.js"></script>
 </head>
-<body data-scene="sun">
+<body data-scene="sun" class="waiting">
   <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
 
   <!-- Shared drawings reused by every scene and by the minimap -->
@@ -34,10 +34,10 @@
         <feMerge><feMergeNode in="glow"/><feMergeNode in="rim"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
       <filter id="haze">
-        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.09" numOctaves="1" seed="3">
+        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.09" numOctaves="1" seed="3" result="noise">
           <animate attributeName="baseFrequency" values="0.01 0.09;0.01 0.13;0.01 0.09" dur="1.8s" repeatCount="indefinite"/>
         </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" scale="10"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="10"/>
       </filter>
       <g id="palm">
         <path d="M0 0C-2 -40 4 -80 18 -112" fill="none" stroke="#140a24" stroke-width="13" stroke-linecap="round"/>
@@ -67,10 +67,10 @@
   </svg>
 
   <header class="topbar">
-    <a class="logo" href="./" data-i18n-aria="homeLink" aria-label="Wanted Weather: volver al inicio">
+    <h1 class="brand"><a class="logo" href="./" data-i18n-aria="homeLink" aria-label="Wanted Weather: volver al inicio">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#star5" fill="#ffc93c" stroke="#140a24" stroke-width="2" stroke-linejoin="round"/></svg>
       <span>Wanted</span> <span>Weather</span>
-    </a>
+    </a></h1>
     <div class="lang" role="group" data-i18n-aria="langGroup">
       <button type="button" data-lang="es" aria-pressed="true" lang="es">ES</button>
       <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
@@ -106,21 +106,26 @@
       </button>
     </div>
 
+    <div class="alts" id="altCities" hidden></div>
+
     <div id="error" class="error-slot" role="alert" hidden></div>
 
     <!-- Zone 1: the street — today's weather at a glance -->
     <div class="zone zone-calle" id="zone-calle" data-zone="calle" tabindex="-1">
-      <section class="stage" id="stage" aria-labelledby="cityName" hidden>
+      <section class="stage" id="stage" aria-labelledby="cityName">
         <div class="scene-frame" id="scene"></div>
         <div class="hud-card">
           <p class="hud-eyebrow" id="localTime"></p>
-          <h1 class="hud-city"><span id="cityName"></span> <span class="country" id="country"></span></h1>
+          <h2 class="hud-city"><span id="cityName"></span> <span class="country" id="country"></span></h2>
           <div class="hud-main">
             <p class="hud-temp" id="temp"></p>
             <div class="hud-side">
               <p class="hud-cond" id="condition"></p>
-              <div class="wanted" id="wanted" role="img"></div>
+              <button class="stars-btn" type="button" id="wantedBtn" aria-expanded="false" aria-controls="wantedWhy">
+                <span class="wanted" id="wanted" aria-hidden="true"></span>
+              </button>
               <p class="wanted-label" id="wantedLabel"></p>
+              <p class="wanted-why" id="wantedWhy" aria-live="polite" hidden></p>
             </div>
           </div>
         </div>
@@ -129,7 +134,7 @@
         </div>
       </section>
 
-      <section class="panel details" id="details" aria-labelledby="detailsTitle" hidden>
+      <section class="panel details" id="details" aria-labelledby="detailsTitle">
         <h2 class="sr" id="detailsTitle" data-i18n="details">Detalles del día</h2>
         <dl class="hud-details">
           <div><dt data-i18n="feelsLike">Sensación</dt><dd id="feels"></dd></div>
@@ -145,7 +150,7 @@
         </div>
       </section>
 
-      <section class="teaser" id="teaser" aria-labelledby="teaserTitle" hidden>
+      <section class="teaser" id="teaser" aria-labelledby="teaserTitle">
         <div class="mission-head">
           <p class="mission-when" id="teaserWhen"></p>
           <p class="mission-stamp" aria-hidden="true" data-i18n="stamp">Confidencial</p>
@@ -190,7 +195,7 @@
 
       <section class="upcoming" id="upcoming" aria-labelledby="upcomingTitle" hidden>
         <h2 class="section-title" id="upcomingTitle" data-i18n="upcoming">Próximas misiones</h2>
-        <ol class="upcoming-list" id="upcomingList"></ol>
+        <ol class="upcoming-list" id="upcomingList" tabindex="0" aria-labelledby="upcomingTitle"></ol>
         <p class="note" id="upcomingNote" hidden></p>
       </section>
     </div>

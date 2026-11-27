@@ -1,7 +1,7 @@
 // Tests for the game logic (wanted level, scene choice, formatting).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kindFromCode, sceneFor, screenFxFor, localName, wantedLevel, compassIndex, cityTime, buildView } from '../src/weather.js';
+import { kindFromCode, sceneFor, screenFxFor, localName, wantedLevel, compassIndex, cityTime, buildView, countryName, otherMatches, placeLabel } from '../src/weather.js';
 
 const base = (over = {}) => ({
   id: 1, name: 'Testville', dt: 1700000000, timezone: 3600,
@@ -79,4 +79,30 @@ test('buildView rounds values and converts wind to km/h', () => {
   assert.equal(v.feels, 19);
   assert.equal(v.windKmh, 18);
   assert.equal(v.description, 'Cielo claro');
+});
+
+test('stars say why', () => {
+  assert.equal(wantedLevel(base()).reason, 'calm');
+  assert.equal(wantedLevel(base({ wind: { speed: 6.7, gust: 11.8, deg: 0 } })).reason, 'wind');
+  assert.equal(wantedLevel(base({ weather: [{ id: 502 }] })).reason, 'rain');
+  assert.equal(wantedLevel(base({ weather: [{ id: 602 }] })).reason, 'snow');
+  assert.equal(wantedLevel(base({ main: { temp: 36, feels_like: 38 } })).reason, 'heat');
+});
+
+test('country names in the app language', () => {
+  assert.equal(countryName('ES', 'es'), 'España');
+  assert.equal(countryName('ES', 'en'), 'Spain');
+  assert.equal(countryName('', 'es'), '');
+});
+
+test('other cities with the same name, without duplicates', () => {
+  const r = [
+    { name: 'Mérida', state: 'Extremadura', country: 'ES' },
+    { name: 'Mérida', state: 'Extremadura', country: 'ES' },
+    { name: 'Mérida', state: 'Yucatán', country: 'MX' },
+    { name: 'Mérida', state: 'Yucatán', country: 'MX' },
+    { name: 'Mérida', state: 'Merida State', country: 'VE' },
+  ];
+  assert.deepEqual(otherMatches(r).map((g) => g.country), ['MX', 'VE']);
+  assert.equal(placeLabel({ name: 'Santiago', local_names: { es: 'Santiago' }, state: 'Santiago Metropolitan Region', country: 'CL' }, 'es'), 'Santiago, Santiago Metropolitan Region, Chile');
 });

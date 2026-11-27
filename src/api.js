@@ -47,7 +47,7 @@ function buildUrl(endpoint, params) {
     const key = import.meta.env.VITE_OPENWEATHER_API_KEY;
     if (!key) throw new ApiError('config');
     if (endpoint === 'weather' || endpoint === 'forecast') params.set('units', 'metric');
-    else params.set('limit', '1');
+    else params.set('limit', endpoint === 'geocode' ? '5' : '1');
     params.set('appid', key);
     return `${OWM}${PATHS[endpoint]}?${params}`;
   }
@@ -98,11 +98,11 @@ export function getForecast(coords, lang) {
   return request('forecast', coordParams(coords, lang));
 }
 
-/** Find a city by name. Resolves to the best match, or throws "notFound". */
-export async function findCity(name) {
+/** Find cities by name: up to 5 matches, best first. Throws "notFound" if there are none. */
+export async function findCities(name) {
   const results = await request('geocode', new URLSearchParams({ q: name.trim() }));
   if (!Array.isArray(results) || results.length === 0) throw new ApiError('notFound', 404);
-  return results[0];
+  return results;
 }
 
 /** Name of the place at some coordinates (null if unknown). */
